@@ -16,10 +16,37 @@ module.exports = {
     })
   ],
 
+  devServer: {
+    // host: 'localhost',
+    // port: 8080,
+    // // enable HMR on the devServer
+    // hot: true,
+    // // fallback to root for other urls
+    // historyApiFallback: true,
+
+    // static: {
+    //   // match the output path
+    //   directory: path.resolve(__dirname, 'dist'),
+    //   // match the output 'publicPath'
+    //   publicPath: '/',
+    // },
+
+    // headers: { 'Access-Control-Allow-Origin': '*' },
+
+    proxy: {
+      '/api/**': {
+        target: 'http://localhost:1234/',
+        secure: false,
+      },
+    },
+    // for react router if you use it
+    // historyApiFallback: true
+  },
+  
   module: {
     rules: [
       {
-        test: /.js$/,
+        test: /.(js|jsx)$/,
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
@@ -29,7 +56,10 @@ module.exports = {
         }
       }
     ]
-  }
+  },
 
+  resolve: {
+    extensions: ['.js', '.jsx']
+  }
 
 }
