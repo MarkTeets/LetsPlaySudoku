@@ -15,6 +15,7 @@ mongoose.connect(MONGO_URI, {
 const Schema = mongoose.Schema;
 
 const puzzleSchema = new Schema({
+  number: Number,
   puzzle:	String,
   solution:	String,
   difficulty:	Number,

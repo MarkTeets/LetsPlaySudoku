@@ -1,9 +1,11 @@
 const models = require('../models/puzzles');
+// link to db
 //https://cloud.mongodb.com/v2/642a4ee65670c5544553a07a#/metrics/replicaSet/642a5022807c220853bea4a5/explorer/sudoku/puzzles/find
 const puzzle1 = '070000043040009610800634900094052000358460020000800530080070091902100005007040802';
 const solution1 = '679518243543729618821634957794352186358461729216897534485276391962183475137945862';
 
 const firstPuzzle = {
+  number: 1,
   puzzle:	puzzle1,
   solution:	solution1,
 }

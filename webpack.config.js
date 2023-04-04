@@ -43,13 +43,13 @@ module.exports = {
       },
     },
     // for react router if you use it
-    // historyApiFallback: true
+    historyApiFallback: true
   },
   
   module: {
     rules: [
       {
-        test: /.(js|jsx)$/,
+        test: /.jsx?/,
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
