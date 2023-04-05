@@ -104,7 +104,10 @@ export default createNewSquares;
 /*Testing
 
 const emptyPuzzle = emptyPuzzleMaker();
+// console.log(emptyPuzzle.length)
 const samplePuzzle = '077000044400009610800634900094052000358460020000800530080070091902100005007040802';
+
+// console.log(keys.length)
 
 const grid = createNewSquares(samplePuzzle);
 grid.findDuplicates();
@@ -116,13 +119,7 @@ console.log(grid)
  * @returns an empty puzzle string, comprises 81 0's
  */
 function emptyPuzzleMaker() {
-  count = 81;
-  result = '';
-  while (count > 0) {
-    result += '0'
-    count -= 1;
-  }
-  return result;
+  return '0'.repeat(81)
 }
 
 /** makeSquares
@@ -137,13 +134,9 @@ function emptyPuzzleMaker() {
 function makeSquares () {
   const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
   const numbers = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
-  const rows = [];
-  const cols = []
+  const rows = Array(9).fill([])
+  const cols = Array(9).fill([])
   const boxes = [];
-  for (let i = 0; i < 9; i += 1) {
-    rows[i] = [];
-    cols[i] = [];
-  }
 
   const madeSquares = {};
 

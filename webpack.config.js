@@ -16,7 +16,6 @@ module.exports = {
     new HTMLWebpackPlugin({
       template: './client/index.html'
     }),
-    // new Dotenv()
   ],
 
   devServer: {
@@ -46,6 +45,8 @@ module.exports = {
     historyApiFallback: true
   },
   
+  mode: process.env.NODE_ENV,
+
   module: {
     rules: [
       {
@@ -57,7 +58,18 @@ module.exports = {
             presets: ['@babel/preset-env', '@babel/preset-react']
           }
         }
-      }
+      },
+      {
+        test: /.(css|s[ac]ss)$/i,
+        use: [
+          // Creates `style` nodes from JS strings
+          "style-loader",
+          // Translates CSS into CommonJS
+          "css-loader",
+          // Compiles Sass to CSS
+          "sass-loader",
+        ],
+      },
     ]
   },
 
