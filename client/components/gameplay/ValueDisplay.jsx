@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import './stylesheets/ValueDisplay.css'
 
-const ValueDisplay = () => {
+const ValueDisplay = ({ displayVal, squareId}) => {
+  
   return (
-    <input type="text" className='value-display'/>
+    <input type="text" className='value-display' id={squareId} value={displayVal} />
   )
 }
 

@@ -4,8 +4,7 @@
 */
 
 //These variables are declared here to be used in the class definition to avoid recreating commonly used information
-const madeSquares = makeSquares();
-const keys = Object.keys(madeSquares);
+const { madeSquares, keys, boxes } = makeSquares();
 const numbers = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
 
@@ -63,7 +62,7 @@ class allSquares {
    * making a change. For now I'm gonna brute force it and check the entire array.
    * 
   */
-
+  /*
   findDuplicates() {
     // let squareId
     for (const squareId of keys) {
@@ -83,7 +82,7 @@ class allSquares {
         }
       });
     }
-  }
+  }*/
 }
 
 /** createNewSquares
@@ -93,11 +92,12 @@ class allSquares {
  * @returns a new instance of the allSquares class.
  */
 
-const createNewSquares = (puzzleString) => {
+export const squareIds = keys;
+export const unitBoxes = boxes;
+
+export const createNewSquares = (puzzleString) => {
   return new allSquares(puzzleString)
 }
-
-export default createNewSquares;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -127,8 +127,11 @@ function emptyPuzzleMaker() {
  * Used to make an 'allSquares' class object rubric. It would be computationally expensive to generate the specific strings and peers 
  * sets anew every time.
  * 
- * @returns an object populated with 'square' objects having property keys 'A1' - 'I9' corresponding to square position
+ * @returns an object holding:
+ *  1. madeSquares object populated with 'square' objects having property keys 'A1' - 'I9' corresponding to square position
  *  in the sudoku grid. Rows are the letters, columns are the numbers.
+ *  2. boxes array to be used for displaying the puzzle in the future
+ *  3. squareIds array holding all of the Id strings of each square
  */
 
 function makeSquares () {
@@ -197,7 +200,11 @@ function makeSquares () {
     madeSquares[key].peers.delete(key)
   })
   
-  return madeSquares;
+  return {
+    madeSquares,
+    boxes,
+    keys
+  };
 }
 
 /** isValidPuzzle
