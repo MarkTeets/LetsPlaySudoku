@@ -1,22 +1,58 @@
+$bodyColor: #222da9;
+$bigBorderColor: #58c2c6;
+$innerBorderColor: #e985a6;
+$squareBackground: rgb(52, 64, 160);
+$buttonBackground: rgb(169, 198, 193);
+$offBlack: rgb(50, 42, 104);
+$numberColor:#8eb5f5;
+$textColor: rgb(236, 213, 130);
+$buttonText: rgb(57, 50, 50);
+$duplicateNumber: rgb(204, 69, 69);
+
+body {
+  background-color: $bodyColor;
+  font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  color: $textColor;
+}
+
+h1, h5, .button-container {
+  width: max-content;
+  margin: 30px auto;
+}
+
+button {
+  margin: 0 10px;
+  background-color: $buttonBackground;
+  color: $buttonText;
+  border-radius: 5px;
+}
+
 #puzzle-container {
   display: grid;
   grid-template-rows: repeat(3, 1fr);
   grid-template-columns: repeat(3, 1fr);
-  border: black solid 3px;
+  border: $bigBorderColor solid 2px;
   width: 500px;
   height: 500px;
+  margin: 0 auto;
+  border-radius: 1px;
+
 }
 
 .box-unit-container {
   display: grid;
   grid-template-rows: repeat(3, 1fr);
   grid-template-columns: repeat(3, 1fr);
-  border: black solid 1px;
+  border: $bigBorderColor solid 1px;
 }
 
 .square-container {
-  background-color: green;
-  border: yellow dashed 1px;
+  background-color: $squareBackground;
+  border: $innerBorderColor dotted 1px;
+}
+
+*:disabled{
+color: inherit;
 }
 
 .value-display {
@@ -29,16 +65,11 @@
   width: 100%;
   height: 100%;
   text-align: center;
-}
-
-*:disabled{
-color: inherit;
+  font-size: 20px;
+  color: $numberColor;
+  // color: $bodyColor;
 }
 
 .duplicate-number {
-  color: red;
-}
-
-._1:hover {
-color:rgb(86, 181, 23);
+  color: $duplicateNumber;
 }
