@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import ValueDisplay from './ValueDisplay';
-import './stylesheets/SquareContainer.css';
 
 const SquareContainer = ({square, onValueDisplayClick, onInputChange}) => {
   const { id } = square;

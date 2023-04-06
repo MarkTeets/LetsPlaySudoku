@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './stylesheets/ValueDisplay.css'
+// import './stylesheets/ValueDisplay.css'
 const numStringRegex = /[0123456789]/
 
 const ValueDisplay = ({ square, onValueDisplayClick, onInputChange }) => {
@@ -30,7 +30,7 @@ export default ValueDisplay;
 
 function inputMaker(square, currentVal, handleValueChange) {
   const { id, displayVal, duplicate, fixedVal } = square;
-  let classes = `value-display ${displayVal}`
+  let classes = `value-display _${displayVal}`
 
   if (duplicate) classes += ' duplicate-number';
     

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import BoxUnitContainer from './BoxUnitContainer';
-import './stylesheets/PuzzleContainer.css';
 import {unitBoxes, squareIds, createNewSquares, newAllSquares} from '../../data/squares'
 
 const samplePuzzle = '077000044400009610800634900094052000358460020000800530080070091902100005007040802';
