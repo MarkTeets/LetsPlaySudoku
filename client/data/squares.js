@@ -6,7 +6,7 @@
 //These variables are declared here to be used in the class definition to avoid recreating commonly used information
 const { madeSquares, keys, boxes } = makeSquares();
 const numbers = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
-
+const numStringRegex = /[0123456789]/;
 
 /** class allSquares
  * Produces an object holding each square of a sudoku grid. These squares are each delivered an
@@ -45,44 +45,10 @@ class allSquares {
     }
   }
 
-  //Prototype methods:
-
-  /** Notes on find duplicates:
-   * I can actually do this recursively and only visit the peers of my current this if I found a change that needed to
-   * occur. I'm thinking too hard. All I need to do run this every time I change a number, and then change the 'duplicate'
-   * property of the affected peer. The problem is making sure I get rid of the other duplicate when I get rid of that 
-   * selection. 
-   * 
-   * One solution is to recurrsively check all peers until I hit an iteration where nothing needs to change.
-   * A better solution is to add a 'previous value' key to check and see if the previous value was the reason
-   * one of the peers was a duplicate, and if so get rid of it. Actuallty I think I'd have to go the recursive 
-   * route, because if there are multiple reasons a single block is duplicated I'd have to check each of them.
-   * 
-   * Alright, essentially I've figured out that I'd have to check every peer recursively until I went a round without
-   * making a change. For now I'm gonna brute force it and check the entire array.
-   * 
-  */
-  /*
-  findDuplicates() {
-    // let squareId
-    for (const squareId of keys) {
-      const square = this[squareId];
-      //for each square,
-      if (square.displayVal === '0') continue;
-      //set duplicate to false
-      square.duplicate = false;
-      //I need to iterate over the peers
-      square.peers.forEach(peer => {
-        //for each peer,
-        //I need to compare the display value of the this[peer] to my square's display value.
-        if (square.displayVal === this[peer].displayVal) {
-          //update duplicated to true if they're the same
-          square.duplicate = true;
-          return;
-        }
-      });
-    }
-  }*/
+  /** Prototype methods:
+  * I tried to add methods here and then realized that I wanted these methods to alter allState instances
+  * which can't be done in react. New objects should be used every time state is updates
+  */ 
 }
 
 /** createNewSquares
@@ -92,35 +58,60 @@ class allSquares {
  * @returns a new instance of the allSquares class.
  */
 
-export const squareIds = keys;
-export const unitBoxes = boxes;
-
 export const createNewSquares = (puzzleString) => {
   return new allSquares(puzzleString)
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+ * Given an allSquares object, a squareID, and a newly entered value in an input, 
+ * 
+ * @param {object} allSquares 
+ * @param {string} squareId 
+ * @param {string} newVal 
+ * @returns 
+ */
+export function newAllSquares(allSquares, squareId, newVal) {
+
+  if (allSquares[squareId].displayVal === newVal) {
+    alert('state has not changed')
+    return allSquares;
+  }
+
+  const newSquare = { ...allSquares[squareId] };
+  newSquare.displayVal = newVal;
+  newSquare.duplicate = false;
+  const newAllSquareObj = { ...allSquares, [squareId]: newSquare };
+  findDuplicates(newAllSquareObj)
+  return newAllSquareObj;
+}
+
+export const squareIds = keys;
+export const unitBoxes = boxes;
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /*Testing
 
 const emptyPuzzle = emptyPuzzleMaker();
 // console.log(emptyPuzzle.length)
-const samplePuzzle = '077000044400009610800634900094052000358460020000800530080070091902100005007040802';
+const samplePuzzle = '077000044400009610800634900094052000358460020000800530080070091902100005007040822';
 
 // console.log(keys.length)
 
 const grid = createNewSquares(samplePuzzle);
-grid.findDuplicates();
-console.log(grid)
+findDuplicates(grid);
+// console.log(grid);
+
+const newGrid = newAllSquares(grid, 'A1', '1')
+console.log(newGrid['A1'].displayVal)
+
 // */
 
 
-/** emptyPuzzleMaker
- * @returns an empty puzzle string, comprises 81 0's
- */
-function emptyPuzzleMaker() {
-  return '0'.repeat(81)
-}
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Helper function definitions
 
 /** makeSquares
  * 
@@ -137,9 +128,14 @@ function emptyPuzzleMaker() {
 function makeSquares () {
   const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
   const numbers = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
-  const rows = Array(9).fill([])
-  const cols = Array(9).fill([])
+  const rows = []
+  const cols = []
   const boxes = [];
+
+  for (let i = 0; i < 9; i++){
+    rows.push([])
+    cols.push([])
+  }
 
   const madeSquares = {};
 
@@ -183,10 +179,9 @@ function makeSquares () {
   }
 
   const allUnits = rows.concat(cols).concat(boxes);
-  // console.log(allUnits)
 
   const keys = Object.keys(madeSquares);
-  // console.log(keys)
+
   keys.forEach(key => {
     //for each array in allUnits that contains my key, I'm gonna add each element from that array to my peers set on my allSquares[key]peers prop
     const keysPeers = allUnits.reduce((acc, currentArray) => {
@@ -207,6 +202,44 @@ function makeSquares () {
   };
 }
 
+/** Notes on find duplicates:
+ * I can actually do this recursively and only visit the peers of my current this if I found a change that needed to
+ * occur. I'm thinking too hard. All I need to do run this every time I change a number, and then change the 'duplicate'
+ * property of the affected peer. The problem is making sure I get rid of the other duplicate when I get rid of that 
+ * selection. 
+ * 
+ * One solution is to recurrsively check all peers until I hit an iteration where nothing needs to change.
+ * A better solution is to add a 'previous value' key to check and see if the previous value was the reason
+ * one of the peers was a duplicate, and if so get rid of it. Actuallty I think I'd have to go the recursive 
+ * route, because if there are multiple reasons a single block is duplicated I'd have to check each of them.
+ * 
+ * Alright, essentially I've figured out that I'd have to check every peer recursively until I went a round without
+ * making a change. For now I'm gonna brute force it and check the entire array.
+ * 
+*/
+
+function findDuplicates(allSquares) {
+  // let squareId
+  for (const squareId of keys) {
+    const square = allSquares[squareId];
+    //for each square,
+    if (square.displayVal === '0') continue;
+    //set duplicate to false
+    square.duplicate = false;
+    //I need to iterate over the peers
+    square.peers.forEach(peer => {
+      //for each peer,
+      //I need to compare the display value of the allSquares[peer] to my square's display value.
+      if (square.displayVal === allSquares[peer].displayVal) {
+        //update duplicated to true if they're the same
+        square.duplicate = true;
+        return;
+      }
+    });
+  }
+}
+
+
 /** isValidPuzzle
  * 
  * Checks input parameter to see if string if exactly 81 characters long and each character is
@@ -223,7 +256,6 @@ function isValidPuzzle(puzzleString) {
   }
 
   let result = true;
-  const numStringRegex = /[0123456789]/;
 
   for (let i = 0; i < puzzleString.length; i += 1){
     if (!(numStringRegex.test(puzzleString[i]))) {
@@ -233,3 +265,37 @@ function isValidPuzzle(puzzleString) {
   }
   return result;
 }
+
+/** emptyPuzzleMaker
+ * @returns an empty puzzle string, comprises 81 0's
+ */
+
+function emptyPuzzleMaker() {
+  return '0'.repeat(81)
+}
+
+
+
+/* I used to have this function check to make sure the input was ok, but that's unnecessary now that I have my value display container
+do it before passing calling the onInputChange function
+
+export function newAllSquares(allSquares, squareId, newVal) {
+
+  if (allSquares[squareId].displayVal === newVal ||
+    !(numStringRegex.test(newVal)) ||
+    typeof newVal !== 'string' || //these last two tests are for me, they'll never actually come up when using the application
+    newVal.length !== 1) {
+    alert('state has not changed')
+    return allSquares;
+  }
+
+  const newSquare = { ...allSquares[squareId] };
+  newSquare.displayVal = newVal;
+  newSquare.duplicate = false;
+  const newAllSquareObj = { ...allSquares, [squareId]: newSquare };
+  findDuplicates(newAllSquareObj)
+  return newAllSquareObj;
+}
+
+
+*/

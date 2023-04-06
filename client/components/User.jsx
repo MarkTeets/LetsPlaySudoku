@@ -1,14 +1,19 @@
 import React, { Component, useState, useEffect} from 'react';
 
 const Users = () => {
-  const [message, newMessage] = useState('I shouldn\'t be here');
+  const [message1, newMessage1] = useState('I shouldn\'t be here');
+  const [message2, newMessage2] = useState('I shouldn\'t be here');
+  const [message3, newMessage3] = useState('I shouldn\'t be here');
 
   useEffect(() => {
     fetch('/api/users')
       .then(res => res.json())
-      .then(data => newMessage(data.message))
+      .then(data => newMessage1(data.message))
     // console.log('I happen once')
   }, [])
+
+  //replaces state of message1 with argument
+  newMessage1(message1 + 1)
 
   return (
     <ul>
@@ -16,20 +21,25 @@ const Users = () => {
       <li>{message}</li>
     </ul>
   )
-
-
 }
-
 export default Users;
 
-/*
+
 class Users2 extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      message: "I shouldn\'t be here"
+      message1: "I shouldn\'t be here",
+      message2: "I shouldn\'t be here",
+      message3: "I shouldn\'t be here"
     }
   }
+
+  newMessage1(newMessage) {
+    this.setState({...this.state, message1: newMessage})
+  }
+
+  //newMessage1(this.state.message1 + 1) can't actually be called here. Lame!
 
   componentDidMount() {
     fetch('/api/users')
@@ -46,7 +56,7 @@ class Users2 extends Component {
     )
   }
 }
-*/
+
 
 
 
