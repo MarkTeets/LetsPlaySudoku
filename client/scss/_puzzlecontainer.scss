@@ -2,7 +2,7 @@ $bodyColor: #222da9;
 $bigBorderColor: #58c2c6;
 $innerBorderColor: #e985a6;
 $squareBackground: rgb(52, 64, 160);
-$buttonBackground: rgb(169, 198, 193);
+$buttonBackground: rgb(128, 179, 171);
 $offBlack: rgb(50, 42, 104);
 $numberColor:#8eb5f5;
 $textColor: rgb(236, 213, 130);
@@ -15,9 +15,38 @@ body {
   color: $textColor;
 }
 
-h1, h5, .button-container {
+h1, h5, .button-container{
   width: max-content;
-  margin: 30px auto;
+  margin: 15px auto;
+}
+
+#lets-play{
+  font-size: 40px;
+  margin-bottom: 40px;
+}
+
+#house-img {
+  display: block;
+  width: max-content;
+  margin: 0 auto;
+} 
+
+#main-nav {
+  width:max-content;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 40px;
+}
+
+.nav-link {
+  color: $numberColor;
+  margin: 0 10px;
+  padding: 15px;
+}
+
+#main-nav .active {
+  background-color: $offBlack;
+  border-radius: 7px;
 }
 
 button {
@@ -34,7 +63,7 @@ button {
   border: $bigBorderColor solid 2px;
   width: 500px;
   height: 500px;
-  margin: 0 auto;
+  margin: 30px auto;
   border-radius: 1px;
 
 }
