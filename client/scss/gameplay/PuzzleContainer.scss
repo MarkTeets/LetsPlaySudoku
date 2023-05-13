@@ -1,0 +1,12 @@
+#puzzle-container {
+  display: grid;
+  grid-template-rows: repeat(3, 1fr);
+  grid-template-columns: repeat(3, 1fr);
+  border: black solid 3px;
+  width: 500px;
+  height: 500px;
+}
+
+/* .square-container:hover ._2 {
+  color: aqua;
+} */

@@ -7,6 +7,10 @@ const ValueDisplay = ({ square, onValueDisplayClick, onInputChange }) => {
 
   const [currentVal, setCurrentVal] = useState(displayVal === '0'? '' : displayVal)
 
+  // useEffect(() => {
+  //   console.log(id, 'rendered')
+  // });
+
   const handleValueChange = (e) => {
     let newVal = e.currentTarget.value;
     if (newVal === '') newVal = '0';

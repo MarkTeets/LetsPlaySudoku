@@ -7,6 +7,7 @@ function Home () {
       <h1>This is my home!!!</h1>
         <img id='house-img' src={house} />
       <h1>Welcome everyone!</h1>
+      <h2>Login functionality coming soon!</h2>
     </div>
     );
 }

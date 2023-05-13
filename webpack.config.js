@@ -1,5 +1,4 @@
 const path = require('path');
-// const Dotenv = require('dotenv-webpack');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
 
 

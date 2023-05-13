@@ -15,7 +15,7 @@ body {
   color: $textColor;
 }
 
-h1, h5, .button-container{
+h1, h2, h5, .button-container{
   width: max-content;
   margin: 15px auto;
 }
@@ -29,6 +29,7 @@ h1, h5, .button-container{
   display: block;
   width: max-content;
   margin: 0 auto;
+  border-radius: 4px;
 } 
 
 #main-nav {
