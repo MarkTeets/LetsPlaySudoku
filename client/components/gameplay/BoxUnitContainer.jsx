@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import SquareContainer from './SquareContainer';
 
-const BoxUnitContainer = ({boxUnit, onValueDisplayClick, onInputChange}) => {
+const BoxUnitContainer = ({boxUnit, onInputChange}) => {
 
-  const squares = generateSquares(boxUnit, onValueDisplayClick, onInputChange);
+  const squares = generateSquares(boxUnit, onInputChange);
 
   return (
     <div className="box-unit-container">
@@ -14,8 +14,8 @@ const BoxUnitContainer = ({boxUnit, onValueDisplayClick, onInputChange}) => {
 
 export default BoxUnitContainer;
 
-function generateSquares(boxUnit, onValueDisplayClick, onInputChange) {
+function generateSquares(boxUnit, onInputChange) {
   return boxUnit.map(square => {
-    return <SquareContainer square={square} key={`Square${square.id}`} onValueDisplayClick={onValueDisplayClick} onInputChange={onInputChange}/>
+    return <SquareContainer square={square} key={`Square${square.id}`} onInputChange={onInputChange}/>
   })
 }

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 // import './stylesheets/ValueDisplay.css'
 const numStringRegex = /[0123456789]/
 
-const ValueDisplay = ({ square, onValueDisplayClick, onInputChange }) => {
+const ValueDisplay = ({ square, onInputChange }) => {
   const { id, displayVal, duplicate } = square;
 
   const [currentVal, setCurrentVal] = useState(displayVal === '0'? '' : displayVal)

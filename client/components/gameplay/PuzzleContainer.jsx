@@ -2,30 +2,22 @@ import React, { useState, useEffect } from 'react';
 import BoxUnitContainer from './BoxUnitContainer';
 import {unitBoxes, squareIds, createNewSquares, newAllSquares} from '../../data/squares'
 
-const samplePuzzle = '070000043040009610800634900094052000358460020000800530080070091902100005007040802';
+// const samplePuzzle = '070000043040009610800634900094052000358460020000800530080070091902100005007040802';
 
 const PuzzleContainer = ({puzzleString}) => {
-
   const [allSquares, setSquares] = useState(createNewSquares(puzzleString));
 
-  
   //For testing 
   // useEffect(() => {
   //   setSquares(createNewSquares(samplePuzzle))
   // }, [])
 
-  // const onValueDisplayClick = (e) => {
-  //   console.log('I wasnt needed')
-  // }
-
-  const onValueDisplayClick = 5
-  // const onInputChange = 5
   //This function is fired every time there's an onChange event in an individual square. It and updates the state of allSquares.
   const onInputChange = (id, newVal) => {
     setSquares(newAllSquares(allSquares, id, newVal))
   }
 
-  const boxComponents = generateBoxes(allSquares, onValueDisplayClick, onInputChange)
+  const boxComponents = generateBoxes(allSquares, onInputChange)
 
   return (
     <div key="puzzle-container" id="puzzle-container">
@@ -44,14 +36,15 @@ export default PuzzleContainer;
  * @param {object} allSquares 
  * @returns 
  */
-function generateBoxes(allSquares, onValueDisplayClick, onInputChange) {
+
+function generateBoxes(allSquares, onInputChange) {
   //create large array to be rendered
   const boxUnitContainers = [];
   unitBoxes.forEach((squareIdArr, i) => {
     //assign boxUnit var to array of objects corresponding to squareIdArr strings
     const boxUnit = squareIdArr.map(squareId => allSquares[squareId]);
     //push <BoxUnitContainer/> with unitBox prop drilled to boxUnitContainer
-    boxUnitContainers.push(<BoxUnitContainer key={`BoxUnit${i + 1}`} boxUnit={boxUnit} onValueDisplayClick={onValueDisplayClick} onInputChange={onInputChange} />)
+    boxUnitContainers.push(<BoxUnitContainer key={`BoxUnit${i + 1}`} boxUnit={boxUnit} onInputChange={onInputChange} />)
   })
 
   //return boxUnitContainers array so they can be rendered.
