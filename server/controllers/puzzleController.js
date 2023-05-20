@@ -7,7 +7,7 @@ puzzleController.getPuzzle = async (req, res, next) => {
   //database and return it as a json
   try {
     const { puzzleNumber } = req.query;
-    console.log('puzzleNumber:', puzzleNumber);
+    // console.log('puzzleNumber:', puzzleNumber);
 
     if (puzzleNumber === undefined) {
       return next(errorMaker('getPuzzle', 400, 'Failed to retrieve puzzleNumber query string from req.query'))

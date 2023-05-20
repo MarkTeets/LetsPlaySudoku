@@ -10,6 +10,4 @@ router.get('/', (req, res) => {
   res.status(200).json(data)
 });
 
-// router.get('/secret')
-
 module.exports = router;
