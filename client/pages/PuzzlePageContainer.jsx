@@ -26,15 +26,14 @@ export const PuzzlePageContainer = () => {
   )
 }
 
-//loader function
+//loader functions
 export const puzzleLoader = async ({ params }) => {
   const res = await fetch(`/api/puzzle?puzzleNumber=${params.puzzleNumber}`)
   return res.json();
 }
 
-export const puzzleTestLoader = async () => {
-  const res = await fetch(`/api/puzzle?puzzleNumber=1`)
-  return res.json();
+export const puzzleTestLoader = () => {
+  return { puzzle: '070000043040009610800634900094052000358460020000800530080070091902100005007040802' };
 }
 
 
