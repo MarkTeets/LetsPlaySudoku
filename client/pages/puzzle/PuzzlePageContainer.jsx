@@ -1,18 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { useLoaderData, useParams } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useLoaderData } from 'react-router-dom';
 
 //Components
-import PuzzleContainer from '../components/gameplay/PuzzleContainer'
+import PuzzleContainer from './components/PuzzleContainer';
 
 //Styles
-import '../scss/_puzzlecontainer.scss';
-
+import '../../scss/_puzzlecontainer.scss';
 
 
 export const PuzzlePageContainer = () => {
-  // const { puzzleNumber } = useParams();
   const puzzleData = useLoaderData();
-  const [puzzleString, setPuzzleString] = useState(puzzleData.puzzle)
+  const [puzzleString, setPuzzleString] = useState(puzzleData.puzzle);
 
   return (
     <div id='puzzle-page-container'>
@@ -23,18 +21,18 @@ export const PuzzlePageContainer = () => {
         <button>Game Data</button>
       </div>
     </div>
-  )
-}
+  );
+};
 
 //loader functions
 export const puzzleLoader = async ({ params }) => {
-  const res = await fetch(`/api/puzzle?puzzleNumber=${params.puzzleNumber}`)
+  const res = await fetch(`/api/puzzle?puzzleNumber=${params.puzzleNumber}`);
   return res.json();
-}
+};
 
 export const puzzleTestLoader = () => {
   return { puzzle: '070000043040009610800634900094052000358460020000800530080070091902100005007040802' };
-}
+};
 
 
 /*

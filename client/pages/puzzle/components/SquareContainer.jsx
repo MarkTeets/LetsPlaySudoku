@@ -7,7 +7,7 @@ const SquareContainer = ({square, onInputChange}) => {
     <div className='square-container' id={`Square${id}`}>
       <ValueDisplay class="square-container" square={square} key={`ValueDisplay${id}`} onInputChange={onInputChange} />
     </div>
-  )
-}
+  );
+};
 
 export default SquareContainer;

@@ -9,13 +9,13 @@ const BoxUnitContainer = ({boxUnit, onInputChange}) => {
     <div className="box-unit-container">
       {squares}
     </div> 
-  )
-}
+  );
+};
 
 export default BoxUnitContainer;
 
 function generateSquares(boxUnit, onInputChange) {
   return boxUnit.map(square => {
-    return <SquareContainer square={square} key={`Square${square.id}`} onInputChange={onInputChange}/>
-  })
+    return <SquareContainer square={square} key={`Square${square.id}`} onInputChange={onInputChange}/>;
+  });
 }

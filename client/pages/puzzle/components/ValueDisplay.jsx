@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
+
 // import './stylesheets/ValueDisplay.css'
-const numStringRegex = /[0123456789]/
+const numStringRegex = /[0123456789]/;
 
 const ValueDisplay = ({ square, onInputChange }) => {
   const { id, displayVal, duplicate } = square;
 
-  const [currentVal, setCurrentVal] = useState(displayVal === '0'? '' : displayVal)
+  const [currentVal, setCurrentVal] = useState(displayVal === '0'? '' : displayVal);
 
   // useEffect(() => {
   //   console.log(id, 'rendered')
@@ -15,17 +16,17 @@ const ValueDisplay = ({ square, onInputChange }) => {
     let newVal = e.currentTarget.value;
     if (newVal === '') newVal = '0';
     if (numStringRegex.test(newVal)) {
-      setCurrentVal(e.currentTarget.value)
-      onInputChange(id, newVal)
+      setCurrentVal(e.currentTarget.value);
+      onInputChange(id, newVal);
     } else {
-      alert('Please enter a number from 1-9')
+      alert('Please enter a number from 1-9');
     }
-  }
+  };
 
   return (
     inputMaker(square, currentVal, handleValueChange)
-  )
-}
+  );
+};
 
 export default ValueDisplay;
 
@@ -34,7 +35,7 @@ export default ValueDisplay;
 
 function inputMaker(square, currentVal, handleValueChange) {
   const { id, displayVal, duplicate, fixedVal } = square;
-  let classes = `value-display _${displayVal}`
+  let classes = `value-display _${displayVal}`;
 
   if (duplicate) classes += ' duplicate-number';
     
@@ -42,7 +43,6 @@ function inputMaker(square, currentVal, handleValueChange) {
     return <input type="text" className={classes} id={id} value={displayVal} disabled />;
   }
   return <input type="text" className={classes} id={id} maxLength={1} value={currentVal} onChange={(e) => handleValueChange(e)} />;
-  // return <input type="text" className={classes} id={id} maxLength={1} value={currentVal} />;
 }
   
 
