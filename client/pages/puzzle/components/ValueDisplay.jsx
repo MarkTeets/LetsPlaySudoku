@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 const numStringRegex = /[0123456789]/;
 
 const ValueDisplay = ({ square, onInputChange }) => {
-  const { id, displayVal, duplicate } = square;
+  const { id, displayVal } = square;
 
   const [currentVal, setCurrentVal] = useState(displayVal === '0'? '' : displayVal);
 
