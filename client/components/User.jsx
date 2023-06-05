@@ -6,25 +6,25 @@ const Users = () => {
   const [message3, newMessage3] = useState('I shouldn\'t be here');
 
   useEffect(() => {
-    fetch('/api/users')
+    fetch('/api/user')
       .then(res => res.json())
-      .then(data => newMessage1(data.message))
+      .then(data => newMessage1(data.message));
     // console.log('I happen once')
-  }, [])
+  }, []);
 
   //replaces state of message1 with argument
-  newMessage1(message1 + 1)
+  newMessage1(message1 + 1);
 
   return (
     <ul>
       <li>here</li>
-      <li>{message}</li>
+      <li>{message1}</li>
     </ul>
-  )
-}
+  );
+};
 export default Users;
 
-
+/*
 class Users2 extends Component {
   constructor(props) {
     super(props);
@@ -42,7 +42,7 @@ class Users2 extends Component {
   //newMessage1(this.state.message1 + 1) can't actually be called here. Lame!
 
   componentDidMount() {
-    fetch('/api/users')
+    fetch('/api/user')
       .then(res => res.json())
       .then(data => this.setState({message: data.message}))
   }
@@ -57,7 +57,7 @@ class Users2 extends Component {
   }
 }
 
-
+*/
 
 
 /*
@@ -71,7 +71,7 @@ class Users extends Component {
   }
 
   componentDidMount() {
-    fetch('/api/users')
+    fetch('/api/user')
       .then(res => res.json())
       .then(data => this.setState({message: data.message}))
   }
