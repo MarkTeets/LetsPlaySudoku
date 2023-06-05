@@ -1,4 +1,4 @@
-const models = require('../models/puzzles');
+const models = require('../models/puzzleModel');
 
 const puzzleController = {};
 
@@ -10,7 +10,7 @@ puzzleController.getPuzzle = async (req, res, next) => {
     // console.log('puzzleNumber:', puzzleNumber);
 
     if (puzzleNumber === undefined) {
-      return next(errorMaker('getPuzzle', 400, 'Failed to retrieve puzzleNumber query string from req.query'))
+      return next(errorMaker('getPuzzle', 400, 'Failed to retrieve puzzleNumber query string from req.query'));
     }
 
     res.locals.puzzleObj = await models.Puzzle.findOne({ number: puzzleNumber }).exec();
@@ -22,9 +22,9 @@ puzzleController.getPuzzle = async (req, res, next) => {
     return next();
 
   } catch (err) {
-    return next(errorMaker('getPuzzle', 500, 'Failed to retrieve puzzle string', err))
+    return next(errorMaker('getPuzzle', 500, 'Failed to retrieve puzzle string', err));
   }
-}
+};
 
 
 
