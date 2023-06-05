@@ -1,19 +1,8 @@
 const mongoose = require('mongoose');
-// const dotenv = require('dotenv');
-// dotenv.config();
-
-// // Allow guests to see a single sample puzzle for now
-// const MONGO_URI='mongodb+srv://markteets:PV0m4ZjwEg3wZwIT@sudoku-db.ox6sdpn.mongodb.net/?retryWrites=true&w=majority';
-// //const MONGO_URI = process.env.SUDOKU_MONGO_URI;
-
-// mongoose.connect(MONGO_URI, {
-//   dbName: 'sudoku'
-// })
-//   .then(() => console.log('Connected to Mongo DB!'))
-//   .catch(err => console.log('Database error: ', err.message));
-
 const Schema = mongoose.Schema;
 
+// Each puzzle document will include the following details. The names of different techniques denotes if said technique is required to 
+// solve the puzzle
 
 const puzzleSchema = new Schema({
   number: Number,
