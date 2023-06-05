@@ -18,29 +18,30 @@ class allSquares {
   constructor(puzzleString = emptyPuzzleMaker()) {
 
     if (!isValidPuzzle(puzzleString)) {
-      console.log('Puzzle string was not valid')
-      throw new Error('Puzzle string was not valid')
+      console.log('Puzzle string was not valid');
+      throw new Error('Puzzle string was not valid');
     }
 
     let squareId, puzzleVal;
 
     for (let i = 0; i < keys.length; i += 1) {
       squareId = keys[i];
-      puzzleVal = puzzleString[i]
+      puzzleVal = puzzleString[i];
       const possibleVal = new Set(numbers);
 
       if (puzzleVal === '0') {
         this[squareId] = {
           ...madeSquares[squareId],
           possibleVal
-        }
+        };
       } else {
         this[squareId] = {
           ...madeSquares[squareId],
           displayVal: puzzleVal,
           fixedVal: true,
+          // Unless the way I check for a completed game uses these, I shouldn't add possibleVal to fixed Val numbers
           possibleVal
-        }
+        };
       }
     }
   }
@@ -59,8 +60,8 @@ class allSquares {
  */
 
 export const createNewSquares = (puzzleString) => {
-  return new allSquares(puzzleString)
-}
+  return new allSquares(puzzleString);
+};
 
 /**
  * Given an allSquares object, a squareID, and a newly entered value in an input, 
@@ -73,7 +74,7 @@ export const createNewSquares = (puzzleString) => {
 export function newAllSquares(allSquares, squareId, newVal) {
 
   if (allSquares[squareId].displayVal === newVal) {
-    alert('state has not changed')
+    alert('state has not changed');
     return allSquares;
   }
 
@@ -81,12 +82,18 @@ export function newAllSquares(allSquares, squareId, newVal) {
   newSquare.displayVal = newVal;
   newSquare.duplicate = false;
   const newAllSquareObj = { ...allSquares, [squareId]: newSquare };
-  findDuplicates(newAllSquareObj)
+  findDuplicates(newAllSquareObj);
   return newAllSquareObj;
 }
 
-export const squareIds = keys;
+// export const squareIds = keys;
 export const unitBoxes = boxes;
+
+// const isPuzzleComplete = (allSquares) => {
+//   for (const squareId of keys) {
+//     if(allSquares[squareId] === '0')
+//   }
+// };
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -122,19 +129,19 @@ console.log(newGrid['A1'].displayVal)
  *  1. madeSquares object populated with 'square' objects having property keys 'A1' - 'I9' corresponding to square position
  *  in the sudoku grid. Rows are the letters, columns are the numbers.
  *  2. boxes array to be used for displaying the puzzle in the future
- *  3. squareIds array holding all of the Id strings of each square
+ *  3. keys array holding all of the Id strings of each square
  */
 
 function makeSquares () {
   const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
   const numbers = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
-  const rows = []
-  const cols = []
+  const rows = [];
+  const cols = [];
   const boxes = [];
 
   for (let i = 0; i < 9; i++){
-    rows.push([])
-    cols.push([])
+    rows.push([]);
+    cols.push([]);
   }
 
   const madeSquares = {};
@@ -155,11 +162,11 @@ function makeSquares () {
         displayVal: '0',
         duplicate: false,
         fixedVal: false,
-        possibleVal: 'will be replaced by a set later. Didn\'t want any shared references between class instances', //new Set(numbers),
+        possibleVal: 'will be replaced by a set later. Didn\'t want any shared references between class instances',
         peers: 'Will be replaced by a Set holding all of the squares names that share this squares row, column, or box'
-      }
+      };
     });
-  })
+  });
 
   const letterBoxes = [['A', 'B', 'C'], ['D', 'E', 'F'], ['G', 'H', 'I']];
   const numBoxes = [['1', '2', '3'], ['4', '5', '6'], ['7', '8', '9']];
@@ -172,8 +179,8 @@ function makeSquares () {
         numBox.forEach(number => {
           const key = letter.concat(number);
           box.push(key);
-        })
-      })
+        });
+      });
       boxes.push(box);
     }
   }
@@ -185,15 +192,15 @@ function makeSquares () {
   keys.forEach(key => {
     //for each array in allUnits that contains my key, I'm gonna add each element from that array to my peers set on my allSquares[key]peers prop
     const keysPeers = allUnits.reduce((acc, currentArray) => {
-      if (currentArray.includes(key)) return acc.concat(currentArray)
+      if (currentArray.includes(key)) return acc.concat(currentArray);
       else return acc;
-    }, [])
+    }, []);
  
-    madeSquares[key].peers = new Set(keysPeers)
+    madeSquares[key].peers = new Set(keysPeers);
  
     //remove this key from my peers set
-    madeSquares[key].peers.delete(key)
-  })
+    madeSquares[key].peers.delete(key);
+  });
   
   return {
     madeSquares,
@@ -203,7 +210,7 @@ function makeSquares () {
 }
 
 /** Notes on find duplicates:
- * I can actually do this recursively and only visit the peers of my current this if I found a change that needed to
+ * I can actually do this recursively and only visit the peers of my changed square if I found a change that needed to
  * occur. I'm thinking too hard. All I need to do run this every time I change a number, and then change the 'duplicate'
  * property of the affected peer. The problem is making sure I get rid of the other duplicate when I get rid of that 
  * selection. 
@@ -216,6 +223,7 @@ function makeSquares () {
  * Alright, essentially I've figured out that I'd have to check every peer recursively until I went a round without
  * making a change. For now I'm gonna brute force it and check the entire array.
  * 
+ * On second thought, recursion might be slower without tail-call optimization. I should look into this
 */
 
 function findDuplicates(allSquares) {
@@ -251,7 +259,7 @@ function findDuplicates(allSquares) {
 
 function isValidPuzzle(puzzleString) {
   if (puzzleString.length !== 81) {
-    console.log('puzzle string length isn\'t 81')
+    console.log('puzzle string length isn\'t 81');
     return false;
   }
 
@@ -259,7 +267,7 @@ function isValidPuzzle(puzzleString) {
 
   for (let i = 0; i < puzzleString.length; i += 1){
     if (!(numStringRegex.test(puzzleString[i]))) {
-      console.log('character', `'${puzzleString[i]}'`, 'was found in puzzle string. Only strings representing nums 0-9 are allowed.')
+      console.log('character', `'${puzzleString[i]}'`, 'was found in puzzle string. Only strings representing nums 0-9 are allowed.');
       result = false;
     }
   }
@@ -271,9 +279,8 @@ function isValidPuzzle(puzzleString) {
  */
 
 function emptyPuzzleMaker() {
-  return '0'.repeat(81)
+  return '0'.repeat(81);
 }
-
 
 
 /* I used to have this function check to make sure the input was ok, but that's unnecessary now that I have my value display container
@@ -296,6 +303,4 @@ export function newAllSquares(allSquares, squareId, newVal) {
   findDuplicates(newAllSquareObj)
   return newAllSquareObj;
 }
-
-
 */
