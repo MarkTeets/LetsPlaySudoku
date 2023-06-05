@@ -6,16 +6,17 @@
   "scripts": {
     "oldStart": "webpack-dev-server --mode development --open --hot",
     "build": "NODE_ENV=production webpack",
-    "start": "concurrently \"cross-env NODE_ENV=development webpack serve --open --hot --progress --color \" \" nodemon ./server/server.js\""
+    "start": "concurrently \"cross-env NODE_ENV=development webpack serve --open --hot --progress --color \" \" nodemon ./server/server.js\"",
+    "add-puzzle": "node server/controllers/puzzleDBCreate.js"
   },
   "keywords": [],
   "author": "Mark Teets",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "express": "^4.18.2",
     "mongoose": "^7.0.3",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
     "react-router-dom": "^6.10.0",
     "sass": "^1.60.0"
   },
@@ -28,6 +29,11 @@
     "cross-env": "^7.0.3",
     "css-loader": "^6.7.3",
     "dotenv": "^16.0.3",
+    "eslint": "^8.42.0",
+    "eslint-import-resolver-webpack": "^0.13.2",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-jsx-a11y": "^6.7.1",
+    "eslint-plugin-react": "^7.32.2",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.5.0",
     "nodemon": "^2.0.22",
