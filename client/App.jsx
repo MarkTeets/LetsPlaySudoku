@@ -14,12 +14,12 @@ const router = createBrowserRouter(
       <Route index element={<Home/>} />
       <Route
         path='playTest'
-        element={<PuzzlePageContainer key='PuzzlePageContainer' />}
+        element={<PuzzlePageContainer key='PuzzlePageContainerFromPlayTest' />}
         loader={puzzleTestLoader}
       />
       <Route
         path='play/:puzzleNumber'
-        element={<PuzzlePageContainer key='PuzzlePageContainer' />}
+        element={<PuzzlePageContainer key='PuzzlePageContainerFromDB' />}
         loader={puzzleLoader}
       />
     </Route>

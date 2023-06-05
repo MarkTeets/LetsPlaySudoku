@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 export default function SignInSuccess() {
   return (
@@ -6,10 +6,10 @@ export default function SignInSuccess() {
 
 
     </div>
-  )
+  );
 }
 
 //loader function
 const usersLoader = async () => {
   
-}
+};
