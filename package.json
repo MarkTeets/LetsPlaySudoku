@@ -4,9 +4,10 @@
   "description": "",
   "main": "server/server.js",
   "scripts": {
-    "oldStart": "webpack-dev-server --mode development --open --hot",
     "build": "NODE_ENV=production webpack",
-    "start": "concurrently \"cross-env NODE_ENV=development webpack serve --open --hot --progress --color \" \" nodemon ./server/server.js\"",
+    "frontend": "NODE_ENV=development webpack serve --open --hot",
+    "backend": "NODE_ENV=development nodemon ./server/server.js",
+    "start": "concurrently \"cross-env NODE_ENV=development webpack serve --open --hot --color \" \" nodemon ./server/server.js\"",
     "add-puzzle": "node server/controllers/puzzleDBCreate.js"
   },
   "keywords": [],
