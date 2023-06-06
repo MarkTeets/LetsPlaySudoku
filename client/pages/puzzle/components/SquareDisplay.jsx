@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 
-// import './stylesheets/ValueDisplay.css'
 const numStringRegex = /[0123456789]/;
 
-const ValueDisplay = ({ square, onInputChange }) => {
+const SquareDisplay = ({ square, index, onInputChange }) => {
   const { id, displayVal } = square;
 
   const [currentVal, setCurrentVal] = useState(displayVal === '0'? '' : displayVal);
@@ -24,25 +23,25 @@ const ValueDisplay = ({ square, onInputChange }) => {
   };
 
   return (
-    inputMaker(square, currentVal, handleValueChange)
+    inputMaker(square, currentVal, index, handleValueChange)
   );
 };
 
-export default ValueDisplay;
+export default SquareDisplay;
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 
 
-function inputMaker(square, currentVal, handleValueChange) {
+function inputMaker(square, currentVal, index, handleValueChange) {
   const { id, displayVal, duplicate, fixedVal } = square;
-  let classes = `value-display _${displayVal}`;
+  let classes = `value-display _${displayVal} ${index}`;
 
   if (duplicate) classes += ' duplicate-number';
     
   if (fixedVal) {
-    return <input type="text" className={classes} id={id} value={displayVal} disabled />;
+    return <input key={`Input-${id}`} type="text" className={classes} id={id} value={displayVal} disabled />;
   }
-  return <input type="text" className={classes} id={id} maxLength={1} value={currentVal} onChange={(e) => handleValueChange(e)} />;
+  return <input key={`Input-${id}`} type="text" className={classes} id={id} maxLength={1} value={currentVal} onChange={(e) => handleValueChange(e)} />;
 }
   
 

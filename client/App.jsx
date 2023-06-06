@@ -3,7 +3,7 @@ import { createBrowserRouter, createRoutesFromElements, RouterProvider, Route } 
 
 //pages, loaders
 import Home from './pages/Home';
-import { PuzzlePageContainer, puzzleLoader, puzzleTestLoader } from './pages/puzzle/PuzzlePageContainer';
+import { PuzzlePage, puzzleLoader, puzzleTestLoader } from './pages/puzzle/PuzzlePage';
 
 //layouts
 import RootLayout from './layouts/RootLayout';
@@ -14,12 +14,12 @@ const router = createBrowserRouter(
       <Route index element={<Home/>} />
       <Route
         path='playTest'
-        element={<PuzzlePageContainer key='PuzzlePageContainerFromPlayTest' />}
+        element={<PuzzlePage key='PuzzlePageContainerFromPlayTest' />}
         loader={puzzleTestLoader}
       />
       <Route
         path='play/:puzzleNumber'
-        element={<PuzzlePageContainer key='PuzzlePageContainerFromDB' />}
+        element={<PuzzlePage key='PuzzlePageContainerFromDB' />}
         loader={puzzleLoader}
       />
     </Route>

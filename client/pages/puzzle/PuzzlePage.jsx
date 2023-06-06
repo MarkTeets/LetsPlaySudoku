@@ -8,7 +8,7 @@ import PuzzleContainer from './components/PuzzleContainer';
 import '../../scss/_puzzlecontainer.scss';
 
 
-export const PuzzlePageContainer = () => {
+export const PuzzlePage = () => {
   const puzzleData = useLoaderData();
   const [puzzleString, setPuzzleString] = useState(puzzleData.puzzle);
 

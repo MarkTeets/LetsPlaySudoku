@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import SquareContainer from './SquareContainer';
+import SquareDisplay from './SquareDisplay';
 
 const BoxUnitContainer = ({boxUnit, onInputChange}) => {
 
@@ -15,7 +15,7 @@ const BoxUnitContainer = ({boxUnit, onInputChange}) => {
 export default BoxUnitContainer;
 
 function generateSquares(boxUnit, onInputChange) {
-  return boxUnit.map(square => {
-    return <SquareContainer square={square} key={`Square${square.id}`} onInputChange={onInputChange}/>;
+  return boxUnit.map((square, index) => {
+    return <SquareDisplay index={`square-${index + 1}`} square={square} key={`Square-${square.id}`} onInputChange={onInputChange}/>;
   });
 }
