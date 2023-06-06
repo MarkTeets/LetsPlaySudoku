@@ -7,6 +7,7 @@
 const { madeSquares, keys, boxes } = makeSquares();
 const numbers = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
 const numStringRegex = /[0123456789]/;
+export const unitBoxes = boxes;
 
 /** class allSquares
  * Produces an object holding each square of a sudoku grid. These squares are each delivered an
@@ -73,27 +74,37 @@ export const createNewSquares = (puzzleString) => {
  */
 export function newAllSquares(allSquares, squareId, newVal) {
 
+  // If the state value hasn't changed, skip the function and just return the original object
   if (allSquares[squareId].displayVal === newVal) {
-    alert('state has not changed');
+    // alert('state has not changed');
     return allSquares;
   }
-
-  const newSquare = { ...allSquares[squareId] };
-  newSquare.displayVal = newVal;
-  newSquare.duplicate = false;
-  const newAllSquareObj = { ...allSquares, [squareId]: newSquare };
+  // Make a deep copy of the allSquares object
+  const newAllSquareObj = {};
+  for (const id of keys) {
+    newAllSquareObj[id] = {
+      ...allSquares[id],
+      possibleVal: new Set(allSquares[id].possibleVal),
+      peers: new Set(allSquares[id].peers)
+    };
+  }
+  // Change the specific values for the square that was changed
+  newAllSquareObj[squareId].displayVal = newVal;
+  newAllSquareObj[squareId].duplicate = false;
+  // Iterate over the entire grid and check each square to see if it had duplicate values within the squares in its peers Set
+  // If so, change the duplicate value of said square to true
   findDuplicates(newAllSquareObj);
   return newAllSquareObj;
 }
 
-// export const squareIds = keys;
-export const unitBoxes = boxes;
-
-// const isPuzzleComplete = (allSquares) => {
-//   for (const squareId of keys) {
-//     if(allSquares[squareId] === '0')
-//   }
-// };
+export const isPuzzleFinished = (allSquares) => {
+  for (const squareId of keys) {
+    if (allSquares[squareId].displayVal === '0' || allSquares[squareId].duplicate) {
+      return false;
+    }
+  }
+  return true;
+};
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
