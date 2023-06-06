@@ -34,7 +34,7 @@ export default SquareDisplay;
 
 function inputMaker(square, currentVal, index, handleValueChange) {
   const { id, displayVal, duplicate, fixedVal } = square;
-  let classes = `value-display _${displayVal} ${index}`;
+  let classes = `square-display _${displayVal} ${index}`;
 
   if (duplicate) classes += ' duplicate-number';
     

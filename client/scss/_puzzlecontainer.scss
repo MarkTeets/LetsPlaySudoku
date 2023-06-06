@@ -61,34 +61,30 @@ button {
   display: grid;
   grid-template-rows: repeat(3, 1fr);
   grid-template-columns: repeat(3, 1fr);
-  border: $bigBorderColor solid 2px;
+  border: $bigBorderColor solid 3px;
   width: 500px;
   height: 500px;
   margin: 30px auto;
-  border-radius: 1px;
-
+  border-radius: 2px;
 }
 
 .box-unit-container {
+  box-sizing: border-box;
   display: grid;
   grid-template-rows: repeat(3, 1fr);
   grid-template-columns: repeat(3, 1fr);
   border: $bigBorderColor solid 1px;
 }
 
-.square-container {
-  background-color: $squareBackground;
-  border: $innerBorderColor dotted 1px;
-}
-
-*:disabled{
+*:disabled {
 color: inherit;
 }
 
-.value-display {
+.square-display {
+  box-sizing: border-box;
   padding: 0;
-  background: none;
-  border: none;
+  background-color: $squareBackground;
+  border: $innerBorderColor dotted 1px;
   border-radius: 0;
   outline: none;
   appearance: none;
@@ -97,7 +93,22 @@ color: inherit;
   text-align: center;
   font-size: 20px;
   color: $numberColor;
-  // color: $bodyColor;
+}
+
+.square-1, .square-2, .square-3 {
+  border-top-style: none;
+}
+
+.square-1, .square-4, .square-7 {
+  border-left-style: none;
+}
+
+.square-3, .square-6, .square-9 {
+  border-right-style: none;
+}
+
+.square-7, .square-8, .square-9 {
+  border-bottom-style: none;
 }
 
 .duplicate-number {
