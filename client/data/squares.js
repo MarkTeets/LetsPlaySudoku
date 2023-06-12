@@ -120,7 +120,7 @@ const emptyPuzzleMaker = () => {
 
 const isValidPuzzle = (puzzleString) => {
   if (puzzleString.length !== 81) {
-    console.log('puzzle string length isn\'t 81');
+    // console.log('puzzle string length isn\'t 81');
     return false;
   }
 
@@ -128,7 +128,7 @@ const isValidPuzzle = (puzzleString) => {
 
   for (let i = 0; i < puzzleString.length; i += 1){
     if (!(numStringRegex.test(puzzleString[i]))) {
-      console.log('character', `'${puzzleString[i]}'`, 'was found in puzzle string. Only strings representing nums 0-9 are allowed.');
+      // console.log('character', `'${puzzleString[i]}'`, 'was found in puzzle string. Only strings representing nums 0-9 are allowed.');
       result = false;
     }
   }
@@ -146,7 +146,7 @@ class allSquares {
   constructor(puzzleString = emptyPuzzleMaker()) {
 
     if (!isValidPuzzle(puzzleString)) {
-      console.log('Puzzle string was not valid');
+      // console.log('Puzzle string was not valid');
       throw new Error('Puzzle string was not valid');
     }
 

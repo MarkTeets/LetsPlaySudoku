@@ -90,7 +90,7 @@ userController.createUser = async (req, res, next) => {
     const createdUser = await models.User.create(document);
     // Prepare a frontendUser object including only the necessary props to send to the frontend
     res.locals.frontendUser = cleanUser(createdUser);
-    console.log('createUser res.locals.frontendUser:', res.locals.frontendUser);
+    // console.log('createUser res.locals.frontendUser:', res.locals.frontendUser);
     return next();
 
   } catch (err) {
@@ -125,7 +125,7 @@ userController.verifyUser = async (req, res, next) => {
 
     // Prepare a frontendUser object including only the necessary props to send to the frontend
     res.locals.frontendUser = cleanUser(res.locals.foundUser);
-    console.log('verifyUser res.locals.frontendUser:', res.locals.frontendUser);
+    // console.log('verifyUser res.locals.frontendUser:', res.locals.frontendUser);
     return next();
 
   } catch (err) {
@@ -164,7 +164,7 @@ userController.savePuzzle = async (req, res, next) => {
     const updatedUser = await res.locals.foundUser.save();
     // Send the user with the new array back to the frontend
     res.locals.frontendUser = cleanUser(updatedUser);
-    console.log('savePuzzle res.locals.frontendUser:', res.locals.frontendUser);
+    // console.log('savePuzzle res.locals.frontendUser:', res.locals.frontendUser);
 
   } catch (err) {
     return next(createErr({
