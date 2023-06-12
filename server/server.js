@@ -7,8 +7,7 @@ const app = express();
 const usersRouter = require('./routes/userRouter');
 const puzzleRouter = require('./routes/puzzleRouter');
 
-const PORT = 1234;
-
+const PORT = 3000;
 
 
 // Allow guests to access database for now
@@ -30,11 +29,13 @@ app.use('/api/user', usersRouter);
 
 app.use('/api/puzzle', puzzleRouter);
 
-app.get('/api', (req, res) => {
-  res.send('hello world from express!');
-});
+app.get('/favicon.ico', (req, res) => res.status(204));
 
-app.get('/', (req, res) => {
+// app.get('/api', (req, res) => {
+//   res.send('hello world from express!');
+// });
+
+app.use('/', (req, res) => {
   res.status(404).send('Nothing to see here!');
 });
 
@@ -43,7 +44,7 @@ app.use((err, req, res, next) => {
   const defaultErr = {
     log: 'Express error handler caught unknown middleware error',
     status: 500,
-    message: { err: 'An error occurred' },
+    message: { err: 'A server error occurred' },
   };
   const errorObj = Object.assign({}, defaultErr, err);
   console.log(errorObj.log);
