@@ -79,6 +79,4 @@ const puzzleSchema = new Schema({
 const Puzzle = mongoose.model('puzzles', puzzleSchema);
 
 
-module.exports = {
-  Puzzle
-};
+module.exports = Puzzle;
