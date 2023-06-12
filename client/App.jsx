@@ -23,6 +23,7 @@ import { userContext, pageContext } from './context';
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={<RootLayout />}>
+
       <Route path='/' element={<WelcomeLayout />}>
         <Route index element={<Home />} />
         <Route
@@ -38,6 +39,7 @@ const router = createBrowserRouter(
           errorElement={<ErrorPage />}
         />
       </Route>
+
       <Route path='guest' element={<GuestLayout/>}>
         <Route
           index
@@ -54,6 +56,7 @@ const router = createBrowserRouter(
           loader={puzzleLoader}
         />
       </Route>
+
       <Route path=':username' element={<UserLayout/>}>
         <Route
           index
@@ -74,7 +77,8 @@ const router = createBrowserRouter(
           loader={puzzleLoader}
         />
       </Route>
-      <Route path='*' element={NotFound } />
+      
+      <Route path='*' element={<NotFound />} />
     </Route>
   )
 );

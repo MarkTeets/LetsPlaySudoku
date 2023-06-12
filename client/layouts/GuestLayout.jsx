@@ -11,7 +11,6 @@ function GuestLayout() {
           <NavLink to='playTest' className='nav-link'>Play Test</NavLink>
           <NavLink to='play/2' className='nav-link'>Play Puzzle 2</NavLink>
           <NavLink to='/' className='nav-link'>Home</NavLink>
-          
         </nav>
       </header>
       <main>
