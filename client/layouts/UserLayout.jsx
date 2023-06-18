@@ -19,7 +19,7 @@ function UserLayout() {
       <header>
         <nav id='main-nav'>
           <h1 id='lets-play'>{'User!'}</h1>
-          <NavLink to={userHomeParam} className='nav-link' end activeClassName="active">User Home</NavLink>
+          <NavLink to={userHomeParam} className='nav-link' end >User Home</NavLink>
           <NavLink to='newPuzzleSelect' className='nav-link' >Puzzle Selection</NavLink>
           <NavLink to='playTest' className='nav-link'>Play Test</NavLink>
           <NavLink to='play/2' className='nav-link'>Play Puzzle 2</NavLink>
