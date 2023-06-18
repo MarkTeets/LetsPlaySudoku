@@ -8,7 +8,8 @@ module.exports = {
 
   output: {
     path: path.join(__dirname, '/dist'),
-    filename: 'bundle.js'
+    filename: 'bundle.js',
+    publicPath: '/'
   },
 
   plugins: [
@@ -19,18 +20,12 @@ module.exports = {
 
   devServer: {
     // host: 'localhost',
-    // port: 8080,
-    // // enable HMR on the devServer
-    // hot: true,
-    // // fallback to root for other urls
-    // historyApiFallback: true,
-
-    // static: {
-    //   // match the output path
-    //   directory: path.resolve(__dirname, 'dist'),
-    //   // match the output 'publicPath'
-    //   publicPath: '/',
-    // },
+    port: 8080,
+   
+    static: {
+      // match the output path
+      directory: path.join(__dirname, '/dist'),
+    },
 
     // headers: { 'Access-Control-Allow-Origin': '*' },
 
@@ -40,8 +35,8 @@ module.exports = {
         secure: false,
       },
     },
-    // for react router if you use it
-    historyApiFallback: true
+    // for react router
+    historyApiFallback: true,
   },
   
   mode: process.env.NODE_ENV,
