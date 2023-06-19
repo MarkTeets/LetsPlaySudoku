@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import BoxUnitContainer from './BoxUnitContainer';
-import {unitBoxes} from '../../../data/squares';
+import {unitBoxes} from '../../../utils/squares';
 
 
 const PuzzleContainer = ({ allSquares, onInputChange }) => {
