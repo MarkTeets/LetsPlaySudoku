@@ -4,31 +4,51 @@ models.Puzzle = require('../models/puzzleModel');
 
 const puzzleController = {};
 
-//---GET PUZZLE ---------------------------------------------------------------------------------------------------------------------
-puzzleController.getPuzzle = async (req, res, next) => {
-  //given a string query, request the resource from the 
-  //database and return it as a json
+//---GET PUZZLE BY NUMBER---------------------------------------------------------------------------------------------------
+
+// Given a puzzleNumber, retrieve associated puzzle from the database and return it as a json
+
+puzzleController.getPuzzleByNumber = async (req, res, next) => {
   try {
     const { puzzleNumber } = req.query;
     // console.log('puzzleNumber:', puzzleNumber);
 
     if (puzzleNumber === undefined) {
-      return next(errorMaker('getPuzzle', 400, 'Failed to retrieve puzzleNumber query string from req.query'));
+      return next(createErr({
+        method: 'getPuzzleByNumber',
+        overview: 'destructing puzzleNumber from req.query',
+        status: 400,
+        err: 'Failed to retrieve puzzleNumber query string from req.query'
+      }));
     }
 
-    res.locals.puzzleObj = await models.Puzzle.findOne({ number: puzzleNumber }).exec();
+    res.locals.puzzleObj = await models.Puzzle.findOne({ puzzleNumber: Number(puzzleNumber) }).exec();
 
     if (res.locals.puzzleObj === null) {
-      return (errorMaker('getPuzzle', 400, `Failed to find and return puzzle corresponding to #${puzzleNumber}`));
+      return next(createErr({
+        method: 'getPuzzleByNumber',
+        overview: 'MongoDB findOne returned null',
+        status: 400,
+        err: `Failed to find and return puzzle corresponding to #${puzzleNumber}`
+      }));
     }
 
     return next();
 
   } catch (err) {
-    return next(errorMaker('getPuzzle', 500, 'Failed to retrieve puzzle string', err));
+    return next(createErr({
+      method: 'getPuzzleByNumber',
+      overview: 'Failed to retrieve puzzle string',
+      status: 500,
+      err
+    }));
   }
 };
 
+//---GET PUZZLE WITH FILTERS ------------------------------------------------------------------------------------------------------------------
+// puzzleController.getPuzzleWithFilters = async (req, res, next) => {
+
+// };
 
 //---ADD PUZZLE-------------------------------------------------------------------------------------------------------------------------------------
 /*
@@ -54,65 +74,10 @@ puzzleController.addPuzzle = async (req, res, next) => {
 module.exports = puzzleController;
 
 
-const errorMaker = (middleware, status, message, err) => {
-  const error = {
-    log: `Error in puzzleController from ${middleware} middleware. Error: ${err.message}`,
-    status,
-    message: { error: `Error puzzleController from ${middleware} middleware.` }
-  };
-
-  if (err !== undefined) {
-    error.log = `Error puzzleController from ${middleware} middleware. ${message}. Error: ${err.message}`;
-  }
-
-  return error;
-};
-
-
-/*
-puzzleController.getPuzzle = async (req, res, next) => {
-  //given a string query, request the resource from the 
-  //database and return it as a json
-  try {
-    const { puzzleNumber } = req.query;
-    // console.log('puzzleNumber:', puzzleNumber);
-
-    if (puzzleNumber === undefined) {
-      return next(createErr({
-        method: 'getPuzzle',
-        type: 'destructing puzzleNumber from req.query',
-        status: 400,
-        err: 'Failed to retrieve puzzleNumber query string from req.query'
-      }));
-    }
-
-    res.locals.puzzleObj = await models.Puzzle.findOne({ number: puzzleNumber }).exec();
-
-    if (res.locals.puzzleObj === null) {
-      return next(createErr({
-        method: 'getPuzzle',
-        type: 'MongoDB findOne returned null',
-        status: 400,
-        err: 'Failed to find and return puzzle corresponding to #${puzzleNumber}'
-      }));
-    }
-
-    return next();
-
-  } catch (err) {
-    return next(createErr({
-      method: 'getPuzzle',
-      type: 'Failed to retrieve puzzle string',
-      status: 500,
-      err
-    }));
-  }
-};
-
 // Error generation helper function
-const createErr = ({ method, type, status, err }) => {
+const createErr = ({ method, overview, status, err }) => {
   const errorObj = {
-    log: `puzzleController.${method} ${type}: ERROR: ${typeof err === 'object' ? err.message : err}`,
+    log: `puzzleController.${method} ${overview}: ERROR: ${typeof err === 'object' ? err.message : err}`,
     message: { err: `Error occurred in puzzleController.${method}. Check server logs for more details.` }
   };
   if (status) {
@@ -120,5 +85,3 @@ const createErr = ({ method, type, status, err }) => {
   }
   return errorObj;
 };
-
-*/
