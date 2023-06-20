@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { userContext } from '../../context';
 
 const NewPuzzleSelect = () => {
   const navigate = useNavigate();
+  const {user, setUser} = useContext(userContext);
   const [difficultyScore, setDifficultyScore] = useState(1);
   const [uniqueSolution, setUniqueSolution] = useState(false);
   const [singleCandidate, setSingleCandidate] = useState(false);
@@ -20,6 +22,13 @@ const NewPuzzleSelect = () => {
   const [hiddenQuad, setHiddenQuad] = useState(false);
   const [swordfish, setSwordfish] = useState(false);
   
+  useEffect(() => {
+    if (!user) {
+      console.log('Navigated from NewPuzzleSelect back to home page due to lack of user');
+      navigate('/');
+    }
+  }, []);
+
   return (
     <>
       <h1>New puzzle select</h1>
@@ -29,6 +38,7 @@ const NewPuzzleSelect = () => {
         <button>Hard</button>
         <button>Random</button>
       </div>
+      <h2>Puzzle Filters:</h2>
       <div className="puzzle-filters">
         <div>difficultyScore</div>
         <div> <button>X</button> uniqueSolution </div>
