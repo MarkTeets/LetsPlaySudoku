@@ -8,8 +8,9 @@ const userSchema = new Schema({
   displayName: String,
   allPuzzles: [
     {
+      puzzleNumber: Number,
       progress: String,
-      puzzle: {
+      puzzleId: {
         type: Schema.Types.ObjectId,
         ref: 'Puzzle'
       }
