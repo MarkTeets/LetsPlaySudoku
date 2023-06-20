@@ -3,7 +3,7 @@ const puzzleRouter = express.Router();
 const puzzleController = require('../controllers/puzzleController');
 
 puzzleRouter.get('/',
-  puzzleController.getPuzzle,
+  puzzleController.getPuzzleByNumber,
   (req, res) => {
     res.status(200).json(res.locals.puzzleObj);
   }
