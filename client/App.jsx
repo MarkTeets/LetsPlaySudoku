@@ -22,7 +22,11 @@ import { userContext, pageContext } from './context';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path='/' element={<RootLayout />}>
+    <Route
+      path='/'
+      element={<RootLayout />}
+      errorElement={<ErrorPage />}
+    >
 
       <Route path='/' element={<WelcomeLayout />}>
         <Route index element={<Home />} />
@@ -85,7 +89,7 @@ const router = createBrowserRouter(
 
 
 const App = () => {
-  const [user, setUser] = useState(null); 
+  const [user, setUser] = useState(null);
   const pageInfo = useRef(null);
 
   // console.log('user from app', user);
