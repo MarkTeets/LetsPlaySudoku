@@ -1,21 +1,33 @@
-import React, { useState, useEffect } from 'react';
-import { createNewSquares, newAllSquares, isPuzzleFinished } from '../../data/squares';
-import { useLoaderData } from 'react-router-dom';
+import React, { useState, useEffect, useContext } from 'react';
+import { createNewSquares, newAllSquares, isPuzzleFinished } from '../../utils/squares';
+import { useLoaderData, useNavigate } from 'react-router-dom';
 
-//Components
+// Components
 import PuzzleContainer from './components/PuzzleContainer';
 
-//Styles
+// Context
+import { userContext } from '../../context';
+
+// Styles
 import '../../scss/_puzzlecontainer.scss';
 
 
 export const PuzzlePage = () => {
+  const navigate = useNavigate();
   const puzzleData = useLoaderData();
+  const { user } = useContext(userContext);
   // This implementation will calculate the initialState the first time the page loads, and then each
   // re-render it won't
   const [initialAllSquares, setInitialSquares] = useState(createNewSquares(puzzleData.puzzle));
   const [allSquares, setAllSquares] = useState(initialAllSquares);
   
+  useEffect(() => {
+    if (!user) {
+      console.log('Navigated from PuzzlePage back to home page due to lack of user');
+      navigate('/');
+    }
+  }, []);
+
   // Checks to see if user has solves puzzle every time allSquares updates
   useEffect(() => {
     // Places this in a setTimeout so the allSquares update is painted before this alert goes out
