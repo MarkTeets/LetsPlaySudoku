@@ -10,10 +10,10 @@ const userSchema = new Schema({
     {
       puzzleNumber: Number,
       progress: String,
-      puzzleId: {
-        type: Schema.Types.ObjectId,
-        ref: 'Puzzle'
-      }
+      // puzzleId: {
+      //   type: Schema.Types.ObjectId,
+      //   ref: 'Puzzle'
+      // }
     }
   ]
 });

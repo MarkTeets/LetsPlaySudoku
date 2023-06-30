@@ -9,12 +9,23 @@ const userController = {};
 
 // Returns an object with the relevant properties from an immutable returned Mongo document 
 const cleanUser = (user) => {
+  // It'll be easier on the frontend to organize "allPuzzles" as an object with the keys being the number of the puzzle
+  // once useReducer/useContext holds a current puzzle number as the way a current puzzle is produced.
+  const allPuzzles = {};
+
+  for (const puzzleObj of user.allPuzzles) {
+    allPuzzles[puzzleObj.puzzleNumber] = {
+      puzzleNumber: puzzleObj.puzzleNumber,
+      progress: puzzleObj.progress
+    }; 
+  }
+
   return {
     status: 'valid',
     user: {
       username: user.username,
       displayName: user.displayName,
-      allPuzzles: user.allPuzzles
+      allPuzzles
     }
   };
 };
@@ -27,7 +38,7 @@ userController.getUser = async (req, res, next) => {
   if (username === undefined) {
     return next(createErr({
       method: 'getUser',
-      type: 'problem retrieving user from request body',
+      overview: 'problem retrieving user from request body',
       status: 400,
       err: 'username wasn\'t included in request body'
     }));
@@ -42,7 +53,7 @@ userController.getUser = async (req, res, next) => {
   } catch (err) {
     return next(createErr({
       method: 'getUser',
-      type: 'problem retrieving user from database',
+      overview: 'problem retrieving user from database',
       status: 500,
       err
     }));
@@ -71,7 +82,7 @@ userController.createUser = async (req, res, next) => {
   if (username === undefined || password === undefined) {
     return next(createErr({
       method: 'createUser',
-      type: 'problem extracting username, password, or displayName from request body',
+      overview: 'problem extracting username, password, or displayName from request body',
       status: 400,
       err: 'username, password, or displayName wasn\'t included in request body'
     }));
@@ -96,7 +107,7 @@ userController.createUser = async (req, res, next) => {
   } catch (err) {
     return next(createErr({
       method: 'createUser',
-      type: 'problem either hashing password or creating user in database',
+      overview: 'problem either hashing password or creating user in database',
       status: 500,
       err
     }));
@@ -131,7 +142,7 @@ userController.verifyUser = async (req, res, next) => {
   } catch (err) {
     return next(createErr({
       method: 'verifyUser',
-      type: 'problem comparing hashed password',
+      overview: 'problem comparing hashed password',
       status: 500,
       err
     }));
@@ -139,6 +150,8 @@ userController.verifyUser = async (req, res, next) => {
 };
 
 
+// SAVE PUZZLE NOT YET USED:
+// I may switch the entire schema set-up to include puzzle objects, including a Map of said objects in the User schema
 // SAVE PUZZLE -----------------------------------------------------------------------------------------------------
 
 // I'll eventually need to change this to not just push every time, but update a puzzle if it's already in the array.
@@ -152,24 +165,69 @@ userController.savePuzzle = async (req, res, next) => {
     return next();
   }
   
-  // Make the puzzle object to push and save to the user's array
-  const puzzleObj = {
-    puzzle: req.body.puzzleId,
-    progress: req.body.puzzleString
-  };
+  const {
+    puzzleNumber,
+    progress,
+    // puzzleId,
+  } = req.body;
 
-  // Push puzzle object to the users array and save it
+ 
+
+  if (puzzleNumber === undefined || progress === undefined ) {
+    // if (puzzleNumber === undefined || progress === undefined || puzzleId === undefined ) {
+    return next(createErr({
+      method: 'savePuzzle',
+      overview: 'problem extractinging puzzle info from req.body',
+      status: 500,
+      err: 'puzzleNumber and/or progress was undefined'
+    }));
+  }
+
+  let currentPuzzleIndex = null;
+
   try {
-    res.locals.foundUser.allPuzzles.push(puzzleObj);
+    // I can refactor this if I make the user allPuzzles property a map. I could also make a schema 
+    // for the userPuzzleObjects if I wanted to be specific about it. I should probably do that. Or I could just
+    // leave the array.
+    for (const index in res.locals.foundUser.allPuzzles) {
+      if (puzzleNumber === res.locals.foundUser.allPuzzles[index].puzzleNumber) {
+        currentPuzzleIndex = index;
+        break;
+      }
+    }
+
+    /**
+     * Figure out syntax for updating. Hopefully it'll be as simple as interacting with the array normally
+     * as I do below
+     */
+
+    if (currentPuzzleIndex !== null) {
+      // If the user already has saved progress for that puzzle, update it to the new progress value 
+      res.locals.foundUser.allPuzzles[currentPuzzleIndex].progress = progress;
+
+    } else {
+      // If this is the first time a puzzle is being saved to a user: 
+      // Make the puzzle object to push it to the user's array
+      const puzzleObj = {
+        puzzleNumber,
+        progress,
+        // puzzleId
+      };
+
+      res.locals.foundUser.allPuzzles.push(puzzleObj);
+    }
+
     const updatedUser = await res.locals.foundUser.save();
-    // Send the user with the new array back to the frontend
-    res.locals.frontendUser = cleanUser(updatedUser);
+
+    // I'm actually not going to send back the whole user, I'll only send whether or not it was succesful. 
+    // As the user object gets bigger via more and more puzzles, this will be more efficient
+    // res.locals.frontendUser = cleanUser(updatedUser);
     // console.log('savePuzzle res.locals.frontendUser:', res.locals.frontendUser);
 
   } catch (err) {
     return next(createErr({
       method: 'savePuzzle',
-      type: `problem pushing puzzle to ${res.locals.foundUser.username}'s allPuzzles array`,
+      overview: `problem saving progress to ${res.locals.foundUser.username}'s allPuzzles array`,
       status: 500,
       err
     }));
@@ -181,9 +239,9 @@ module.exports = userController;
 
 
 // Error generation helper function
-const createErr = ({ method, type, status, err }) => {
+const createErr = ({ method, overview, status, err }) => {
   const errorObj = {
-    log: `userController.${method} ${type}: ERROR: ${typeof err === 'object' ? err.message : err}`,
+    log: `userController.${method} ${overview}: ERROR: ${typeof err === 'object' ? err.message : err}`,
     message: { err: `Error occurred in userController.${method}. Check server logs for more details.` }
   };
   if (status) {
