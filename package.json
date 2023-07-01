@@ -8,6 +8,7 @@
     "frontend": "NODE_ENV=development webpack serve --open --hot",
     "backend": "NODE_ENV=development nodemon ./server/server.js",
     "dev": "concurrently \"cross-env NODE_ENV=development webpack serve --open --hot --color \" \" nodemon ./server/server.js\"",
+    "prod": "concurrently \"cross-env NODE_ENV=production webpack serve --open \" \" node ./server/server.js\"",
     "add-puzzle": "node server/utils/puzzleDBCreate.js"
   },
   "keywords": [],
