@@ -1,6 +1,7 @@
 const models = {};
 models.Puzzle = require('../models/puzzleModel');
 // import { isValidPuzzle } from '../../client/data/squares';
+const totalPuzzles = 2;
 
 const puzzleController = {};
 
@@ -44,6 +45,65 @@ puzzleController.getPuzzleByNumber = async (req, res, next) => {
     }));
   }
 };
+
+//---GET USER PUZZLES --------------------------------------------------------------------------------------------------------------------------
+
+// Given a frontendData object on res.locals from userController.verifyLogin, this function will return all of the puzzle details
+// for each puzzle in the frontendData user's allPuzzles
+
+puzzleController.getUserPuzzles = async (req, res, next) => {
+  // The login page already handles the "userNotFound" case, so I don't need to do anything else
+  if (res.locals.frontendData.status !== 'valid') {
+    // console.log('No user found in getUserPuzzles, user status:', res.locals.frontendData.status);
+    return next();
+  }
+
+  // console.log(res.locals.foundUser);
+  // console.log(res.locals.foundUser.allPuzzles);
+
+  if (res.locals.foundUser.allPuzzles.length === 0) {
+    res.locals.frontendData.puzzleCollection = [];
+    return next();
+  }
+
+  const userPuzzleNumbersFilter = res.locals.foundUser.allPuzzles.map(puzzleObj => {
+    return { puzzleNumber: puzzleObj.puzzleNumber };
+  });
+  // console.log('userPuzzleNumbersFilter from getUserPuzzles', userPuzzleNumbersFilter);
+
+  try {
+    const foundPuzzles = await models.Puzzle.find({ $or: userPuzzleNumbersFilter });
+    // console.log('foundPuzzles from getUserPuzzles', foundPuzzles);
+
+    const puzzleCollection = {};
+    for (const puzzleDoc of foundPuzzles) {
+      puzzleCollection[puzzleDoc.puzzleNumber] = puzzleDoc;
+    }
+    
+    res.locals.frontendData.puzzleCollection = puzzleCollection;
+
+    return next();
+
+  } catch (err) {
+    return next(createErr({
+      method: 'getUserPuzzles',
+      overview: 'Failed to retrieve puzzle documents from puzzles collection',
+      status: 500,
+      err
+    }));
+  }
+};
+
+puzzleController.getNextPuzzleForUser = async (req, res, next) => {
+  
+};
+
+puzzleController.getNextPuzzleForGuest = async (req, res, next) => {
+
+};
+
+
+
 
 //---GET PUZZLE WITH FILTERS ------------------------------------------------------------------------------------------------------------------
 // puzzleController.getPuzzleWithFilters = async (req, res, next) => {
