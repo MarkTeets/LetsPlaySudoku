@@ -4,13 +4,16 @@ import { userContext } from '../context';
 
 function UserLayout() {
   const { user, setUser } = useContext(userContext);
-  const [userHomeParam, setUserHomeParam] = useState((user === null) ? '/' : `/${encodeURIComponent(user.username)}`);
+  const [puzzleSelectMenuURL, setPuzzleSelectMenuURL] = useState((user === null) ? '/' : `/${encodeURIComponent(user.username)}`);
+  const [lastPuzzleNumberURL, setLastPuzzleNumberURL] = useState((user === null) ? '/' : `/${encodeURIComponent(user.username)}/play/${user.lastPuzzleNumber}`);
 
   useEffect(() => {
     if (user?.username) {
-      setUserHomeParam(`/${encodeURIComponent(user.username)}`);
+      setPuzzleSelectMenuURL(`/${encodeURIComponent(user.username)}`);
+      setLastPuzzleNumberURL(`/${encodeURIComponent(user.username)}/play/${user.lastPuzzleNumber}`);
     } else {
-      setUserHomeParam('/');
+      setPuzzleSelectMenuURL('/');
+      setLastPuzzleNumberURL('/');
     }
   }, [user]);
 
@@ -18,12 +21,16 @@ function UserLayout() {
     <div className='welcome-layout root-layout'>
       <header>
         <nav id='main-nav'>
-          <h1 id='lets-play'>{'User!'}</h1>
-          <NavLink to={userHomeParam} className='nav-link' end >User Home</NavLink>
-          <NavLink to='newPuzzleSelect' className='nav-link' >Puzzle Selection</NavLink>
+          <h2 id='lets-play'>Let&apos;s Play Sudoku!</h2>
+          <NavLink to={puzzleSelectMenuURL} className='nav-link' end >Puzzle Select Menu</NavLink>
+          {user?.lastPuzzleNumber > 0 &&
+            <NavLink to={lastPuzzleNumberURL} className='nav-link' >Puzzle</NavLink>
+          }
           <NavLink to='playTest' className='nav-link'>Play Test</NavLink>
-          <NavLink to='play/2' className='nav-link'>Play Puzzle 2</NavLink>
-          <NavLink to='/' className='nav-link' onClick={() => setUser(null)}>Log out</NavLink>
+          {user?.username !== 'guest' ?
+            <NavLink to='/' className='nav-link' onClick={() => setUser(null)}>Log out</NavLink> :
+            <NavLink to='/' className='nav-link' >Return home</NavLink>
+          }
         </nav>
       </header>
       <main>
