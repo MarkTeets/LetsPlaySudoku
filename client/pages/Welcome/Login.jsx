@@ -1,10 +1,11 @@
 import React, { useContext, useEffect } from 'react';
 import { useNavigate, Form, Link, useActionData } from 'react-router-dom';
-import { userContext, pageContext } from '../../context';
+import { userContext, puzzleCollectionContext, pageContext } from '../../context';
 
 const Login = () => {
   const navigate = useNavigate();
   const { user, setUser } = useContext(userContext);
+  const { puzzleCollection, setPuzzleCollection } = useContext(puzzleCollectionContext);
   const { pageInfo } = useContext(pageContext);
   const data = useActionData();
   
@@ -16,6 +17,8 @@ const Login = () => {
   useEffect(() => {
     // Make sure the user has been set and they didn't just get to this page before navigating to UserHomePage
     if (user !== null && pageInfo.current === 'login') {
+      // console.log('login user:', user);
+      // console.log('login puzzleCollection:', puzzleCollection);
       return navigate(`/${user.username}`);
     }
   }, [user]);
@@ -23,6 +26,7 @@ const Login = () => {
   useEffect(() => {
     if (data?.user !== undefined) {
       setUser(data.user);
+      setPuzzleCollection(data.puzzleCollection);
       // Update pageInfo to this page on successful submission
       pageInfo.current = 'login';
     }
@@ -84,7 +88,8 @@ export const loginAction = async ({ request }) => {
   if (response.status === 'valid') {
     // console.log('Login was successful!');
     return {
-      user: response.user
+      user: response.user,
+      puzzleCollection: response.puzzleCollection
     };
   }
 
@@ -98,45 +103,3 @@ export const loginAction = async ({ request }) => {
 };
 
 export default Login;
-
-/*
-export const loginAction = async ({ request }) => {
-  const loginInfo = await request.formData();
-  //need to pull data from DB and check to see if authentication passed
-
-  const res = await fetch('/api/user/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      username: loginInfo.get('username'),
-      password: loginInfo.get('password'),
-    }),
-  });
-  // console.log(res);
-  if (res.status === 200) {
-
-    const response = await res.json();
-    if (response.status === 'valid') {
-      // console.log('Login was successful!');
-      const { username, firstName } = response;
-      return {
-        user: { username, firstName }
-      };
-    }
-
-    if (
-      response.status === 'IncorrectPassword' ||
-			response.status === 'UserNotFound'
-    ) {
-      return { error: 'Username password combination was not valid' };
-    }
-
-    return {
-      error: `The status "${response.status}" sent in the response doesn't match the valid cases.`,
-    };
-  }
-
-  return { error: 'The server responded with a status other than 200' };
-};
-
-*/
