@@ -9,7 +9,8 @@ function WelcomeLayout() {
     setUser({
       username: 'guest',
       displayName: 'Guest',
-      allPuzzles: []
+      lastPuzzleNumber: 0,
+      allPuzzles: {}
     });
   };
 
