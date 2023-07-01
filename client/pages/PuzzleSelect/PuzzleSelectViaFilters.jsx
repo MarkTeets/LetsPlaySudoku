@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { userContext } from '../../context';
 
-const NewPuzzleSelect = () => {
+const PuzzleSelectViaFilters = () => {
   const navigate = useNavigate();
   const {user, setUser} = useContext(userContext);
   const [difficultyScore, setDifficultyScore] = useState(1);
@@ -28,6 +28,21 @@ const NewPuzzleSelect = () => {
       navigate('/');
     }
   }, []);
+  
+  const testClick = () => {
+    navigate(`/${user.username}/play/2`);
+    /* This works using the loaders as they're set-up
+
+      To make the switch from this shortcut to the second puzzle to what I'm looking for I'll have to:
+      Have a submit button attached to a submit method, wherein the submit method performs a fetch request
+      That comes back with a new puzzle. I'll then have to update both the user and the puzzleCollection to
+      include the new puzzle, and then I can't navigate yet because I can't change state and navigate in the same 
+      click.
+      I have to wait for state to be updated and then navigate using a useEffect. I'll probs update user's lastPuzzleNumber, and
+      then navigate using that state as my param. Then PuzzlePage will use the state from user and puzzleCollection with said param to 
+      render the puzzle
+     */
+  };
 
   return (
     <>
@@ -37,7 +52,7 @@ const NewPuzzleSelect = () => {
         <button disabled>Easy</button>
         <button disabled>Medium</button>
         <button disabled>Hard</button>
-        <button>Random</button>
+        <button onClick={testClick}>Random</button>
       </div>
       <h2>Puzzle Filters:</h2>
       <div className="puzzle-filters">
@@ -62,7 +77,7 @@ const NewPuzzleSelect = () => {
   );
 };
 
-export default NewPuzzleSelect;
+export default PuzzleSelectViaFilters;
 
 // Wrote this before realizing I'd like to use this logic in the backend
 // Saving this code until I use it there
