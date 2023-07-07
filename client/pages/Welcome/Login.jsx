@@ -19,7 +19,7 @@ const Login = () => {
     if (user !== null && pageInfo.current === 'login') {
       // console.log('login user:', user);
       // console.log('login puzzleCollection:', puzzleCollection);
-      return navigate(`/${user.username}`);
+      return navigate(`/${encodeURIComponent(user.username)}`);
     }
   }, [user]);
 

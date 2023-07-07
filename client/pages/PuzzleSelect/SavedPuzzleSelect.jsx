@@ -42,7 +42,7 @@ const createPuzzleLinks = (user) => {
   return puzzleNumbers.map(puzzleNumber => {
     return (
       <Link
-        to={`/${user.username}/play/${puzzleNumber}`}
+        to={`/${encodeURIComponent(user.username)}/play/${puzzleNumber}`}
         key={`saved-puzzle-${puzzleNumber}-link`}
       >
         {puzzleNumber}
