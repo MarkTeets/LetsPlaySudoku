@@ -45,6 +45,11 @@ h1, h2, h5, .button-container{
   padding: 15px;
 }
 
+.nav-link-container {
+  width: max-content;
+  margin: 0 auto;
+}
+
 #main-nav .active {
   background-color: $offBlack;
   border-radius: 7px;
