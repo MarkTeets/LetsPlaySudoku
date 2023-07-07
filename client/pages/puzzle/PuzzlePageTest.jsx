@@ -56,7 +56,7 @@ export const PuzzlePageTest = () => {
 
   return (
     <div id='puzzle-page-container'>
-      <h1>Test page</h1>
+      <h2>Test page</h2>
       <PuzzleContainer key='PuzzleContainer' allSquares={allSquares} onInputChange={onInputChange} />
       <div className='button-container'>
         <button
@@ -87,7 +87,7 @@ export const PuzzlePageTest = () => {
 
 // Loader functions
 // export const puzzleLoader = async ({ params }) => {
-//   const res = await fetch(`/api/puzzle?puzzleNumber=${params.puzzleNumber}`);
+//   const res = await fetch(`/api/puzzle/${params.puzzleNumber}`);
 //   return res.json();
 // };
 
