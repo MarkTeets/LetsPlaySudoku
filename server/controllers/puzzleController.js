@@ -11,21 +11,21 @@ const puzzleController = {};
 
 puzzleController.getPuzzleByNumber = async (req, res, next) => {
   try {
-    const { puzzleNumber } = req.query;
+    const { puzzleNumber } = req.params;
     // console.log('puzzleNumber:', puzzleNumber);
 
     if (puzzleNumber === undefined) {
       return next(createErr({
         method: 'getPuzzleByNumber',
-        overview: 'destructing puzzleNumber from req.query',
+        overview: 'destructing puzzleNumber from req.params',
         status: 400,
-        err: 'Failed to retrieve puzzleNumber query string from req.query'
+        err: 'Failed to retrieve puzzleNumber params string from req.params'
       }));
     }
 
-    res.locals.puzzleObj = await models.Puzzle.findOne({ puzzleNumber: Number(puzzleNumber) }).exec();
+    const puzzleObj = await models.Puzzle.findOne({ puzzleNumber: Number(puzzleNumber) }).exec();
 
-    if (res.locals.puzzleObj === null) {
+    if (puzzleObj === null) {
       return next(createErr({
         method: 'getPuzzleByNumber',
         overview: 'MongoDB findOne returned null',
@@ -34,6 +34,11 @@ puzzleController.getPuzzleByNumber = async (req, res, next) => {
       }));
     }
 
+    res.locals.frontendData = {
+      status: 'valid',
+      puzzleObj
+    };
+    
     return next();
 
   } catch (err) {
@@ -47,7 +52,6 @@ puzzleController.getPuzzleByNumber = async (req, res, next) => {
 };
 
 //---GET USER PUZZLES --------------------------------------------------------------------------------------------------------------------------
-
 // Given a frontendData object on res.locals from userController.verifyLogin, this function will return all of the puzzle details
 // for each puzzle in the frontendData user's allPuzzles
 
@@ -58,9 +62,6 @@ puzzleController.getUserPuzzles = async (req, res, next) => {
     return next();
   }
 
-  // console.log(res.locals.foundUser);
-  // console.log(res.locals.foundUser.allPuzzles);
-
   if (res.locals.foundUser.allPuzzles.length === 0) {
     res.locals.frontendData.puzzleCollection = [];
     return next();
@@ -69,11 +70,9 @@ puzzleController.getUserPuzzles = async (req, res, next) => {
   const userPuzzleNumbersFilter = res.locals.foundUser.allPuzzles.map(puzzleObj => {
     return { puzzleNumber: puzzleObj.puzzleNumber };
   });
-  // console.log('userPuzzleNumbersFilter from getUserPuzzles', userPuzzleNumbersFilter);
 
   try {
     const foundPuzzles = await models.Puzzle.find({ $or: userPuzzleNumbersFilter });
-    // console.log('foundPuzzles from getUserPuzzles', foundPuzzles);
 
     const puzzleCollection = {};
     for (const puzzleDoc of foundPuzzles) {
@@ -94,15 +93,65 @@ puzzleController.getUserPuzzles = async (req, res, next) => {
   }
 };
 
-puzzleController.getNextPuzzleForUser = async (req, res, next) => {
+//---GET NEXT PUZZLE ----------------------------------------------------------------------------------------------------------------------
+// A post request from a guest will include their allPuzzles object. A post request from a user will include their username.
+// This middleware will find the first puzzle number that hasn't been played, and redirect to a get request for that specific puzzle
+// If every puzzle has been played, a specific status will be sent back.
+// There are two different ways to get the info for guests vs users as a user's allPuzzles array might be large, and eventually it'll be 
+// cached for fast retrieval
+
+puzzleController.getNextPuzzle = async (req, res, next) => {
+  const { username, allPuzzles } = req.body;
+
+  // Set nextPuzzleNum to null. It'll be reassigned if a valid puzzle is found
+  let nextPuzzleNum = null;
+
+  // A user request will include a username and the getUser middleware is called to retreive the user.
+  if (username !== undefined) {
+    if (res.locals.foundUser === null) {
+      res.locals.frontendData = { status: 'userNotFound' };
+      return next();
+    }
   
+    // add all puzzle numbers from user's allPuzzles array to a set
+    const puzzleNumSet = new Set();
+  
+    for (const puzzleObj of res.locals.foundUser.allPuzzles) {
+      puzzleNumSet.add(puzzleObj.puzzleNumber);
+    }
+     
+    // Reassign nextPuzzleNum to the first unused puzzle number from the user's allPuzzles array that's less than the total number of puzzles
+    // Have to do this sequentially as user can choose any number to play via other methods, aka puzzle numbers can be sparse
+    for (let i = 1; i <= totalPuzzles; i++){
+      if (!puzzleNumSet.has(i)) {
+        nextPuzzleNum = i;
+        break;
+      }
+    }
+  }
+
+  // A guest request will include an allPuzzles object. 
+  if (allPuzzles !== undefined) {
+    // Reassign nextPuzzleNum to the first unused puzzle number in the object that's less  than the total number of puzzles
+    // Have to do this sequentially as user can choose any number to play via other methods, aka puzzle numbers can be sparse
+    for (let i = 1; i <= totalPuzzles; i++) {
+      if (!allPuzzles[i]) {
+        nextPuzzleNum = i;
+        break;
+      }
+    }
+  }
+
+  // nextPuzzleNum will be a valid number if one was available. Redirect if usable number was found
+  if (nextPuzzleNum !== null) {
+    return res.redirect(`/api/puzzle/${nextPuzzleNum}`);
+  }
+
+  // If no usable number was found, it's because they've already played all of the puzzles. Send this info back to the frontend.
+  res.locals.frontendData = { status: 'allPuzzlesPlayed' };
+
+  return next();
 };
-
-puzzleController.getNextPuzzleForGuest = async (req, res, next) => {
-
-};
-
-
 
 
 //---GET PUZZLE WITH FILTERS ------------------------------------------------------------------------------------------------------------------

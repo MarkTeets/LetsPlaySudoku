@@ -3,27 +3,25 @@ const puzzleRouter = express.Router();
 const userController = require('../controllers/userController');
 const puzzleController = require('../controllers/puzzleController');
 
-puzzleRouter.get('/',
+puzzleRouter.get('/:puzzleNumber',
   puzzleController.getPuzzleByNumber,
   (req, res) => {
-    res.status(200).json(res.locals.puzzleObj);
+    res.status(200).json(res.locals.frontendData);
   }
 );
 
 puzzleRouter.post('/get-next-puzzle-for-user',
   userController.getUser,
-  puzzleController.getNextPuzzleForUser,
-  puzzleController.getPuzzleByNumber,
+  puzzleController.getNextPuzzle,
   (req, res) => {
-    res.status(200).json(res.locals.puzzleObj);
+    res.status(200).json(res.locals.frontendData);
   }
 );
 
 puzzleRouter.post('/get-next-puzzle-for-guest',
-  puzzleController.getNextPuzzleForGuest,
-  puzzleController.getPuzzleByNumber,
+  puzzleController.getNextPuzzle,
   (req, res) => {
-    res.status(200).json(res.locals.puzzleObj);
+    res.status(200).json(res.locals.frontendData);
   }
 );
 

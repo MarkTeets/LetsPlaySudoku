@@ -1,85 +1,111 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { userContext, puzzleCollectionContext } from '../../context';
+const totalPuzzles = 2;
 
 const PuzzleSelectMenu = () => {
   const navigate = useNavigate();
   const { user, setUser } = useContext(userContext);
   const { puzzleCollection, setPuzzleCollection } = useContext(puzzleCollectionContext);
-  const [puzzleNumber, setPuzzleNumber] = useState('');
+  const [puzzleNumString, setPuzzleNumString] = useState('');
   const [puzzleSelected, setPuzzleSelected] = useState(false);
   
   
   useEffect(() => {
     if (!user) {
-      console.log('Navigated from NewPuzzleSelect back to home page due to lack of user');
+      console.log('Navigated from PuzzleSelectMenu back to home page due to lack of user');
       navigate('/');
     }
   }, []);
 
   useEffect(() => {
     if (user && puzzleSelected) {
-      navigate(`/${user.username}/play/${puzzleNumber}`);
+      // console.log('user.lastPuzzleNumber from PuzzleSelectMenu useEffect for navigation', user.lastPuzzleNumber);
+      navigate(`/${encodeURIComponent(user.username)}/play/${user.lastPuzzleNumber}`);
     }
   }, [puzzleSelected]);
   
 
   const onResumeLastPuzzleClick = () => {
-    navigate(`/${user.username}/play/${user.lastPuzzleNumber}`);
+    setPuzzleSelected(true);
   };
 
 
-  const onSeePreviousPuzzleClick = () => {
-    navigate(`/${user.username}/savedPuzzleSelect`);
+  const onSeeSavedPuzzlesClick = () => {
+    navigate(`/${encodeURIComponent(user.username)}/savedPuzzleSelect`);
   };
 
 
   const onNumberSelectClick = async () => {
-    // console.log('puzzleNumber', puzzleNumber, typeof puzzleNumber);
-    if (puzzleNumber !== '1' && puzzleNumber !== '2') {
-      alert('only puzzles 1 and 2 are available at this time, please enter one of these');
-      return;
-    }
+    // If the text from the input isn't a valid puzzleNumber, return
+    const convertedPuzzleNumber = Number(puzzleNumString.trim());
+    if (!isValidPuzzleNumber(convertedPuzzleNumber)) return;
 
-    // If the selected puzzle is a new puzzle, we'll add it to the user's allPuzzles object
-    if (!user.allPuzzles[puzzleNumber]) {
+    // If the selected puzzle isn't already in the user's allPuzzles, we'll add it there and to the puzzleCollection
+    if (!user.allPuzzles[convertedPuzzleNumber]) {
 
-      const res = await fetch(`/api/puzzle?puzzleNumber=${puzzleNumber}`);
+      const res = await fetch(`/api/puzzle/${convertedPuzzleNumber}`);
       
       if (!res.ok) {
         alert('Problem retrieving puzzle from server, try again later');
         return;
       }
 
-      const fetchedPuzzleData = await res.json();
-      // console.log('puzzleData from TempNewPuzzleSelect:', fetchedPuzzleData);
+      const { puzzleObj: fetchedPuzzleData, status } = await res.json();
 
-      addPuzzleToUserAndCollection(puzzleNumber, fetchedPuzzleData, user, setUser, puzzleCollection, setPuzzleCollection);
+      // if the status is anything other than valid, alert specific string and exit method without adding to user or puzzle collection
+      if (!isValidStatus(status)) return;
+
+      addPuzzleToUserAndCollection(convertedPuzzleNumber, fetchedPuzzleData, user, setUser, puzzleCollection, setPuzzleCollection);
+    } else {
+      if (user.lastPuzzleNumber !== convertedPuzzleNumber) {
+        setUser({
+          ...user,
+          lastPuzzleNumber: convertedPuzzleNumber
+        });
+      }
     }
 
+    // Setting this to true allows the page to navigate to said puzzle on next render
     setPuzzleSelected(true);
   };
 
+
   // Backend will specifically return a puzzle that isn't already in user's allPuzzles
   const onNextPuzzleClick = async () => {
-    const res = await fetch('to be determined',{
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        username: user.username
-      }),
-    });
+    let res;
+
+    if (user.username === 'guest') {
+      res = await fetch('/api/puzzle/get-next-puzzle-for-guest', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          allPuzzles: user.allPuzzles
+        }),
+      });
+    } else {
+      res = await fetch('/api/puzzle/get-next-puzzle-for-user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: user.username
+        }),
+      });
+    }
 
     if (!res.ok) {
       alert('Problem retrieving puzzle from server, try again later');
       return;
     }
 
-    const fetchedPuzzleData = await res.json();
-    console.log('puzzleData from TempNewPuzzleSelect:', fetchedPuzzleData);
+    const { puzzleObj: fetchedPuzzleData, status } = await res.json();
+    
+    // if the status is anything other than valid, alert specific string and exit method without adding to user or puzzle collection
+    if (!isValidStatus(status)) return;
 
-    addPuzzleToUserAndCollection(puzzleNumber, fetchedPuzzleData, user, setUser, puzzleCollection, setPuzzleCollection);
+    addPuzzleToUserAndCollection(Number(fetchedPuzzleData.puzzleNumber), fetchedPuzzleData, user, setUser, puzzleCollection, setPuzzleCollection);
 
+    // Setting this to true allows the page to navigate to said puzzle on next render
     setPuzzleSelected(true);
   };
 
@@ -94,11 +120,10 @@ const PuzzleSelectMenu = () => {
           <button onClick={onResumeLastPuzzleClick}>It won&apos;t know what hit it!</button>
         </div>}
       
-      {user.username !== 'guest' &&
-        Object.keys(user.allPuzzles).length > 0 &&
+      {Object.keys(user.allPuzzles).length > 0 &&
         <div>
           <h3>Choose From Previous Puzzles:</h3>
-          <button onClick={onSeePreviousPuzzleClick}>Show me those puzzles!</button>
+          <button onClick={onSeeSavedPuzzlesClick}>Show me those puzzles!</button>
         </div>
       }
 
@@ -117,8 +142,8 @@ const PuzzleSelectMenu = () => {
         <p>Enter the number of the puzzle you&apos;d like to play</p>
         <input
           type="text"
-          onChange={(e) => setPuzzleNumber(e.target.value)}
-          value={puzzleNumber}
+          onChange={(e) => setPuzzleNumString(e.target.value)}
+          value={puzzleNumString}
         />
         <button onClick={onNumberSelectClick}>Let&apos;s play!</button>
       </div>
@@ -128,7 +153,63 @@ const PuzzleSelectMenu = () => {
 
 export default PuzzleSelectMenu;
 
+//---- HELPER FUNCTIONS --------------------------------------------------------------------------------------------------------------
 
+/** isValidStatus
+ * 
+ * Takes a status string from the backend and generates appropriate alerts for invalid statuses.
+ * Returns true for 'valid' status, otherwise returns false.
+ * 
+ * @param {String} status 
+ * @returns boolean
+ */
+
+function isValidStatus(status) {
+  if (status === 'valid') return true;
+
+  if (status === 'allPuzzlesPlayed') {
+    alert('All puzzles have been played, please choose a puzzle from saved puzzles');
+  } else if (status === 'userNotFound') {
+    alert('You must either be logged in or be a guest to play. Please start again from the home screen');
+  } else {
+    alert('Failed to retrieve puzzle, please try again later');
+  }
+  return false;
+}
+
+
+/** isValidPuzzleNumber
+ * 
+ * Checks to see if the given input is a valid puzzle number based on the total number of puzzles in the database
+ * 
+ * @param {Number} puzzleNumber 
+ * @returns boolean
+ */
+
+export function isValidPuzzleNumber(puzzleNumber) {
+  if (!Number.isInteger(puzzleNumber) ||
+      puzzleNumber < 1 ||
+      puzzleNumber > totalPuzzles
+  ) {
+    alert(`Please enter a number from 1 to ${totalPuzzles}.`);
+    return false;
+  }
+
+  return true;
+}
+
+/** addPuzzleToUserAndCollection
+ * 
+ * Takes a puzzle document from the database's puzzles collection and adds it to the user's allPuzzles object and to
+ * the puzzleCollection without mutating existing state. This makes it available for use when rendering the PuzzlePage component.
+ * 
+ * @param {Number} puzzleNumber 
+ * @param {Object} fetchedPuzzleData - puzzle document from the database's puzzles collection
+ * @param {Object} user - Global context object, holds username, displayName, and allPuzzles object which holds a user's progress on each puzzle they've saved 
+ * @param {Function} setUser - Function for setting global user object
+ * @param {Object} puzzleCollection - Global context object, holds information for each puzzle
+ * @param {Function} setPuzzleCollection - Function for setting global puzzleCollection object
+ */
 function addPuzzleToUserAndCollection(puzzleNumber, fetchedPuzzleData, user, setUser, puzzleCollection, setPuzzleCollection) {
   const newUser = {
     ...user,
@@ -143,7 +224,7 @@ function addPuzzleToUserAndCollection(puzzleNumber, fetchedPuzzleData, user, set
 
   setUser(newUser);
 
-  // All puzzles in a user's AllPuzzles array will be added to the puzzle collection on login,
+  // Every puzzle in a user's allPuzzles object will be added to the puzzleCollection object when the user logs in,
   // therefore we only need to add the puzzle to the puzzle collection after confirming it's not already
   // in allPuzzles
       
@@ -157,23 +238,4 @@ function addPuzzleToUserAndCollection(puzzleNumber, fetchedPuzzleData, user, set
     newPuzzleCollection[puzzleNumber] = fetchedPuzzleData;
     setPuzzleCollection(newPuzzleCollection);
   }
-
 }
-
-
-// Wrote this before realizing I'd like to use this logic in the backend
-// Saving this code until I use it there
-
-// const puzzleSelectWithoutFilters = (user, puzzleRangeStart, puzzleRangeEnd) => {
-//   const takenNumbers = new Set();
-//   for (const puzzleObj of user.allPuzzles) {
-//     takenNumbers.add(puzzleObj.puzzleNumber);
-//   }
-//   let numberIsValid = false;
-//   let puzzleNumber;
-//   while (!numberIsValid) {
-//     puzzleNumber = Math.floor(Math.random() * (puzzleRangeEnd - puzzleRangeStart) + puzzleRangeStart);
-//     if (!takenNumbers.has(puzzleNumber)) numberIsValid = true;
-//   }
-//   return puzzleNumber;
-// };
