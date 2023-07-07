@@ -30,6 +30,7 @@
     "concurrently": "^8.0.1",
     "cross-env": "^7.0.3",
     "css-loader": "^6.7.3",
+    "csv-parser": "^3.0.0",
     "dotenv": "^16.0.3",
     "eslint": "^8.42.0",
     "eslint-import-resolver-webpack": "^0.13.2",
