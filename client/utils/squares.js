@@ -120,7 +120,7 @@ const emptyPuzzleMaker = () => {
 
 const isValidPuzzle = (puzzleString) => {
   if (puzzleString.length !== 81) {
-    console.log('puzzle string length isn\'t 81');
+    // console.log('puzzle string length isn\'t 81');
     return false;
   }
 
@@ -128,7 +128,7 @@ const isValidPuzzle = (puzzleString) => {
 
   for (let i = 0; i < puzzleString.length; i += 1){
     if (!(numStringRegex.test(puzzleString[i]))) {
-      console.log('character', `'${puzzleString[i]}'`, 'was found in puzzle string. Only strings representing nums 0-9 are allowed.');
+      // console.log('character', `'${puzzleString[i]}'`, 'was found in puzzle string. Only strings representing nums 0-9 are allowed.');
       result = false;
     }
   }
@@ -146,7 +146,7 @@ class allSquares {
   constructor(puzzleString = emptyPuzzleMaker()) {
 
     if (!isValidPuzzle(puzzleString)) {
-      console.log('Puzzle string was not valid');
+      // console.log('Puzzle string was not valid');
       throw new Error('Puzzle string was not valid');
     }
 
@@ -225,6 +225,61 @@ const findDuplicates = (allSquares) => {
   }
 };
 
+const deepCopyAllSquares = (allSquares) => {
+  // Make a deep copy of the allSquares object
+  const newAllSquareObj = {};
+  for (const id of keys) {
+    newAllSquareObj[id] = {
+      ...allSquares[id],
+      possibleVal: new Set(allSquares[id].possibleVal),
+      peers: new Set(allSquares[id].peers)
+    };
+  }
+  return newAllSquareObj;
+};
+
+/** createProgressString
+ * Takes an allSquares object and creates a string representing the current state of the puzzle
+ * 
+ * @param {object} allSquares 
+ * @returns {string}
+ */
+
+export const createProgressString = (allSquares) => {
+  let progress = '';
+
+  for (const key of keys) {
+    progress += allSquares[key].displayVal;
+  }
+
+  // console.log('progress string from createProgressString:', progress);
+
+  return progress;
+};
+
+/** updateSquaresFromProgress
+ * 
+ *  Takes an allSquares object and returns a new allSquares object updated with the correct numbers from a progress string
+ * 
+ * @param {Object} allSquares 
+ * @param {String} progress 
+ * @returns new allSquares object
+ */
+
+export const updateSquaresFromProgress = (allSquares, progress) => {
+  // Make a deep copy of the allSquares object
+  const newAllSquareObj = deepCopyAllSquares(allSquares);
+  
+  // Replace every display value to reflect the value from progress, but the "fixedVal" value will be preserved from the original allSquares creation
+  for (let i = 0; i < keys.length; i++) {
+    newAllSquareObj[keys[i]].displayVal = progress[i];
+  }
+
+  // Account for duplicates
+  findDuplicates(newAllSquareObj);
+
+  return newAllSquareObj;
+};
 
 /** newAllSquares
  * Given an allSquares object, a squareID, and a newly entered value in an input, return a deep copy with appropriate values
@@ -242,14 +297,8 @@ export const newAllSquares = (allSquares, squareId, newVal) => {
     return allSquares;
   }
   // Make a deep copy of the allSquares object
-  const newAllSquareObj = {};
-  for (const id of keys) {
-    newAllSquareObj[id] = {
-      ...allSquares[id],
-      possibleVal: new Set(allSquares[id].possibleVal),
-      peers: new Set(allSquares[id].peers)
-    };
-  }
+  const newAllSquareObj = deepCopyAllSquares(allSquares);
+
   // Change the specific values for the square that was changed
   newAllSquareObj[squareId].displayVal = newVal;
   newAllSquareObj[squareId].duplicate = false;
@@ -261,7 +310,7 @@ export const newAllSquares = (allSquares, squareId, newVal) => {
 
 
 /** isPuzzleFinished
- *  Checks if a puzzle is complete by seeing if there are no empty spaces and no duplicates in the puzzle
+ *  Checks if a puzzle is complete by checking to see if there are no empty spaces and no duplicates in the puzzle
  * 
  * @param {object} allSquares 
  * @returns {boolean}
@@ -275,6 +324,9 @@ export const isPuzzleFinished = (allSquares) => {
   }
   return true;
 };
+
+
+
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -292,6 +344,6 @@ findDuplicates(grid);
 // console.log(grid);
 
 const newGrid = newAllSquares(grid, 'A1', '1')
-console.log(newGrid['A1'].displayVal)
+// console.log(newGrid['A1'].displayVal)
 
 // */

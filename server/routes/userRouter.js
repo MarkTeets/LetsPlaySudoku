@@ -1,13 +1,33 @@
 const express = require('express');
-const router = express.Router();
+const userRouter = express.Router();
+const userController = require('../controllers/userController');
+const puzzleController = require('../controllers/puzzleController');
 
-const data = {
-  message: 'I\'m the one you want',
-};
 
-router.get('/', (req, res) => {
-  console.log(data);
-  res.status(200).json(data);
-});
+userRouter.post('/signup',
+  userController.getUser,
+  userController.createUser,
+  (req, res) => {
+    res.status(200).json(res.locals.frontendData);
+  }
+);
 
-module.exports = router;
+userRouter.post('/login',
+  userController.getUser,
+  userController.verifyUser,
+  puzzleController.getUserPuzzles,
+  (req, res) => {
+    res.status(200).json(res.locals.frontendData);
+  }
+);
+
+userRouter.post('/save-puzzle',
+  userController.getUser,
+  userController.savePuzzle,
+  (req, res) => {
+    res.status(200).json(res.locals.frontendData);
+  }
+);
+
+
+module.exports = userRouter;

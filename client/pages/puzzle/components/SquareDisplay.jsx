@@ -16,7 +16,6 @@ const SquareDisplay = ({ square, squareClassByLocation, onInputChange }) => {
   }, [displayVal]);
 
   // Function to be executed when user changes the value of a sudoku square.
-  // If the input is valid, it'll 
   const handleValueChange = (e) => {
     let newVal = e.currentTarget.value;
     // The user shouldn't be able to type 0, but I do want number deletions to be saved as 0.
@@ -59,22 +58,9 @@ function inputMaker(square, currentVal, squareClassByLocation, handleValueChange
 }
   
 
-
-
-/* So I originally had the number disappear every time you clicked into a non-fixed box, but
+/* 
+So I originally had the number disappear every time you clicked into a non-fixed box, but
 then I realized their number didn't come back if you didn't change it. So I made the number come
 back on a blur. Then I realized there was no way for them to delete a number. So I made it simpler 
 and don't do anything on clicks or blurs anymore
-
-  const handleClick = () => {
-    // setCurrentVal('')
-    // emptySetter(true);
-  }
-
-  const handleBlur = () => {
-    // if (currentVal === '' && displayVal !== '0') {
-    //     setCurrentVal(displayVal)
-    // }
-  }
-
 */
