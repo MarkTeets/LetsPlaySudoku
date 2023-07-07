@@ -8,7 +8,10 @@ const puzzleSchema = new Schema({
   puzzleNumber: Number,
   puzzle: String,
   solution: String,
-  difficultyString: String,
+  difficultyString: {
+    type: String,
+    default: 'easy'
+  },
   difficultyScore: {
     type: Number,
     default: 1
@@ -23,7 +26,7 @@ const puzzleSchema = new Schema({
   },
   singlePosition: {
     type: Boolean,
-    default: true
+    default: false
   },
   candidateLines: {
     type: Boolean,
