@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
-import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 // Components
 import PuzzleContainer from './components/PuzzleContainer';
@@ -7,6 +7,7 @@ import PuzzleContainer from './components/PuzzleContainer';
 // Context and utilities
 import { userContext, puzzleCollectionContext } from '../../context';
 import { createNewSquares, newAllSquares, isPuzzleFinished, createProgressString, updateSquaresFromProgress } from '../../utils/squares';
+const savePuzzle = savePuzzleAtLeastOnce();
 
 // Styles
 import '../../scss/_puzzlecontainer.scss';
@@ -14,7 +15,7 @@ import '../../scss/_puzzlecontainer.scss';
 
 export const PuzzlePage = () => {
   const navigate = useNavigate();
-  const { puzzleNumber } = useParams();
+  const puzzleNumber = Number(useParams().puzzleNumber) ;
   const { user, setUser } = useContext(userContext);
   const { puzzleCollection } = useContext(puzzleCollectionContext);
 
@@ -48,7 +49,7 @@ export const PuzzlePage = () => {
     }
   }, []);
 
-  // Checks to see if user has solved puzzle every time allSquares updates
+  // Checks to see if user has solved puzzle on each allSquares update
   useEffect(() => {
     // setTimeout is used so the allSquares update is painted before this alert goes out
     if (isPuzzleFinished(allSquares)) {
@@ -65,7 +66,7 @@ export const PuzzlePage = () => {
   //   // console.log('useEffect allSquares', allSquares);
   // });
 
-  //onInputChange is fired every time there's an onChange event in an individual square. 
+  // onInputChange is fired every time there's an onChange event in an individual square. 
   // It updates the state of allSquares based on the inidividual square that's been updated.
   const onInputChange = (id, newVal) => {
     setAllSquares(newAllSquares(allSquares, id, newVal));
@@ -96,9 +97,23 @@ export const PuzzlePage = () => {
   );
 };
 
+//---- HELPER FUNCTIONS --------------------------------------------------------------------------------------------------------------
 
+/** firstAllSquares
+ * When the page first loads, the original puzzle needs to be used to make the initialAllSquares object to make sure the correct numbers
+ * are given the fixedVal = true property. However, the puzzle also needs to be consistent with updated values from the user's progress string. 
+ * 
+ * Therefore, this function checks to see if there are any differences between a user's progress string and the original puzzle. If not,
+ * the initialAllSquares object is returned with no need for additional work. If there are differences, this function returns a deep copy
+ * of the initialAllSquares object with the displayVal's updated to be consistent with the user's progress string. 
+ * 
+ * @param {Object} initialAllSquares 
+ * @param {Number} puzzleNumber 
+ * @param {Object} user 
+ * @param {Object} puzzleCollection 
+ * @returns an allSquares object
+ */
 function firstAllSquares(initialAllSquares, puzzleNumber, user, puzzleCollection) {
-
   // Check to see if the original puzzle and the user's progress on it are the same
   // If so, just return the initialAllSquares object made from the original puzzle
   if (user.allPuzzles[puzzleNumber].progress === puzzleCollection[puzzleNumber].puzzle) {
@@ -110,53 +125,77 @@ function firstAllSquares(initialAllSquares, puzzleNumber, user, puzzleCollection
   return updateSquaresFromProgress(initialAllSquares, user.allPuzzles[puzzleNumber].progress);
 }
 
+/** savePuzzleAtLeastOnce
+ * 
+ * Returns a function that allows a user to save their progress on a puzzle. The returned function also confirms that there's 
+ * a difference between the current puzzles state and a user's progress string before saving. However, the function utilizes 
+ * closure to make sure that the first save occurs regardless of said difference. This is important as a puzzle isn't saved 
+ * to a user in the database until saved at least once.
+ * 
+ * @returns function
+ */
+function savePuzzleAtLeastOnce() {
+  let firstSave = true;
 
-// Eventually this function will be called regularly using a throttler
-async function savePuzzle(puzzleNumber, allSquares, user, setUser) {
-  if (user.username === 'guest') {
-    alert('Please sign up for a free account to save');
-    return;
-  }
+  return async (puzzleNumber, allSquares, user, setUser) => {
+    // Don't allow a guest to save
+    if (user.username === 'guest') {
+      alert('Please sign up for a free account to save');
+      return;
+    }
 
-  // There will be a method to update the progress string based on allSquares current state
-  // For now I'll just use the old progress
-  const currentProgress = createProgressString(allSquares);
+    // createProgressString generates a puzzle string that reflects the current state of allSquares
+    const currentProgress = createProgressString(allSquares);
+  
+    // Check to see if there are differences between the current state and a user's progress string
+    const isPuzzleDifference = (currentProgress !== user.allPuzzles[puzzleNumber].progress);
 
-  //COMPARE CURRENT PROGRESS TO OLD PROGRESS HERE, DO NOTHING IF NO UPDATES
-  // actually, utilize closure to check and see if this is the first time the function has run.
-  // I want them to be able to save the first time regrardless
+    // Save only if it's the first time or there's a difference. Otherwise, skip saving
+    if (firstSave || isPuzzleDifference) {
+      // Play with optimistic rendering here later. For now, confirm things happened in real time
+      const res = await fetch('/api/user/save-puzzle',{
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: user.username,
+          puzzleNumber,
+          progress: currentProgress
+        }),
+      });
 
-  // Play with optimistic rendering here later. For now confirm things happened in real time
-  const res = await fetch('/api/user/save-puzzle',{
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      username: user.username,
-      puzzleNumber,
-      progress: currentProgress
-    }),
-  });
+      if (!res.ok) {
+        alert('Problem saving updated progress to user document in database, try again later');
+        return;
+      }
 
-  if (!res.ok) {
-    alert('Problem saving updated progress to user document in database, try again later');
-    return;
-  }
+      const { status } = await res.json();
 
-  const { status } = await res.json();
+      if (status !== 'valid') {
+        alert('Problem saving updated progress to user document in database (bad status), try again later');
+        return;
+      }
 
-  if (status !== 'valid') {
-    alert('Problem saving updated progress to user document in database (bad status), try again later');
-    return;
-  }
+      // If the save was successful, update the user's progress string so that if they navigate away from the 
+      // page and then come back the saved version of the puzzle will be shown
+      const newUser = {
+        ...user,
+        allPuzzles: { ...user.allPuzzles }
+      };
 
-  const newUser = {
-    ...user,
-    allPuzzles: { ...user.allPuzzles }
+      newUser.allPuzzles[puzzleNumber].progress = currentProgress;
+
+      setUser(newUser);
+      
+      if (firstSave) {
+        firstSave = false;
+        // console.log('First save successful');
+        return;
+      }
+
+      // console.log('Successful save');
+      return;
+    }
+
+    // console.log('No puzzle differences from last save, no save necessary');
   };
-
-  newUser.allPuzzles[puzzleNumber].progress = currentProgress;
-
-  setUser(newUser);
-  console.log('successful save');
 }
-
