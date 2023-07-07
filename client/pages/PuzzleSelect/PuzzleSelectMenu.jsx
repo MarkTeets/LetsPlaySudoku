@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { userContext, puzzleCollectionContext } from '../../context';
-const totalPuzzles = 2;
+const totalPuzzles = 501;
 
 const PuzzleSelectMenu = () => {
   const navigate = useNavigate();

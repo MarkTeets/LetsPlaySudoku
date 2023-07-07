@@ -1,7 +1,6 @@
 const models = {};
 models.Puzzle = require('../models/puzzleModel');
-// import { isValidPuzzle } from '../../client/data/squares';
-const totalPuzzles = 2;
+const totalPuzzles = 501;
 
 const puzzleController = {};
 
@@ -159,26 +158,6 @@ puzzleController.getNextPuzzle = async (req, res, next) => {
 
 // };
 
-//---ADD PUZZLE-------------------------------------------------------------------------------------------------------------------------------------
-/*
-puzzleController.addPuzzle = async (req, res, next) => {
-  const { puzzleString } = req.body;
-  //Eventually this will start by checking to see whether or not a submitted puzzle string is valid
-  if (!isValidPuzzle(puzzleString)) {
-    //Logic for what happens when puzzle isn't valid
-    //probably return next with something attached to res.locals signaling failure
-  }
-  // next, implement solving algorithms to populate the solveLevel object.
-  // I might check for lowest scores or for easiest techniques possible. Maybe one day a user would be able to select how they'd
-  // like to sort the problem, so "solveLevel" would actually have multiple properties, with each key being named after sorting
-  // method like "lowest score", "easiest techniques", and "fewest steps"
-  
-  // Whatever simple way I choose to do it first, I would populate the solveLevel object accordingly, and then add a puzzle document
-  // to the puzzles collection with all the info. 
-
-};
-
-*/
 
 module.exports = puzzleController;
 
