@@ -2,11 +2,12 @@ $bodyColor: #222da9;
 $bigBorderColor: #58c2c6;
 $innerBorderColor: #e985a6;
 $squareBackground: rgb(52, 64, 160);
-$buttonBackground: rgb(128, 179, 171);
+$buttonBackground: rgb(194, 202, 201);
 $offBlack: rgb(50, 42, 104);
 $numberColor:#8eb5f5;
 $textColor: rgb(236, 213, 130);
 $buttonText: rgb(57, 50, 50);
+$visitedLink: rgb(128, 179, 171);
 $duplicateNumber: rgb(204, 69, 69);
 
 body {
@@ -15,9 +16,47 @@ body {
   color: $textColor;
 }
 
-h1, h2, h5, .button-container{
+h1, h2, h3, h5, .button-container{
   width: max-content;
   margin: 15px auto;
+}
+
+.centered-div {
+  box-sizing: border-box;
+  width: max-content;
+  padding: 10px 30px 15px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: $bigBorderColor groove 7px;
+  border-radius: 18px;
+
+  a:visited {
+    color: $visitedLink;
+  }
+
+  input {
+    margin: 6px 0;
+  }
+
+  label {
+    margin: 8px 0
+  }
+
+  div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+p {
+  margin: 0;
+}
+
+.puzzle-select-div {
+  margin: 10px 0;
 }
 
 #lets-play{

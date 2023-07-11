@@ -1,12 +1,15 @@
 import React, { useState, useRef } from 'react';
 import { createBrowserRouter, createRoutesFromElements, RouterProvider, Route } from 'react-router-dom';
 
-// layouts
+// Styles
+import './scss/styles.scss';
+
+// Layouts
 import RootLayout from './layouts/RootLayout';
 import WelcomeLayout from './layouts/WelcomeLayout';
 import UserLayout from './layouts/UserLayout';
 
-// pages, loaders
+// Pages, Loaders
 import Home from './pages/Welcome/Home';
 import { PuzzlePage } from './pages/Puzzle/PuzzlePage';
 import { PuzzlePageTest, puzzleTestLoader } from './pages/Puzzle/PuzzlePageTest';
@@ -19,7 +22,7 @@ import SavedPuzzleSelect from './pages/PuzzleSelect/SavedPuzzleSelect';
 import NotFound from './pages/NotFound';
 import ErrorPage from './pages/ErrorPage';
 
-// context
+// Context
 import { userContext, puzzleCollectionContext, pageContext } from './context';
 
 const router = createBrowserRouter(

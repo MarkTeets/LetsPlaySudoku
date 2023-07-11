@@ -6,9 +6,11 @@ const ErrorPage = () => {
 
   return (
     <>
-      <h2>Hey there, you look a little lost. Want some help getting back home?</h2>
-      <Link to='/'>Take me home!</Link>
-      <div>Error: {error.message}</div>
+      <h3>Hey there, you look a little lost. Want some help getting back home?</h3>
+      <div className='centered-div'>
+        <Link to='/'>Take me home!</Link>
+        <div>Error: {error.message}</div>
+      </div>
     </>
   );
 };

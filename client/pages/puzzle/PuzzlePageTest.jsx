@@ -8,9 +8,6 @@ import PuzzleContainer from './components/PuzzleContainer';
 // Context
 import { userContext } from '../../context';
 
-// Styles
-import '../../scss/_puzzlecontainer.scss';
-
 
 export const PuzzlePageTest = () => {
   const navigate = useNavigate();

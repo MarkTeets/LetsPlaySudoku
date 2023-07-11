@@ -35,26 +35,25 @@ const SignUp = () => {
       <div className="login-container">
         <h2>Create New Account</h2>
         <Form method='post' action='/signUp' className='login-form'>
-          <label>
-            <span>Username</span>
-            <br />
-            <input type="username" name="username" placeholder="Enter your username" required />
-          </label>
-          <br></br>
-          <label>
-            <span>Password</span>
-            <br />
-            <input type="password" name="password" placeholder="Enter your password" required />
-          </label>
-          <br></br>
-          <label>
-            <span>Site Display Name</span>
-            <br />
-            <input type="displayName" name="displayName" placeholder={'Optional'} />
-          </label>
-          <br></br>
-          {data?.error && <p>{data.error}</p>}
-          <button>Submit</button>
+          <div className='centered-div'>
+            <label>
+              <span>Username</span>
+              <br />
+              <input type="username" name="username" placeholder="Enter your username" required />
+            </label>
+            <label>
+              <span>Password</span>
+              <br />
+              <input type="password" name="password" placeholder="Enter your password" required />
+            </label>
+            <label>
+              <span>Site Display Name</span>
+              <br />
+              <input type="displayName" name="displayName" placeholder={'Optional'} />
+            </label>
+            {data?.error && <p>{data.error}</p>}
+            <button>Submit</button>
+          </div>
         </Form>
       </div>
     </div>

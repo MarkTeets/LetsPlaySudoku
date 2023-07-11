@@ -9,9 +9,6 @@ import { userContext, puzzleCollectionContext } from '../../context';
 import { createNewSquares, newAllSquares, isPuzzleFinished, createProgressString, updateSquaresFromProgress } from '../../utils/squares';
 const savePuzzle = savePuzzleAtLeastOnce();
 
-// Styles
-import '../../scss/_puzzlecontainer.scss';
-
 
 export const PuzzlePage = () => {
   const navigate = useNavigate();
@@ -21,7 +18,7 @@ export const PuzzlePage = () => {
 
   // This implementation will calculate the initialState the first time the page loads, and then each
   // time reset is pressed it will skip recaluclating and just use the initialAllSquares value
-  const [initialAllSquares, setInitialSquares] = useState(createNewSquares(puzzleCollection[puzzleNumber].puzzle));
+  const [initialAllSquares, setInitialSquares] = useState(createNewSquares(puzzleCollection[puzzleNumber]?.puzzle));
 
   // The firstAllSquares function compares the original puzzle string to a user's progress string.
   // If they're the same, it returns the initialAllSquares object
@@ -116,7 +113,7 @@ export const PuzzlePage = () => {
 function firstAllSquares(initialAllSquares, puzzleNumber, user, puzzleCollection) {
   // Check to see if the original puzzle and the user's progress on it are the same
   // If so, just return the initialAllSquares object made from the original puzzle
-  if (user.allPuzzles[puzzleNumber].progress === puzzleCollection[puzzleNumber].puzzle) {
+  if (!user || user.allPuzzles[puzzleNumber].progress === puzzleCollection[puzzleNumber].puzzle) {
     return initialAllSquares;  
   }
 

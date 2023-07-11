@@ -37,26 +37,25 @@ const Login = () => {
       <div className='login-container'>
         <h2>Please Log In</h2>
         <Form method='post' action='/login' className='login-form'>
-          <label>
-            <span>Username</span>
-            <br />
-            <input type='username' name='username' placeholder= "Enter your username" required />
-          </label>
-          <br></br>
-          <label>
-            <span>Password</span>
-            <br />
-            <input type='password' name='password' placeholder="Enter your password" required />
-          </label>
-          {data?.error && <p>{data.error}</p>}
-          <br></br>
-          <button>Login</button>
+          <div className='centered-div'>
+            <label>
+              <span>Username</span>
+              <br />
+              <input type='username' name='username' placeholder= "Enter your username" required />
+            </label>
+            <label>
+              <span>Password</span>
+              <br />
+              <input type='password' name='password' placeholder="Enter your password" required />
+            </label>
+            {data?.error && <p>{data.error}</p>}
+            <button className='login-button'>Login</button>
+            {/* <br></br>
+            <p>No account?</p>
+            <Link to='/signUp'> Sign up!</Link>
+             */}
+          </div>
         </Form>
-        <div id='noAccount'>
-          <br></br>
-          <p>No account?</p>
-          <Link to='/signUp'> Sign up!</Link>
-        </div>
       </div>
     </div>
   );

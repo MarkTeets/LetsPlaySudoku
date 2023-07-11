@@ -113,39 +113,42 @@ const PuzzleSelectMenu = () => {
   return (
     <>
       <h2>Pick a puzzle!</h2>
+      <div className='centered-div'>
 
-      {user.lastPuzzleNumber > 0 &&
-        <div>
+        {user?.lastPuzzleNumber > 0 &&
+        <div className='puzzle-select-div'>
           <h3>Resume Last Puzzle:</h3>
-          <button onClick={onResumeLastPuzzleClick}>It won&apos;t know what hit it!</button>
+          <button className='puzzle-select-button' onClick={onResumeLastPuzzleClick}>It won&apos;t know what hit it!</button>
         </div>}
       
-      {Object.keys(user.allPuzzles).length > 0 &&
-        <div>
+        {user && Object.keys(user.allPuzzles).length > 0 &&
+        <div className='puzzle-select-div'>
           <h3>Choose From Previous Puzzles:</h3>
-          <button onClick={onSeeSavedPuzzlesClick}>Show me those puzzles!</button>
+          <button className='puzzle-select-button' onClick={onSeeSavedPuzzlesClick}>Show me those puzzles!</button>
         </div>
-      }
+        }
 
-      <div>
-        <h3>Start Next New Puzzle:</h3>
-        <button onClick={onNextPuzzleClick}>I&apos;m ready for anything!</button>
-      </div>
+        <div className='puzzle-select-div'>
+          <h3>Start Next New Puzzle:</h3>
+          <button className='puzzle-select-button' onClick={onNextPuzzleClick}>I&apos;m ready for anything!</button>
+        </div>
       
-      <div>
-        <h3>Choose Puzzle via difficulty or solution method(s):</h3>
-        <p>Feature coming soon</p>
-      </div >
+        <div className='puzzle-select-div'>
+          <h3>Choose Puzzle via difficulty or solution method(s):</h3>
+          <p>Feature coming soon</p>
+        </div >
         
-      <div>
-        <h3>Puzzle Number Select:</h3>
-        <p>Enter the number of the puzzle you&apos;d like to play</p>
-        <input
-          type="text"
-          onChange={(e) => setPuzzleNumString(e.target.value)}
-          value={puzzleNumString}
-        />
-        <button onClick={onNumberSelectClick}>Let&apos;s play!</button>
+        <div className='puzzle-select-div'>
+          <h3>Puzzle Number Select:</h3>
+          <p>Enter puzzle number you&apos;d like to play</p>
+          <input
+            type="text"
+            // placeholder='1'
+            onChange={(e) => setPuzzleNumString(e.target.value)}
+            value={puzzleNumString}
+          />
+          <button onClick={onNumberSelectClick}>Let&apos;s play!</button>
+        </div>
       </div>
     </>
   );

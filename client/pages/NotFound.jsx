@@ -4,8 +4,10 @@ import { Link } from 'react-router-dom';
 const NotFound = () => {
   return (
     <>
-      <h2>Hey there, you look a little lost. Want some help getting back home?</h2>
-      <Link to='/'>Take me home!</Link>
+      <h3>Hey there, you look a little lost. Want some help getting back home?</h3>
+      <div className='centered-div'>
+        <Link to='/'>Take me home!</Link>
+      </div>
     </>
   );
 };
