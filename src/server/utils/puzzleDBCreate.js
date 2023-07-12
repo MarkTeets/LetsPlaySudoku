@@ -5,7 +5,7 @@ const path = require('path');
 const csv = require('csv-parser');
 
 const filePath = path.resolve(__dirname, '../../data/sudoku.csv');
-const limit = 500;
+const limit = 500; // Update totalPuzzles after new limit choice successfully populates database
 const results = [];
 
 const MONGO_URI='mongodb+srv://markteets:PV0m4ZjwEg3wZwIT@sudoku-db.ox6sdpn.mongodb.net/?retryWrites=true&w=majority';

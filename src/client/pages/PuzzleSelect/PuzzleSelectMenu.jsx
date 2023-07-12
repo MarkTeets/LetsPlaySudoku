@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { userContext, puzzleCollectionContext } from '../../context';
-const totalPuzzles = 501;
+import { totalPuzzles } from '../../../globalUtils/totalPuzzles.mjs';
+
 
 const PuzzleSelectMenu = () => {
   const navigate = useNavigate();
@@ -9,7 +10,6 @@ const PuzzleSelectMenu = () => {
   const { puzzleCollection, setPuzzleCollection } = useContext(puzzleCollectionContext);
   const [puzzleNumString, setPuzzleNumString] = useState('');
   const [puzzleSelected, setPuzzleSelected] = useState(false);
-  
   
   useEffect(() => {
     if (!user) {
@@ -140,7 +140,7 @@ const PuzzleSelectMenu = () => {
         
         <div className='puzzle-select-div'>
           <h3>Puzzle Number Select:</h3>
-          <p>Enter puzzle number you&apos;d like to play</p>
+          <p>Enter puzzle number you&apos;d like to play from 1 to {totalPuzzles}</p>
           <input
             type="text"
             // placeholder='1'

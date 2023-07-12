@@ -1,14 +1,24 @@
 const models = {};
 models.Puzzle = require('../models/puzzleModel');
 
-// Error generation helper function
+// Helper function: createErr will return an object formatted for the global error handler
 const controllerErrorMaker = require('../utils/controllerErrorMaker');
+const createErr = controllerErrorMaker('puzzleController');
 
-const totalPuzzles = 501;
+// Importing the totalNumber of puzzles from another file so it can be the single source of truth as this
+// also needs to be used in the frontend, which imports via ES6 syntax. This method is simpler than adding
+// "type": "module" to my package.json and removing every instance of 'require'
+let totalPuzzles;
+import('../../globalUtils/totalPuzzles.mjs')
+  .then(module => {
+    totalPuzzles = module.totalPuzzles;
+    // console.log('totalpuzzles from back', totalPuzzles);
+  }).catch(err => {
+    console.log('totalPuzzles failed to import to puzzle controller', err.message);
+  });
+
 
 const puzzleController = {};
-
-const createErr = controllerErrorMaker('puzzleController');
 
 //---GET PUZZLE BY NUMBER---------------------------------------------------------------------------------------------------
 
@@ -166,16 +176,3 @@ puzzleController.getNextPuzzle = async (req, res, next) => {
 
 
 module.exports = puzzleController;
-
-
-
-// const createErr = ({ method, overview, status, err }) => {
-//   const errorObj = {
-//     log: `puzzleController.${method} ${overview}: ERROR: ${typeof err === 'object' ? err.message : err}`,
-//     message: { err: `Error occurred in puzzleController.${method}. Check server logs for more details.` }
-//   };
-//   if (status) {
-//     errorObj.status = status;
-//   }
-//   return errorObj;
-// };
