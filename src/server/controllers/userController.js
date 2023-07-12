@@ -4,13 +4,15 @@ const models = {};
 models.User = require('../models/userModel');
 // models.Puzzle = require('../models/puzzleModel');
 
-const userController = {};
+// Helper function: createErr will return an object formatted for the global error handler
+const controllerErrorMaker = require('../utils/controllerErrorMaker');
+const createErr = controllerErrorMaker('userController');
 
-
-// Returns an object with the relevant properties from an immutable returned Mongo document 
+// Helper function: cleanUser will return an object with the relevant properties extracted from an immutable returned Mongo document 
 const cleanUser = (user) => {
   // It'll be easier on the frontend to organize "allPuzzles" as an object with the keys being the number of the puzzle
-  // once useReducer/useContext holds a current puzzle number as the way a current puzzle is produced.
+  // I could convert the mongo document to hold a map of puzzle objects, but then they'd have to have dynamic keys based on 
+  // the puzzle number and I'd need to use a Map. For now I'll just store them in arrays to avoid dynamic keys
   const allPuzzles = {};
 
   for (const puzzleObj of user.allPuzzles) {
@@ -30,6 +32,9 @@ const cleanUser = (user) => {
     }
   };
 };
+
+
+const userController = {};
 
 // GET USER --------------------------------------------------------------------------------------------------------------------
 userController.getUser = async (req, res, next) => {
@@ -228,16 +233,3 @@ userController.savePuzzle = async (req, res, next) => {
 
 
 module.exports = userController;
-
-
-// Error generation helper function
-const createErr = ({ method, overview, status, err }) => {
-  const errorObj = {
-    log: `userController.${method} ${overview}: ERROR: ${typeof err === 'object' ? err.message : err}`,
-    message: { err: `Error occurred in userController.${method}. Check server logs for more details.` }
-  };
-  if (status) {
-    errorObj.status = status;
-  }
-  return errorObj;
-};
