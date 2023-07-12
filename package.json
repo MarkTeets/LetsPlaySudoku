@@ -2,14 +2,14 @@
   "name": "sudoku",
   "version": "1.0.0",
   "description": "",
-  "main": "server/server.js",
+  "main": "src/server/server.js",
   "scripts": {
-    "build": "NODE_ENV=production webpack",
+    "dev": "concurrently \"cross-env NODE_ENV=development webpack serve --open --hot --color \" \" nodemon ./src/server/server.js\"",
+    "prod": "concurrently \"cross-env NODE_ENV=production webpack serve --open \" \" node ./src/server/server.js\"",
     "frontend": "NODE_ENV=development webpack serve --open --hot",
-    "backend": "NODE_ENV=development nodemon ./server/server.js",
-    "dev": "concurrently \"cross-env NODE_ENV=development webpack serve --open --hot --color \" \" nodemon ./server/server.js\"",
-    "prod": "concurrently \"cross-env NODE_ENV=production webpack serve --open \" \" node ./server/server.js\"",
-    "add-puzzle": "node server/utils/puzzleDBCreate.js"
+    "backend": "NODE_ENV=development nodemon ./src/server/server.js",
+    "build": "NODE_ENV=production webpack",
+    "add-puzzle": "node src/server/utils/puzzleDBCreate.js"
   },
   "keywords": [],
   "author": "Mark Teets",
