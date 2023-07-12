@@ -1,13 +1,15 @@
 const express = require('express');
-const mongoose = require('mongoose');
-const dotenv = require('dotenv');
-
-dotenv.config();
 const app = express();
+const cookieParser = require('cookie-parser');
+const PORT = 3000;
+
+const mongoose = require('mongoose');
+
+const dotenv = require('dotenv');
+dotenv.config();
+
 const usersRouter = require('./routes/userRouter');
 const puzzleRouter = require('./routes/puzzleRouter');
-
-const PORT = 3000;
 
 
 // Allow guests to access database for now
@@ -21,9 +23,10 @@ mongoose.connect(MONGO_URI, {
   .catch(err => console.log('Database error: ', err.message));
 
 
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+
 
 app.use('/api/user', usersRouter);
 

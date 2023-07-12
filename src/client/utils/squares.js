@@ -297,15 +297,15 @@ export const newAllSquares = (allSquares, squareId, newVal) => {
     return allSquares;
   }
   // Make a deep copy of the allSquares object
-  const newAllSquareObj = deepCopyAllSquares(allSquares);
+  const newAllSquaresObj = deepCopyAllSquares(allSquares);
 
   // Change the specific values for the square that was changed
-  newAllSquareObj[squareId].displayVal = newVal;
-  newAllSquareObj[squareId].duplicate = false;
+  newAllSquaresObj[squareId].displayVal = newVal;
+  newAllSquaresObj[squareId].duplicate = false;
   // Iterate over the entire grid and check each square to see if it had duplicate values within the squares in its peers Set
   // If so, change the duplicate value of said square to true
-  findDuplicates(newAllSquareObj);
-  return newAllSquareObj;
+  findDuplicates(newAllSquaresObj);
+  return newAllSquaresObj;
 };
 
 

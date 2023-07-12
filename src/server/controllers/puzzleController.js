@@ -1,8 +1,14 @@
 const models = {};
 models.Puzzle = require('../models/puzzleModel');
+
+// Error generation helper function
+const controllerErrorMaker = require('../utils/controllerErrorMaker');
+
 const totalPuzzles = 501;
 
 const puzzleController = {};
+
+const createErr = controllerErrorMaker('puzzleController');
 
 //---GET PUZZLE BY NUMBER---------------------------------------------------------------------------------------------------
 
@@ -162,14 +168,14 @@ puzzleController.getNextPuzzle = async (req, res, next) => {
 module.exports = puzzleController;
 
 
-// Error generation helper function
-const createErr = ({ method, overview, status, err }) => {
-  const errorObj = {
-    log: `puzzleController.${method} ${overview}: ERROR: ${typeof err === 'object' ? err.message : err}`,
-    message: { err: `Error occurred in puzzleController.${method}. Check server logs for more details.` }
-  };
-  if (status) {
-    errorObj.status = status;
-  }
-  return errorObj;
-};
+
+// const createErr = ({ method, overview, status, err }) => {
+//   const errorObj = {
+//     log: `puzzleController.${method} ${overview}: ERROR: ${typeof err === 'object' ? err.message : err}`,
+//     message: { err: `Error occurred in puzzleController.${method}. Check server logs for more details.` }
+//   };
+//   if (status) {
+//     errorObj.status = status;
+//   }
+//   return errorObj;
+// };

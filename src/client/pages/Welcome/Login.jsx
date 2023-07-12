@@ -54,6 +54,7 @@ const Login = () => {
             <p>No account?</p>
             <Link to='/signUp'> Sign up!</Link>
              */}
+            {/* <div style={{ 'position': 'absolute', 'background-color': 'black', 'height':'100px', 'width': '100px' }} >Big block</div> */}
           </div>
         </Form>
       </div>

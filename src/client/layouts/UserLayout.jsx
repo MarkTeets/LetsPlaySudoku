@@ -26,7 +26,7 @@ function UserLayout() {
           {user?.lastPuzzleNumber > 0 &&
             <NavLink to={lastPuzzleNumberURL} className='nav-link' >Puzzle</NavLink>
           }
-          <NavLink to='playTest' className='nav-link'>Play Test</NavLink>
+          {/* <NavLink to='playTest' className='nav-link'>Play Test</NavLink> */}
           {user?.username !== 'guest' ?
             <NavLink to='/' className='nav-link' onClick={() => setUser(null)}>Log out</NavLink> :
             <NavLink to='/' className='nav-link' >Return home</NavLink>

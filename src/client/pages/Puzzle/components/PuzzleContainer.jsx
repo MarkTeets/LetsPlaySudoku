@@ -5,6 +5,7 @@ import {unitBoxes} from '../../../utils/squares';
 
 const PuzzleContainer = ({ allSquares, onInputChange }) => {
   
+  // useMemo will optimize the page render after more state unrelated to allSquares is added to PuzzlePage 
   const boxComponents = useMemo(() => generateBoxes(allSquares, onInputChange), [allSquares]);
 
   return (
