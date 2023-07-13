@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import SquareDisplay from './SquareDisplay';
 
+
 const BoxUnitContainer = ({boxUnit, onInputChange}) => {
 
   const squares = useMemo(() => generateSquares(boxUnit, onInputChange), [boxUnit]);

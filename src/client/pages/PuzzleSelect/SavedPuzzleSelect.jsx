@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 // Contexts
 import { userContext } from '../../context';
 
+
 const SavedPuzzleSelect = () => {
   const navigate = useNavigate();
   const { user } = useContext(userContext);
@@ -19,7 +20,7 @@ const SavedPuzzleSelect = () => {
     <>
       {user && <h2>{user?.displayName}&apos;s Saved Games</h2>}
       <div className='centered-div'>
-        <h3>Choose a saved puzzle number</h3>
+        <h3>Choose a saved puzzle</h3>
         {createPuzzleLinks(user)}
       </div>
     </>

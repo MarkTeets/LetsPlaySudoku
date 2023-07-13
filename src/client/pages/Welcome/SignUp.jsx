@@ -2,6 +2,7 @@ import React, { useContext, useEffect } from 'react';
 import { useNavigate, Form, useActionData } from 'react-router-dom';
 import { userContext, pageContext } from '../../context';
 
+
 const SignUp = () => {
   const navigate = useNavigate();
   const { user, setUser } = useContext(userContext);
@@ -15,7 +16,7 @@ const SignUp = () => {
 
   useEffect(() => {
     // Make sure the user has been set and they didn't just get to this page before navigating to UserHomePage
-    if (user !== null && pageInfo.current === '/signUp') {
+    if (user !== null && pageInfo.current === 'signUp') {
       return navigate(`/${encodeURIComponent(user.username)}`);
     }
   }, [user]);
@@ -26,7 +27,7 @@ const SignUp = () => {
     if (data?.user !== undefined) {
       setUser(data.user);
       // Update pageInfo to this page on successful submission
-      pageInfo.current = '/signUp';
+      pageInfo.current = 'signUp';
     }
   }, [data]);
 

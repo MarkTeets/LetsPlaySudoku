@@ -2,7 +2,8 @@ import React, { useContext } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import { userContext } from '../context';
 
-function WelcomeLayout() {
+
+const WelcomeLayout = () => {
   const { setUser } = useContext(userContext);
 
   const handleGuest = () => {
@@ -30,6 +31,6 @@ function WelcomeLayout() {
       </main>
     </div>
   );
-}
+};
 
 export default WelcomeLayout;

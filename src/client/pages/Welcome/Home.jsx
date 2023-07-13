@@ -1,6 +1,7 @@
 import React from 'react';
 import house from '../../assets/house.png';
 
+
 const Home = () => {
   return (
     <div className='home-page'>
