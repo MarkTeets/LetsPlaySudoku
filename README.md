@@ -3,10 +3,12 @@
 Welcome to "Let's Play Sudoku," a free web application for accessing and playing free Sudoku puzzles. 
 
 Current features:
-- User sign-up and login, allowing users to save their progress on puzzles and come back to them later
+- User sign-up and login
+- Sessions allow users to automatically log in after first sign-up or subsequent logins
 - Guest mode, for those who want to play without signing in (can't save in guest mode)
 - Duplicate number flagging
 - Completed puzzle verification
+- Save progress made to puzzles so users can resume later
 
 Future features:
 - Choose puzzle based on difficulty and/or techniques required to solve
