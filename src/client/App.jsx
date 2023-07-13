@@ -12,10 +12,9 @@ import UserLayout from './layouts/UserLayout';
 // Pages, Loaders
 import Home from './pages/Welcome/Home';
 import { PuzzlePage } from './pages/Puzzle/PuzzlePage';
-import { PuzzlePageTest, puzzleTestLoader } from './pages/Puzzle/PuzzlePageTest';
-import Login, { loginAction } from './pages/Welcome/Login';
+// import { PuzzlePageTest, puzzleTestLoader } from './pages/Puzzle/PuzzlePageTest';
+import Login, { loginAction, sessionLoader } from './pages/Welcome/Login';
 import SignUp, { signUpAction } from './pages/Welcome/SignUp';
-// import UserHome from './pages/User/UserHome';
 import PuzzleSelectViaFilters from './pages/PuzzleSelect/PuzzleSelectViaFilters';
 import PuzzleSelectMenu from './pages/PuzzleSelect/PuzzleSelectMenu';
 import SavedPuzzleSelect from './pages/PuzzleSelect/SavedPuzzleSelect';
@@ -40,6 +39,7 @@ const router = createBrowserRouter(
           path='login'
           element={<Login key='LoginPage' />}
           action={loginAction}
+          loader={sessionLoader}
           errorElement={<ErrorPage />}
         />
         <Route
@@ -52,18 +52,10 @@ const router = createBrowserRouter(
 
       {/* User layout */}
       <Route path=':username' element={<UserLayout/>}>
-        {/* <Route
-          index
-          element={<UserHome key='UserHome' />}
-        /> */}
         <Route
           index
           element={<PuzzleSelectMenu key='PuzzleSelectMenu' />}
         />
-        {/* <Route
-          path='PuzzleSelectMenu'
-          element={<PuzzleSelectMenu key='PuzzleSelectMenu' />}
-        /> */}
         <Route
           path='savedPuzzleSelect'
           element={<SavedPuzzleSelect key='SavedPuzzleSelect' />}

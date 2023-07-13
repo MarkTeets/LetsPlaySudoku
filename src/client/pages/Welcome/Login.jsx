@@ -1,36 +1,37 @@
 import React, { useContext, useEffect } from 'react';
-import { useNavigate, Form, Link, useActionData } from 'react-router-dom';
+import { useNavigate, Form, useActionData, useLoaderData } from 'react-router-dom';
 import { userContext, puzzleCollectionContext, pageContext } from '../../context';
+
 
 const Login = () => {
   const navigate = useNavigate();
   const { user, setUser } = useContext(userContext);
   const { puzzleCollection, setPuzzleCollection } = useContext(puzzleCollectionContext);
   const { pageInfo } = useContext(pageContext);
-  const data = useActionData();
+  const sessionData = useLoaderData();
+  const newLoginData = useActionData();
   
   // Set pageInfo to variable that will prevent automatic page jump if page has just loaded
   useEffect(() => {
     pageInfo.current = 'JustLoadedLogin';
+
+    if (sessionData.status === 'valid') {
+      populateContext(sessionData.user, setUser, sessionData.puzzleCollection, setPuzzleCollection, pageInfo);
+    }
   }, []);
 
   useEffect(() => {
     // Make sure the user has been set and they didn't just get to this page before navigating to UserHomePage
     if (user !== null && pageInfo.current === 'login') {
-      // console.log('login user:', user);
-      // console.log('login puzzleCollection:', puzzleCollection);
       return navigate(`/${encodeURIComponent(user.username)}`);
     }
   }, [user]);
 
   useEffect(() => {
-    if (data?.user !== undefined) {
-      setUser(data.user);
-      setPuzzleCollection(data.puzzleCollection);
-      // Update pageInfo to this page on successful submission
-      pageInfo.current = 'login';
+    if (newLoginData?.user !== undefined) {
+      populateContext(newLoginData.user, setUser, newLoginData.puzzleCollection, setPuzzleCollection, pageInfo);
     }
-  }, [data]);
+  }, [newLoginData]);
 
   return (
     <div className= 'login-page'>
@@ -48,12 +49,8 @@ const Login = () => {
               <br />
               <input type='password' name='password' placeholder="Enter your password" required />
             </label>
-            {data?.error && <p>{data.error}</p>}
+            {newLoginData?.error && <p>{newLoginData.error}</p>}
             <button className='login-button'>Login</button>
-            {/* <br></br>
-            <p>No account?</p>
-            <Link to='/signUp'> Sign up!</Link>
-             */}
             {/* <div style={{ 'position': 'absolute', 'background-color': 'black', 'height':'100px', 'width': '100px' }} >Big block</div> */}
           </div>
         </Form>
@@ -61,6 +58,8 @@ const Login = () => {
     </div>
   );
 };
+
+export default Login;
 
 
 // This action function is called when the Form above is submitted (see router setup in App.jsx).
@@ -102,4 +101,15 @@ export const loginAction = async ({ request }) => {
   return { error: `The status "${response.status}" sent in the response doesn't match the valid cases` };
 };
 
-export default Login;
+// Session loader function
+export const sessionLoader = async () => {
+  const res = await fetch('/api/user/resume-session');
+  return res.json();
+};
+
+function populateContext(newUser, setUser, newPuzzleCollection, setPuzzleCollection, pageInfo) {
+  setUser(newUser);
+  setPuzzleCollection(newPuzzleCollection);
+  // Update pageInfo to this page on successful submission so that we can navigate away
+  pageInfo.current = 'login';
+}

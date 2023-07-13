@@ -2,23 +2,24 @@
 const controllerErrorMaker = require('../utils/controllerErrorMaker');
 const createErr = controllerErrorMaker('cookieController');
 
+
 const cookieController = {};
 
 //---SET SSID COOKIE ------------------------------------------------------------------------------------------------------
 
+//ssid cookie value will be the logged in user's mongodb document id
 cookieController.setSSIDCookie = async (req, res, next) => {
-  //ssid cookie value will be the Object id of the logged in user
-  //Extract Mongodb id from getUser middleware foundUser 
-  const { id } = res.locals.foundUser;
-
-  // If the login or signup was unsuccessful, move on without creating a cookie
-  if (id === undefined) {
-    return next();
-  }
-
   try {
+  //Extract Mongodb id from getUser middleware userDocument 
+    const userId  = res.locals.userDocument?.id;
+
+    // If the login or signup was unsuccessful, move on without creating a cookie
+    if (res.locals.status !== 'validUser' || userId === undefined) {
+      return next();
+    }
+
     //create new cookie with key:value of ssid: Mongo ObjectID
-    res.cookie('ssid', id, {
+    res.cookie('ssid', userId, {
       secure: true,
       httpOnly: true,
       sameSite: 'lax'

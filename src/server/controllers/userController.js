@@ -1,59 +1,42 @@
-const bcrypt = require('bcryptjs');
-const saltRound = 10;
 const models = {};
 models.User = require('../models/userModel');
 // models.Puzzle = require('../models/puzzleModel');
+
+const bcrypt = require('bcryptjs');
+const saltRound = 10;
 
 // Helper function: createErr will return an object formatted for the global error handler
 const controllerErrorMaker = require('../utils/controllerErrorMaker');
 const createErr = controllerErrorMaker('userController');
 
-// Helper function: cleanUser will return an object with the relevant properties extracted from an immutable returned Mongo document 
-const cleanUser = (user) => {
-  // It'll be easier on the frontend to organize "allPuzzles" as an object with the keys being the number of the puzzle
-  // I could convert the mongo document to hold a map of puzzle objects, but then they'd have to have dynamic keys based on 
-  // the puzzle number and I'd need to use a Map. For now I'll just store them in arrays to avoid dynamic keys
-  const allPuzzles = {};
-
-  for (const puzzleObj of user.allPuzzles) {
-    allPuzzles[puzzleObj.puzzleNumber] = {
-      puzzleNumber: puzzleObj.puzzleNumber,
-      progress: puzzleObj.progress
-    }; 
-  }
-
-  return {
-    status: 'valid',
-    user: {
-      username: user.username,
-      displayName: user.displayName,
-      lastPuzzleNumber: user.lastPuzzleNumber,
-      allPuzzles
-    }
-  };
-};
-
-
 const userController = {};
 
-// GET USER --------------------------------------------------------------------------------------------------------------------
+//--- GET USER --------------------------------------------------------------------------------------------------------------------
 userController.getUser = async (req, res, next) => {
-  // extract info from request (username)
   const { username } = req.body;
-  // check to see if username was in request body
+
+  // In the case of delete-session, we want the username specifically, not the cookies
+  // In the case of resume-session, username will be undefined and we'll want userId from the cookies
+  let userId;
   if (username === undefined) {
+    userId = req.cookies.ssid;
+  }
+
+  // check to see if username was in request body
+  if (username === undefined && userId === undefined) {
     return next(createErr({
       method: 'getUser',
-      overview: 'problem retrieving user from request body',
+      overview: 'problem retrieving user from request body or userId from cookies',
       status: 400,
-      err: 'username wasn\'t included in request body'
+      err: 'username wasn\'t included in request body or userId wasn\'t included in cookies'
     }));
   }
 
   // retreive associated data from database
   try {
     // add whatever is found to res.locals. If nothing is found, null will be returned
-    res.locals.foundUser = await models.User.findOne({ username }).exec();
+    res.locals.userDocument = await models.User.findOne({ $or: [{ username }, { _id: userId }] }).exec();
+    
     return next();
 
   } catch (err) {
@@ -66,11 +49,49 @@ userController.getUser = async (req, res, next) => {
   }
 };
 
+
+// CLEAN USER -------------------------------------------------------------------------------------------------------------
+userController.cleanUser = async (req, res, next) => {
+
+  // if userDocument was found via getUser, extract relevant properties from the immutable returned Mongo document
+  // and send it to next middleware via res.locals.frontendData
+
+  if (res.locals.status === 'validUser' && res.locals.userDocument !== null) {
+    const user = res.locals.userDocument;
+
+    // It'll be easier on the frontend to organize "allPuzzles" as an object with the keys being the number of the puzzle
+    // I could convert the mongo document to hold a map of puzzle objects, but then they'd have to have dynamic keys based on
+    // the puzzle number and I'd need to use a Map. For now I'll just store them in arrays to avoid dynamic keys
+  
+    const allPuzzles = {};
+
+    for (const puzzleObj of user.allPuzzles) {
+      allPuzzles[puzzleObj.puzzleNumber] = {
+        puzzleNumber: puzzleObj.puzzleNumber,
+        progress: puzzleObj.progress
+      }; 
+    }
+
+    res.locals.frontendData = {
+      status: 'valid',
+      user: {
+        username: user.username,
+        displayName: user.displayName,
+        lastPuzzleNumber: user.lastPuzzleNumber,
+        allPuzzles
+      }
+    };
+  }
+
+  return next();
+};
+
+
 // CREATE USER -------------------------------------------------------------------------------------------------------------
 userController.createUser = async (req, res, next) => {
 
-  // if foundUser on res.locals is not null, send frontendData object with status to frontend
-  if (res.locals.foundUser !== null) {
+  // if userDocument on res.locals is not null, send frontendData object with status to frontend
+  if (res.locals.userDocument !== null) {
     res.locals.frontendData = { status: 'userNameExists' };
     return next();
   }
@@ -101,13 +122,13 @@ userController.createUser = async (req, res, next) => {
       password: bcrypt.hashSync(password, saltRound),
       displayName: (displayName !== undefined) ? displayName: username
     };
+    
+    // create user with document, reassign res.locals.userDocument with created document
+    res.locals.userDocument = await models.User.create(document);
+    
+    // set res.locals.status so cleanUser will process the userDocument for the frontend
+    res.locals.status = 'validUser';
 
-    // create user with document
-    // assign createdUser to res.locals
-    const createdUser = await models.User.create(document);
-    // Prepare a frontendData object including only the necessary props to send to the frontend
-    res.locals.frontendData = cleanUser(createdUser);
-    // console.log('createUser res.locals.frontendData:', res.locals.frontendData);
     return next();
 
   } catch (err) {
@@ -123,8 +144,8 @@ userController.createUser = async (req, res, next) => {
 
 // VERIFY USER LOGIN --------------------------------------------------------------------------------------------
 userController.verifyUser = async (req, res, next) => {
-  // if foundUser on res.locals is null, send frontendData object with status to frontend
-  if (res.locals.foundUser === null) {
+  // if userDocument on res.locals is null, send frontendData object with status to frontend
+  if (res.locals.userDocument === null) {
     res.locals.frontendData = { status: 'userNotFound' };
     return next();
   }
@@ -135,14 +156,13 @@ userController.verifyUser = async (req, res, next) => {
 
   try {
     // if password isn't a match, send frontendData object with status to frontend
-    if (!bcrypt.compareSync(password, res.locals.foundUser.password)) {
+    if (!bcrypt.compareSync(password, res.locals.userDocument.password)) {
       res.locals.frontendData = { status: 'incorrectPassword' };
       return next();
     }
 
-    // Prepare a frontendData object including only the necessary props to send to the frontend
-    res.locals.frontendData = cleanUser(res.locals.foundUser);
-    // console.log('verifyUser res.locals.frontendData:', res.locals.frontendData);
+    // set res.locals.status so cleanUser will process the userDocument for the frontend
+    res.locals.status = 'validUser';
 
     return next();
 
@@ -157,13 +177,12 @@ userController.verifyUser = async (req, res, next) => {
 };
 
 
-
 // SAVE PUZZLE -----------------------------------------------------------------------------------------------------
 // I may switch the entire schema set-up to include puzzle objects, including a Map of said objects in the User schema
 
 userController.savePuzzle = async (req, res, next) => {
   // Make sure getUser found the user
-  if (res.locals.foundUser === null) {
+  if (res.locals.userDocument === null) {
     res.locals.frontendData = { status: 'userNotFound' };
     return next();
   }
@@ -172,7 +191,6 @@ userController.savePuzzle = async (req, res, next) => {
   const { progress } = req.body;
 
   if (puzzleNumber === undefined || progress === undefined ) {
-    // if (puzzleNumber === undefined || progress === undefined || puzzleId === undefined ) {
     return next(createErr({
       method: 'savePuzzle',
       overview: 'problem extractinging puzzle info from req.body',
@@ -188,8 +206,8 @@ userController.savePuzzle = async (req, res, next) => {
   try {
     // I can refactor this if I make the user allPuzzles property a map. I could also make a schema 
     // for the userPuzzleObjects if I wanted to be specific about it. Or I could just leave the array.
-    for (const index in res.locals.foundUser.allPuzzles) {
-      if (puzzleNumber === res.locals.foundUser.allPuzzles[index].puzzleNumber) {
+    for (const index in res.locals.userDocument.allPuzzles) {
+      if (puzzleNumber === res.locals.userDocument.allPuzzles[index].puzzleNumber) {
         currentPuzzleIndex = index;
         break;
       }
@@ -197,7 +215,7 @@ userController.savePuzzle = async (req, res, next) => {
 
     if (currentPuzzleIndex !== null) {
       // If the user already has saved progress for that puzzle, update it to the new progress value 
-      res.locals.foundUser.allPuzzles[currentPuzzleIndex].progress = progress;
+      res.locals.userDocument.allPuzzles[currentPuzzleIndex].progress = progress;
 
     } else {
       // If this is the first time a puzzle is being saved to a user: 
@@ -207,13 +225,12 @@ userController.savePuzzle = async (req, res, next) => {
         progress,
       };
 
-      res.locals.foundUser.allPuzzles.push(puzzleObj);
+      res.locals.userDocument.allPuzzles.push(puzzleObj);
     }
 
-    res.locals.foundUser.lastPuzzleNumber = puzzleNumber;
+    res.locals.userDocument.lastPuzzleNumber = puzzleNumber;
 
-    const updatedUser = await res.locals.foundUser.save();
-    // console.log('updatedUser', updatedUser);
+    const updatedUser = await res.locals.userDocument.save();
     
     // I'm not going to send back the whole user, I'll only send whether or not it was succesful. 
     // As the user object gets bigger via more and more puzzles, this will be more efficient
@@ -224,7 +241,7 @@ userController.savePuzzle = async (req, res, next) => {
   } catch (err) {
     return next(createErr({
       method: 'savePuzzle',
-      overview: `problem saving progress to ${res.locals.foundUser.username}'s allPuzzles array`,
+      overview: `problem saving progress to ${res.locals.userDocument.username}'s allPuzzles array`,
       status: 500,
       err
     }));

@@ -72,17 +72,16 @@ puzzleController.getPuzzleByNumber = async (req, res, next) => {
 
 puzzleController.getUserPuzzles = async (req, res, next) => {
   // The login page already handles the "userNotFound" case, so I don't need to do anything else
-  if (res.locals.frontendData.status !== 'valid') {
-    // console.log('No user found in getUserPuzzles, user status:', res.locals.frontendData.status);
+  if (res.locals.status !== 'validUser' || !res.locals.userDocument) {
     return next();
   }
 
-  if (res.locals.foundUser.allPuzzles.length === 0) {
+  if (res.locals.userDocument.allPuzzles.length === 0) {
     res.locals.frontendData.puzzleCollection = [];
     return next();
   }
 
-  const userPuzzleNumbersFilter = res.locals.foundUser.allPuzzles.map(puzzleObj => {
+  const userPuzzleNumbersFilter = res.locals.userDocument.allPuzzles.map(puzzleObj => {
     return { puzzleNumber: puzzleObj.puzzleNumber };
   });
 
@@ -123,7 +122,7 @@ puzzleController.getNextPuzzle = async (req, res, next) => {
 
   // A user request will include a username and the getUser middleware is called to retreive the user.
   if (username !== undefined) {
-    if (res.locals.foundUser === null) {
+    if (res.locals.userDocument === null) {
       res.locals.frontendData = { status: 'userNotFound' };
       return next();
     }
@@ -131,7 +130,7 @@ puzzleController.getNextPuzzle = async (req, res, next) => {
     // add all puzzle numbers from user's allPuzzles array to a set
     const puzzleNumSet = new Set();
   
-    for (const puzzleObj of res.locals.foundUser.allPuzzles) {
+    for (const puzzleObj of res.locals.userDocument.allPuzzles) {
       puzzleNumSet.add(puzzleObj.puzzleNumber);
     }
      
