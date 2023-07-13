@@ -11,7 +11,7 @@ const createErr = controllerErrorMaker('userController');
 
 const userController = {};
 
-//--- GET USER --------------------------------------------------------------------------------------------------------------------
+//---GET USER --------------------------------------------------------------------------------------------------------------------
 userController.getUser = async (req, res, next) => {
   const { username } = req.body;
 
@@ -50,7 +50,7 @@ userController.getUser = async (req, res, next) => {
 };
 
 
-// CLEAN USER -------------------------------------------------------------------------------------------------------------
+//---CLEAN USER -------------------------------------------------------------------------------------------------------------
 userController.cleanUser = async (req, res, next) => {
 
   // if userDocument was found via getUser, extract relevant properties from the immutable returned Mongo document
@@ -87,7 +87,7 @@ userController.cleanUser = async (req, res, next) => {
 };
 
 
-// CREATE USER -------------------------------------------------------------------------------------------------------------
+//---CREATE USER -------------------------------------------------------------------------------------------------------------
 userController.createUser = async (req, res, next) => {
 
   // if userDocument on res.locals is not null, send frontendData object with status to frontend
@@ -142,7 +142,7 @@ userController.createUser = async (req, res, next) => {
 };
 
 
-// VERIFY USER LOGIN --------------------------------------------------------------------------------------------
+//---VERIFY USER LOGIN --------------------------------------------------------------------------------------------
 userController.verifyUser = async (req, res, next) => {
   // if userDocument on res.locals is null, send frontendData object with status to frontend
   if (res.locals.userDocument === null) {
@@ -177,7 +177,7 @@ userController.verifyUser = async (req, res, next) => {
 };
 
 
-// SAVE PUZZLE -----------------------------------------------------------------------------------------------------
+//---SAVE PUZZLE -----------------------------------------------------------------------------------------------------
 // I may switch the entire schema set-up to include puzzle objects, including a Map of said objects in the User schema
 
 userController.savePuzzle = async (req, res, next) => {
