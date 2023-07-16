@@ -77,7 +77,7 @@ userController.cleanUser = async (req, res, next) => {
       user: {
         username: user.username,
         displayName: user.displayName,
-        lastPuzzleNumber: user.lastPuzzleNumber,
+        lastPuzzle: user.lastPuzzle,
         allPuzzles
       }
     };
@@ -228,7 +228,7 @@ userController.savePuzzle = async (req, res, next) => {
       res.locals.userDocument.allPuzzles.push(puzzleObj);
     }
 
-    res.locals.userDocument.lastPuzzleNumber = puzzleNumber;
+    res.locals.userDocument.lastPuzzle = puzzleNumber;
 
     const updatedUser = await res.locals.userDocument.save();
     
