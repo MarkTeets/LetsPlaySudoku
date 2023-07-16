@@ -8,7 +8,6 @@ import PuzzleContainer from './components/PuzzleContainer';
 // Context
 import { userContext } from '../../context';
 
-
 export const PuzzlePageTest = () => {
   const navigate = useNavigate();
   const puzzleData = useLoaderData();
@@ -20,7 +19,7 @@ export const PuzzlePageTest = () => {
 
   // For tracking renders:
   // const renderCount = useRef(1);
-  
+
   useEffect(() => {
     if (!user) {
       console.log('Navigated from PuzzlePage back to home page due to lack of user');
@@ -44,38 +43,27 @@ export const PuzzlePageTest = () => {
   //   renderCount.current += 1;
   // });
 
-  //onInputChange is fired every time there's an onChange event in an individual square. 
+  //onInputChange is fired every time there's an onChange event in an individual square.
   // It updates the state of allSquares based on the inidividual square that's been updated.
   const onInputChange = (id, newVal) => {
     setAllSquares(newAllSquares(allSquares, id, newVal));
   };
 
-
   return (
     <div id='puzzle-page-container'>
       <h2>Test page</h2>
-      <PuzzleContainer key='PuzzleContainer' allSquares={allSquares} onInputChange={onInputChange} />
+      <PuzzleContainer
+        key='PuzzleContainer'
+        allSquares={allSquares}
+        onInputChange={onInputChange}
+      />
       <div className='button-container'>
-        <button
-          onClick={() => {
-            alert('Save feature is currently being built');
-          }}
-        >
-          Save
-        </button>
         <button
           onClick={() => {
             setAllSquares(initialAllSquares);
           }}
         >
           Reset
-        </button>
-        <button
-          onClick={() => {
-            alert('Game Data feature is currently being built');
-          }}
-        >
-          Game Data
         </button>
       </div>
     </div>
@@ -84,13 +72,16 @@ export const PuzzlePageTest = () => {
 
 // Loader functions
 // export const puzzleLoader = async ({ params }) => {
+// typescript
+// export const puzzleLoader = async ({ params } : { params: MyParams }) => {
 //   const res = await fetch(`/api/puzzle/${params.puzzleNumber}`);
 //   return res.json();
 // };
 
-const samplePuzzle1 = '070000043040009610800634900094052000358460020000800530080070091902100005007040802';
-const samplePuzzle2 = '679518243543729618821634957794352186358461729216897534485276391962183475137945860';
-const sampleSolution1 = '679518243543729618821634957794352186358461729216897534485276391962183475137945862';
+const samplePuzzle1 =
+  '070000043040009610800634900094052000358460020000800530080070091902100005007040802';
+// const samplePuzzle2 = '679518243543729618821634957794352186358461729216897534485276391962183475137945860';
+// const sampleSolution1 = '679518243543729618821634957794352186358461729216897534485276391962183475137945862';
 
 export const puzzleTestLoader = () => {
   return { puzzle: samplePuzzle1 };
