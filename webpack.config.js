@@ -1,27 +1,25 @@
 const path = require('path');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
 
-
 module.exports = {
-
-  entry: './src/client/index.js', 
+  entry: './src/client/index.tsx',
 
   output: {
     path: path.join(__dirname, '/dist'),
     filename: 'bundle.js',
-    publicPath: '/'
+    publicPath: '/',
   },
 
   plugins: [
     new HTMLWebpackPlugin({
-      template: './src/client/index.html'
+      template: './src/client/index.html',
     }),
   ],
 
   devServer: {
     // host: 'localhost',
     port: 8080,
-   
+
     static: {
       // match the output path
       directory: path.join(__dirname, '/dist'),
@@ -38,7 +36,7 @@ module.exports = {
     // for react router
     historyApiFallback: true,
   },
-  
+
   mode: process.env.NODE_ENV,
 
   module: {
@@ -49,9 +47,14 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['@babel/preset-env', '@babel/preset-react']
-          }
-        }
+            presets: ['@babel/preset-env', '@babel/preset-react'],
+          },
+        },
+      },
+      {
+        test: /\.tsx?/,
+        exclude: /node_modules/,
+        use: ['ts-loader'],
       },
       {
         test: /.(css|s[ac]ss)$/i,
@@ -67,10 +70,10 @@ module.exports = {
       {
         test: /\.(png|jpe?g|gif)$/i,
         loader: 'file-loader',
-      }
-    ]
+      },
+    ],
   },
   resolve: {
-    extensions: ['.js', '.jsx']
-  }
+    extensions: ['.js', '.jsx', '.ts', '.tsx'],
+  },
 };
