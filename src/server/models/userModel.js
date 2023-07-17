@@ -5,16 +5,15 @@ const userSchema = new Schema({
   username: { type: String, unique: true, required: true },
   password: { type: String, required: true },
   displayName: { type: String, required: true },
-  lastPuzzle: {type: Number, default: 0},
+  lastPuzzle: { type: Number, default: 0 },
   allPuzzles: [
     {
       puzzleNumber: Number,
-      progress: String,
+      progress: String
     }
   ]
 });
 
 const User = mongoose.model('users', userSchema);
-
 
 module.exports = User;

@@ -3,7 +3,6 @@ const puzzleRouter = express.Router();
 const userController = require('../controllers/userController');
 const puzzleController = require('../controllers/puzzleController');
 
-
 puzzleRouter.get('/:puzzleNumber',
   puzzleController.getPuzzleByNumber,
   (req, res) => {
@@ -25,6 +24,5 @@ puzzleRouter.post('/get-next-puzzle-for-guest',
     res.status(200).json(res.locals.frontendData);
   }
 );
-
 
 module.exports = puzzleRouter;

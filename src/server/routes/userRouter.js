@@ -6,7 +6,6 @@ const puzzleController = require('../controllers/puzzleController');
 const cookieController = require('../controllers/cookieController');
 const sessionController = require('../controllers/sessionController');
 
-
 userRouter.post('/signup',
   userController.getUser,
   userController.createUser,
@@ -41,11 +40,9 @@ userRouter.get('/resume-session',
   }
 );
 
-userRouter.get('/no-session',
-  (req, res) => {
-    res.status(200).json({status: 'noSession'});
-  }
-);
+userRouter.get('/no-session', (req, res) => {
+  res.status(200).json({ status: 'noSession' });
+});
 
 userRouter.delete('/delete-session',
   userController.getUser,
@@ -63,6 +60,5 @@ userRouter.post('/save-puzzle',
     res.status(200).json(res.locals.frontendData);
   }
 );
-
 
 module.exports = userRouter;

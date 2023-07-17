@@ -2,10 +2,10 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 /**
-* `createdAt` uses's Mongo's automatic document expiration service via the `expires` property.
-* This automatically be removes the session after the given time in seconds.
-* 1 week = 604800 seconds
-*/
+ * `createdAt` uses's Mongo's automatic document expiration service via the `expires` property.
+ * This automatically be removes the session after the given time in seconds.
+ * 1 week = 604800 seconds
+ */
 
 const sessionSchema = new Schema({
   cookieId: { type: String, required: true, unique: true },

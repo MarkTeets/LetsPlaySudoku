@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-// Each puzzle document will include the following details. The names of different techniques denotes if said technique is required to 
-// solve the puzzle
+// Each puzzle document will include the following details. The names of different techniques denotes
+// if said technique is required to solve the puzzle
 
 const puzzleSchema = new Schema({
   puzzleNumber: Number,
@@ -79,6 +79,5 @@ const puzzleSchema = new Schema({
 });
 
 const Puzzle = mongoose.model('puzzles', puzzleSchema);
-
 
 module.exports = Puzzle;
