@@ -5,7 +5,7 @@
     "es2021": true,
     "node": true
   },
-  "plugins": ["import", "react", "jsx-a11y", "react-hooks", "@typescript-eslint"],
+  "plugins": ["import", "react", "jsx-a11y", "react-hooks", "@typescript-eslint", "prettier"],
   "extends": [
     "eslint:recommended",
     "plugin:import/errors",
@@ -13,7 +13,8 @@
     "plugin:jsx-a11y/recommended",
     "plugin:react-hooks/recommended",
     "plugin:@typescript-eslint/eslint-recommended",
-    "plugin:@typescript-eslint/recommended"
+    "plugin:@typescript-eslint/recommended",
+    "prettier"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -35,7 +36,8 @@
     "react-hooks/exhaustive-deps": "off",
     "react/jsx-pascal-case": 2,
     "@typescript-eslint/no-var-requires": "off",
-    "@typescript-eslint/no-unused-vars": "off"
+    "@typescript-eslint/no-unused-vars": "off",
+    "prettier/prettier": 1
   },
   "settings": {
     "react": {
