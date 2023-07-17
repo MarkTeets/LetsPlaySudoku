@@ -13,7 +13,7 @@ import {
   PuzzleCollectionContextValue,
   PageContextValue,
   SignInData,
-  SignInResponse,
+  SignInResponse
 } from '../../../types';
 
 const Login = () => {
@@ -35,7 +35,7 @@ const Login = () => {
         setUser,
         sessionData.puzzleCollection,
         setPuzzleCollection,
-        pageInfo,
+        pageInfo
       );
     }
   }, []);
@@ -55,7 +55,7 @@ const Login = () => {
         setUser,
         newLoginData.puzzleCollection,
         setPuzzleCollection,
-        pageInfo,
+        pageInfo
       );
     }
   }, [newLoginData]);
@@ -107,8 +107,8 @@ export const loginAction = async ({ request }: { request: Request }): Promise<Si
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       username: loginInfo.get('username'),
-      password: loginInfo.get('password'),
-    }),
+      password: loginInfo.get('password')
+    })
   });
 
   // If the response status isn't in 200s, direct user to error component
@@ -123,7 +123,7 @@ export const loginAction = async ({ request }: { request: Request }): Promise<Si
     // console.log('Login was successful!');
     return {
       user: response.user,
-      puzzleCollection: response.puzzleCollection,
+      puzzleCollection: response.puzzleCollection
     };
   }
 
@@ -134,7 +134,7 @@ export const loginAction = async ({ request }: { request: Request }): Promise<Si
 
   // Included for dev testing, only appears if response.status string in the frontend and backend are misaligned
   return {
-    error: `The status "${response.status}" sent in the response doesn't match the valid cases`,
+    error: `The status "${response.status}" sent in the response doesn't match the valid cases`
   };
 };
 
@@ -149,7 +149,7 @@ function populateContext(
   setUser: SetUser,
   newPuzzleCollection: PuzzleCollection,
   setPuzzleCollection: SetPuzzleCollection,
-  pageInfo: PageInfo,
+  pageInfo: PageInfo
 ) {
   setUser(newUser);
   setPuzzleCollection(newPuzzleCollection);

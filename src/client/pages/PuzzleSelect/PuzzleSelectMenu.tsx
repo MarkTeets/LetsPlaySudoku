@@ -3,12 +3,26 @@ import { useNavigate } from 'react-router-dom';
 import { userContext, puzzleCollectionContext } from '../../context';
 import { totalPuzzles } from '../../../globalUtils/totalPuzzles.mjs';
 
+// Types
+import {
+  User,
+  SetUser,
+  Puzzle,
+  PuzzleCollection,
+  SetPuzzleCollection,
+  UserContextValue,
+  PuzzleCollectionContextValue,
+  QueryStatus,
+  BackendPuzzleResponse
+} from '../../../types';
+
 const PuzzleSelectMenu = () => {
   const navigate = useNavigate();
-  const { user, setUser } = useContext(userContext);
-  const { puzzleCollection, setPuzzleCollection } = useContext(puzzleCollectionContext);
+  const { user, setUser } = useContext<UserContextValue>(userContext);
+  const { puzzleCollection, setPuzzleCollection } =
+    useContext<PuzzleCollectionContextValue>(puzzleCollectionContext);
   const [puzzleNumString, setPuzzleNumString] = useState('');
-  const [puzzleSelected, setPuzzleSelected] = useState(false);
+  const [puzzleSelected, setPuzzleSelected] = useState<boolean>(false);
 
   useEffect(() => {
     if (!user) {
@@ -46,7 +60,7 @@ const PuzzleSelectMenu = () => {
         return;
       }
 
-      const { puzzleObj: fetchedPuzzleData, status } = await res.json();
+      const { status, puzzleObj: fetchedPuzzleData }: BackendPuzzleResponse = await res.json();
 
       // if the status is anything other than valid, alert specific string and exit method without adding to user or puzzle collection
       if (!isValidStatus(status)) return;
@@ -176,11 +190,10 @@ export default PuzzleSelectMenu;
  * Takes a status string from the backend and generates appropriate alerts for invalid statuses.
  * Returns true for 'valid' status, otherwise returns false.
  *
- * @param {String} status
+ * @param status - string from backend
  * @returns boolean
  */
-
-function isValidStatus(status) {
+function isValidStatus(status: QueryStatus): boolean {
   if (status === 'valid') return true;
 
   if (status === 'allPuzzlesPlayed') {
@@ -195,15 +208,14 @@ function isValidStatus(status) {
   return false;
 }
 
-/** isValidPuzzleNumber
+/**isValidPuzzleNumber
  *
  * Checks to see if the given input is a valid puzzle number based on the total number of puzzles in the database
  *
- * @param {Number} puzzleNumber
+ * @param puzzleNumber - number entered by the user
  * @returns boolean
  */
-
-export function isValidPuzzleNumber(puzzleNumber) {
+export function isValidPuzzleNumber(puzzleNumber: number): boolean {
   if (!Number.isInteger(puzzleNumber) || puzzleNumber < 1 || puzzleNumber > totalPuzzles) {
     alert(`Please enter a number from 1 to ${totalPuzzles}.`);
     return false;
@@ -212,25 +224,25 @@ export function isValidPuzzleNumber(puzzleNumber) {
   return true;
 }
 
-/** addPuzzleToUserAndCollection
+/**addPuzzleToUserAndCollection
  *
  * Takes a puzzle document from the database's puzzles collection and adds it to the user's allPuzzles object and to
  * the puzzleCollection without mutating existing state. This makes it available for use when rendering the PuzzlePage component.
  *
- * @param {Number} puzzleNumber
- * @param {Object} fetchedPuzzleData - puzzle document from the database's puzzles collection
- * @param {Object} user - Global context object, holds username, displayName, and allPuzzles object which holds a user's progress on each puzzle they've saved
- * @param {Function} setUser - Function for setting global user object
- * @param {Object} puzzleCollection - Global context object, holds information for each puzzle
- * @param {Function} setPuzzleCollection - Function for setting global puzzleCollection object
+ * @param puzzleNumber
+ * @param fetchedPuzzleData - puzzle document from the database's puzzles collection
+ * @param user - Global context object, holds username, displayName, and allPuzzles object which holds a user's progress on each puzzle they've saved
+ * @param setUser - Function for setting global user object
+ * @param puzzleCollection - Global context object, holds information for each puzzle
+ * @param setPuzzleCollection - Function for setting global puzzleCollection object
  */
 function addPuzzleToUserAndCollection(
-  puzzleNumber,
-  fetchedPuzzleData,
-  user,
-  setUser,
-  puzzleCollection,
-  setPuzzleCollection
+  puzzleNumber: number,
+  fetchedPuzzleData: Puzzle,
+  user: User,
+  setUser: SetUser,
+  puzzleCollection: PuzzleCollection,
+  setPuzzleCollection: SetPuzzleCollection
 ) {
   const newUser = {
     ...user,
@@ -252,9 +264,9 @@ function addPuzzleToUserAndCollection(
   // Check to see if the puzzle is already in the puzzleCollection just in case they switched users and it's already there
   // If it's not there, add it
   if (!puzzleCollection[puzzleNumber]) {
-    const newPuzzleCollection = {};
+    const newPuzzleCollection = { ...puzzleCollection };
     for (const [number, puzzleObject] of Object.entries(puzzleCollection)) {
-      newPuzzleCollection[number] = puzzleObject;
+      newPuzzleCollection[Number(number)] = { ...puzzleObject };
     }
     newPuzzleCollection[puzzleNumber] = fetchedPuzzleData;
     setPuzzleCollection(newPuzzleCollection);

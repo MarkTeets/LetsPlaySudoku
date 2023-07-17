@@ -71,7 +71,7 @@ export const signUpAction = async ({ request }: { request: Request }): Promise<S
   const body = {
     username: submitData.get('username'),
     password: submitData.get('password'),
-    displayName: submitData.get('displayName'),
+    displayName: submitData.get('displayName')
   };
 
   if (body.displayName.length === 0) {
@@ -81,7 +81,7 @@ export const signUpAction = async ({ request }: { request: Request }): Promise<S
   const res: Response = await fetch('/api/user/signup', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
+    body: JSON.stringify(body)
   });
 
   // If the response status isn't in 200s, direct user to error component
@@ -95,7 +95,7 @@ export const signUpAction = async ({ request }: { request: Request }): Promise<S
   if (response.status === 'valid') {
     // console.log('Signup was successful!');
     return {
-      user: response.user,
+      user: response.user
     };
   }
 
@@ -105,7 +105,7 @@ export const signUpAction = async ({ request }: { request: Request }): Promise<S
   }
   // Included for dev testing, only appears if response.status string in the frontend and backend are misaligned
   return {
-    error: `The status "${response.status}" sent in the response doesn't match the valid cases.`,
+    error: `The status "${response.status}" sent in the response doesn't match the valid cases.`
   };
 };
 

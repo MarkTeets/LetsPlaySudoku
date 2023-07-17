@@ -3,7 +3,7 @@ import {
   createBrowserRouter,
   createRoutesFromElements,
   RouterProvider,
-  Route,
+  Route
 } from 'react-router-dom';
 
 // Styles
@@ -20,7 +20,7 @@ import SignUp, { signUpAction } from './pages/Welcome/SignUp';
 import Login, { loginAction, sessionLoader } from './pages/Welcome/Login';
 import PuzzleSelectMenu from './pages/PuzzleSelect/PuzzleSelectMenu';
 import SavedPuzzleSelect from './pages/PuzzleSelect/SavedPuzzleSelect';
-import PuzzleSelectViaFilters from './pages/PuzzleSelect/PuzzleSelectViaFilters';
+// import PuzzleSelectViaFilters from './pages/PuzzleSelect/PuzzleSelectViaFilters';
 import PuzzlePage from './pages/Puzzle/PuzzlePage';
 // import { PuzzlePageTest, puzzleTestLoader } from './pages/Puzzle/PuzzlePageTest';
 import NotFound from './pages/NotFound';
@@ -57,10 +57,10 @@ const router = createBrowserRouter(
       <Route path=':username' element={<UserLayout />}>
         <Route index element={<PuzzleSelectMenu key='PuzzleSelectMenu' />} />
         <Route path='savedPuzzleSelect' element={<SavedPuzzleSelect key='SavedPuzzleSelect' />} />
-        <Route
+        {/* <Route
           path='puzzleSelectViaFilters'
           element={<PuzzleSelectViaFilters key='PuzzleSelectViaFilters' />}
-        />
+        /> */}
         {/* <Route
           path='playTest'
           element={<PuzzlePageTest key='PuzzlePageTest' />}
@@ -70,8 +70,8 @@ const router = createBrowserRouter(
       </Route>
 
       <Route path='*' element={<NotFound />} />
-    </Route>,
-  ),
+    </Route>
+  )
 );
 
 const App = (): JSX.Element => {

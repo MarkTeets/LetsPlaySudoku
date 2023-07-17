@@ -138,29 +138,31 @@ export type UserContextValue = {
   setUser: SetUser;
 };
 
+export type Puzzle = {
+  puzzleNumber: number;
+  puzzle: string;
+  solution: string;
+  difficultyString: string;
+  difficultyScore: number;
+  uniqueSolution: boolean;
+  singleCandidate: boolean;
+  singlePosition: boolean;
+  candidateLines: boolean;
+  doublePairs: boolean;
+  multipleLines: boolean;
+  nakedPair: boolean;
+  hiddenPair: boolean;
+  nakedTriple: boolean;
+  hiddenTriple: boolean;
+  xWing: boolean;
+  forcingChains: boolean;
+  nakedQuad: boolean;
+  hiddenQuad: boolean;
+  swordfish: boolean;
+};
+
 export type PuzzleCollection = {
-  [key: number]: {
-    puzzleNumber: number;
-    puzzle: string;
-    solution: string;
-    difficultyString: string;
-    difficultyScore: number;
-    uniqueSolution: boolean;
-    singleCandidate: boolean;
-    singlePosition: boolean;
-    candidateLines: boolean;
-    doublePairs: boolean;
-    multipleLines: boolean;
-    nakedPair: boolean;
-    hiddenPair: boolean;
-    nakedTriple: boolean;
-    hiddenTriple: boolean;
-    xWing: boolean;
-    forcingChains: boolean;
-    nakedQuad: boolean;
-    hiddenQuad: boolean;
-    swordfish: boolean;
-  };
+  [key: number]: Puzzle;
 };
 
 export type SetPuzzleCollection = Dispatch<SetStateAction<PuzzleCollection>>;
@@ -182,10 +184,20 @@ export type SignInData = {
   error?: string;
 };
 
-type QueryStatus = 'valid' | 'userNameExists' | 'incorrectPassword' | 'userNotFound';
+export type QueryStatus =
+  | 'valid'
+  | 'userNameExists'
+  | 'incorrectPassword'
+  | 'userNotFound'
+  | 'allPuzzlesPlayed';
 
 export type SignInResponse = {
   status: QueryStatus;
   user?: User;
   puzzleCollection?: PuzzleCollection;
+};
+
+export type BackendPuzzleResponse = {
+  status: QueryStatus;
+  puzzleObj: Puzzle;
 };
