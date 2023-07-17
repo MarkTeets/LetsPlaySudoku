@@ -4,14 +4,13 @@ import { Link, useNavigate } from 'react-router-dom';
 // Contexts
 import { userContext } from '../../context';
 
-
 const SavedPuzzleSelect = () => {
   const navigate = useNavigate();
   const { user } = useContext(userContext);
 
   useEffect(() => {
     if (!user) {
-      console.log('Navigated from SavedPuzzleSelect back to home page due to lack of user');
+      // console.log('Navigated from SavedPuzzleSelect back to home page due to lack of user');
       navigate('/');
     }
   }, []);
@@ -31,10 +30,10 @@ export default SavedPuzzleSelect;
 
 const createPuzzleLinks = (user) => {
   const puzzleNumbers = Object.keys(user.allPuzzles);
-  
+
   puzzleNumbers.sort((a, b) => a - b);
 
-  return puzzleNumbers.map(puzzleNumber => {
+  return puzzleNumbers.map((puzzleNumber) => {
     return (
       <div className='saved-puzzle-link-div' key={`saved-puzzle-${puzzleNumber}-link-div`}>
         <Link

@@ -31,7 +31,7 @@ function generateBoxes(allSquares, onInputChange) {
     squareIdArr.forEach((squareId) => boxUnit.push(allSquares[squareId]));
     //push <BoxUnitContainer/> with unitBox prop drilled to boxUnitContainer
     boxUnitContainers.push(
-      <BoxUnitContainer key={`BoxUnit-${i + 1}`} boxUnit={boxUnit} onInputChange={onInputChange} />,
+      <BoxUnitContainer key={`BoxUnit-${i + 1}`} boxUnit={boxUnit} onInputChange={onInputChange} />
     );
   });
 

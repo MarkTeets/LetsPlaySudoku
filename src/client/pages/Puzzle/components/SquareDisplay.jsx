@@ -5,9 +5,9 @@ const numStringRegex = /[0123456789]/;
 const SquareDisplay = ({ square, squareClassByLocation, onInputChange }) => {
   const { id, displayVal } = square;
 
-  const [currentVal, setCurrentVal] = useState(displayVal === '0'? '' : displayVal);
+  const [currentVal, setCurrentVal] = useState(displayVal === '0' ? '' : displayVal);
 
-  // This useEffect will make sure that when the reset button is clicked, boxes that were 
+  // This useEffect will make sure that when the reset button is clicked, boxes that were
   // originally empty will be updated. Without this useEffect, currentVal state was persisting
   useEffect(() => {
     if (displayVal === '0' && currentVal !== '') {
@@ -35,28 +35,43 @@ const SquareDisplay = ({ square, squareClassByLocation, onInputChange }) => {
     }
   };
 
-  return (
-    inputMaker(square, currentVal, squareClassByLocation, handleValueChange)
-  );
+  return inputMaker(square, currentVal, squareClassByLocation, handleValueChange);
 };
 
 export default SquareDisplay;
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 
-
 function inputMaker(square, currentVal, squareClassByLocation, handleValueChange) {
   const { id, displayVal, duplicate, fixedVal } = square;
   let classes = `square-display _${displayVal} ${squareClassByLocation}`;
 
   if (duplicate) classes += ' duplicate-number';
-    
+
   if (fixedVal) {
-    return <input key={`Input-${id}`} type="text" className={classes} id={id} value={displayVal} disabled />;
+    return (
+      <input
+        key={`Input-${id}`}
+        type='text'
+        className={classes}
+        id={id}
+        value={displayVal}
+        disabled
+      />
+    );
   }
-  return <input key={`Input-${id}`} type="text" className={classes} id={id} maxLength={1} value={currentVal} onChange={(e) => handleValueChange(e)} />;
+  return (
+    <input
+      key={`Input-${id}`}
+      type='text'
+      className={classes}
+      id={id}
+      maxLength={1}
+      value={currentVal}
+      onChange={(e) => handleValueChange(e)}
+    />
+  );
 }
-  
 
 /* 
 So I originally had the number disappear every time you clicked into a non-fixed box, but

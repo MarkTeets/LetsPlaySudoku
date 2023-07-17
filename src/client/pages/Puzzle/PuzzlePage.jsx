@@ -11,7 +11,7 @@ import {
   newAllSquares,
   isPuzzleFinished,
   createProgressString,
-  updateSquaresFromProgress,
+  updateSquaresFromProgress
 } from '../../utils/squares';
 const savePuzzle = savePuzzleAtLeastOnce();
 
@@ -24,7 +24,7 @@ const PuzzlePage = () => {
   // This implementation will calculate the initialState the first time the page loads, and then each
   // time reset is pressed it will skip recaluclating and just use the initialAllSquares value
   const [initialAllSquares, setInitialSquares] = useState(
-    createNewSquares(puzzleCollection[puzzleNumber]?.puzzle),
+    createNewSquares(puzzleCollection[puzzleNumber]?.puzzle)
   );
 
   // The firstAllSquares function compares the original puzzle string to a user's progress string.
@@ -33,7 +33,7 @@ const PuzzlePage = () => {
   // By doing it in a two step process, every non-zero display value in the initialAllSquares object will have a
   // true "fixedVal" property, and any updates from the progress string don't.
   const [allSquares, setAllSquares] = useState(
-    firstAllSquares(initialAllSquares, puzzleNumber, user, puzzleCollection),
+    firstAllSquares(initialAllSquares, puzzleNumber, user, puzzleCollection)
   );
 
   // For tracking renders:
@@ -49,7 +49,7 @@ const PuzzlePage = () => {
       if (user.lastPuzzle !== puzzleNumber) {
         setUser({
           ...user,
-          lastPuzzle: puzzleNumber,
+          lastPuzzle: puzzleNumber
         });
       }
     }
@@ -164,8 +164,8 @@ function savePuzzleAtLeastOnce() {
         body: JSON.stringify({
           username: user.username,
           puzzleNumber,
-          progress: currentProgress,
-        }),
+          progress: currentProgress
+        })
       });
 
       if (!res.ok) {
@@ -177,7 +177,7 @@ function savePuzzleAtLeastOnce() {
 
       if (status !== 'valid') {
         alert(
-          'Problem saving updated progress to user document in database (bad status), try again later',
+          'Problem saving updated progress to user document in database (bad status), try again later'
         );
         return;
       }
@@ -186,7 +186,7 @@ function savePuzzleAtLeastOnce() {
       // page and then come back the saved version of the puzzle will be shown
       const newUser = {
         ...user,
-        allPuzzles: { ...user.allPuzzles },
+        allPuzzles: { ...user.allPuzzles }
       };
 
       newUser.allPuzzles[puzzleNumber].progress = currentProgress;

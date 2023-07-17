@@ -12,7 +12,7 @@ const PuzzleSelectMenu = () => {
 
   useEffect(() => {
     if (!user) {
-      console.log('Navigated from PuzzleSelectMenu back to home page due to lack of user');
+      // console.log('Navigated from PuzzleSelectMenu back to home page due to lack of user');
       navigate('/');
     }
   }, []);
@@ -57,13 +57,13 @@ const PuzzleSelectMenu = () => {
         user,
         setUser,
         puzzleCollection,
-        setPuzzleCollection,
+        setPuzzleCollection
       );
     } else {
       if (user.lastPuzzle !== convertedPuzzleNumber) {
         setUser({
           ...user,
-          lastPuzzle: convertedPuzzleNumber,
+          lastPuzzle: convertedPuzzleNumber
         });
       }
     }
@@ -81,16 +81,16 @@ const PuzzleSelectMenu = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          allPuzzles: user.allPuzzles,
-        }),
+          allPuzzles: user.allPuzzles
+        })
       });
     } else {
       res = await fetch('/api/puzzle/get-next-puzzle-for-user', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          username: user.username,
-        }),
+          username: user.username
+        })
       });
     }
 
@@ -110,7 +110,7 @@ const PuzzleSelectMenu = () => {
       user,
       setUser,
       puzzleCollection,
-      setPuzzleCollection,
+      setPuzzleCollection
     );
 
     // Setting this to true allows the page to navigate to said puzzle on next render
@@ -187,7 +187,7 @@ function isValidStatus(status) {
     alert('All puzzles have been played, please choose a puzzle from saved puzzles');
   } else if (status === 'userNotFound') {
     alert(
-      'You must either be logged in or be a guest to play. Please start again from the home screen',
+      'You must either be logged in or be a guest to play. Please start again from the home screen'
     );
   } else {
     alert('Failed to retrieve puzzle, please try again later');
@@ -230,17 +230,17 @@ function addPuzzleToUserAndCollection(
   user,
   setUser,
   puzzleCollection,
-  setPuzzleCollection,
+  setPuzzleCollection
 ) {
   const newUser = {
     ...user,
     lastPuzzle: puzzleNumber,
-    allPuzzles: { ...user.allPuzzles },
+    allPuzzles: { ...user.allPuzzles }
   };
 
   newUser.allPuzzles[puzzleNumber] = {
     puzzleNumber,
-    progress: fetchedPuzzleData.puzzle,
+    progress: fetchedPuzzleData.puzzle
   };
 
   setUser(newUser);
