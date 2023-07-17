@@ -29,7 +29,7 @@ userController.getUser = async (req, res, next) => {
         method: 'getUser',
         overview: 'problem retrieving user from request body or userId from cookies',
         status: 400,
-        err: "username wasn't included in request body or userId wasn't included in cookies"
+        err: 'username wasn\'t included in request body or userId wasn\'t included in cookies'
       })
     );
   }
@@ -109,7 +109,7 @@ userController.createUser = async (req, res, next) => {
         method: 'createUser',
         overview: 'problem extracting username, password, or displayName from request body',
         status: 400,
-        err: "username, password, or displayName wasn't included in request body"
+        err: 'username, password, or displayName wasn\'t included in request body'
       })
     );
   }

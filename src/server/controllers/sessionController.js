@@ -78,11 +78,11 @@ sessionController.isLoggedIn = async (req, res, next) => {
 
 sessionController.logOut = async (req, res, next) => {
   try {
-    console.log(
-      'res.locals.userDocument.id',
-      res.locals.userDocument.id,
-      typeof res.locals.userDocument.id
-    );
+    // console.log(
+    //   'res.locals.userDocument.id',
+    //   res.locals.userDocument.id,
+    //   typeof res.locals.userDocument.id
+    // );
 
     if (res.locals.userDocument === null) {
       res.locals.frontendData = { status: 'userNotFound' };
@@ -90,7 +90,7 @@ sessionController.logOut = async (req, res, next) => {
     }
 
     const deletedSession = await Session.findOneAndDelete({ cookieId: res.locals.userDocument.id });
-    console.log('deletedSession', deletedSession);
+    // console.log('deletedSession', deletedSession);
     if (deletedSession === null) {
       return next(
         createErr({

@@ -15,7 +15,7 @@ import('../../globalUtils/totalPuzzles.mjs')
     // console.log('totalpuzzles from back', totalPuzzles);
   })
   .catch((err) => {
-    console.log('totalPuzzles failed to import to puzzle controller', err.message);
+    // console.log('totalPuzzles failed to import to puzzle controller', err.message);
   });
 
 const puzzleController = {};

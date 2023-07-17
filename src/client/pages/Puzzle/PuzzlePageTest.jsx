@@ -22,7 +22,7 @@ export const PuzzlePageTest = () => {
 
   useEffect(() => {
     if (!user) {
-      console.log('Navigated from PuzzlePage back to home page due to lack of user');
+      // console.log('Navigated from PuzzlePage back to home page due to lack of user');
       navigate('/');
     }
   }, []);

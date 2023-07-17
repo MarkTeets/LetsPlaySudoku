@@ -119,7 +119,7 @@ const isValidPuzzle = (puzzleString: string): boolean => {
 
   const numStringRegex = /[0123456789]/;
 
-  let result: boolean = true;
+  let result = true;
 
   for (let i = 0; i < puzzleString.length; i += 1) {
     if (!numStringRegex.test(puzzleString[i])) {
@@ -319,7 +319,7 @@ const findDuplicates = (allSquares: AllSquares): void => {
  */
 
 export const createProgressString = (allSquares: AllSquares): string => {
-  let progress: string = '';
+  let progress = '';
 
   for (const squareId of allSquareIds) {
     progress += allSquares[squareId].displayVal;

@@ -42,7 +42,7 @@ const PuzzlePage = () => {
   useEffect(() => {
     // On page refresh, user state is lost. For now, we'll avoid complications by sending a user back to the home page
     if (!user) {
-      console.log('Navigated from PuzzlePage back to home page due to lack of user');
+      // console.log('Navigated from PuzzlePage back to home page due to lack of user');
       navigate('/');
     } else {
       // If there is a user on first render, this puzzle number will be saved as their most recent puzzle for navigation purposes
