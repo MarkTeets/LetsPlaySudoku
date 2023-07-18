@@ -5,18 +5,7 @@ models.Puzzle = require('../models/puzzleModel');
 const controllerErrorMaker = require('../utils/controllerErrorMaker');
 const createErr = controllerErrorMaker('puzzleController');
 
-// Importing the totalNumber of puzzles from another file so it can be the single source of truth as this
-// also needs to be used in the frontend, which imports via ES6 syntax. This method is simpler than adding
-// "type": "module" to my package.json and removing every instance of 'require'
-let totalPuzzles;
-import('../../globalUtils/totalPuzzles.mjs')
-  .then((module) => {
-    totalPuzzles = module.totalPuzzles;
-    // console.log('totalpuzzles from back', totalPuzzles);
-  })
-  .catch((err) => {
-    // console.log('totalPuzzles failed to import to puzzle controller', err.message);
-  });
+const totalPuzzles = 501;
 
 const puzzleController = {};
 

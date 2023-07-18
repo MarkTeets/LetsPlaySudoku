@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { userContext, puzzleCollectionContext } from '../../context';
-import { totalPuzzles } from '../../../globalUtils/totalPuzzles.mjs';
+// import { totalPuzzles } from '../../../globalUtils/totalPuzzles.mts';
+const totalPuzzles = 501;
 
 // Types
 import {

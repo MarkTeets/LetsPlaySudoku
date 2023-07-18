@@ -1,5 +1,5 @@
 // import { SquareId, Square, DisplayVal } from '../../types';
-import { SquareId, Square, DisplayVal, AllPeers } from '../../types';
+import { SquareId, Square, DisplayVal, PossibleVal, AllPeers } from '../../types';
 
 /**
  * This file exports a function that when invoked, returns a new instance of an allSquares object,
@@ -86,14 +86,14 @@ const makeAllPeers = (): {
 
   return {
     allPeers,
-    boxes,
+    boxes
   };
 };
 
 //These variables are declared here to be used in the class definition to avoid recreating data
 const { allPeers, boxes } = makeAllPeers();
 export const unitBoxes = boxes;
-const numbers = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
+const numbers: PossibleVal[] = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
 /** emptyPuzzleMaker
  * @returns an empty puzzle string, comprises 81 0's
@@ -135,7 +135,7 @@ const isValidPuzzle = (puzzleString: string): boolean => {
  * numbers 0-9, 0 indicating an empty square.
  */
 
-class AllSquares {
+export class AllSquares {
   public A1: Square;
   public A2: Square;
   public A3: Square;
@@ -230,7 +230,7 @@ class AllSquares {
         duplicate: false,
         fixedVal: true,
         possibleVal: null,
-        peers: allPeers[allSquareIds[i]],
+        peers: allPeers[allSquareIds[i]]
       };
 
       if (puzzleString[i] === '0') {
@@ -263,14 +263,14 @@ export const createNewSquares = (puzzleString: string) => {
 const deepCopyAllSquares = (allSquares: AllSquares): AllSquares => {
   // Make a shallow copy of the allSquares object to maintain typescript typing
   const newAllSquareObj: AllSquares = {
-    ...allSquares,
+    ...allSquares
   };
   // Replace each square with a shallow copy of that square from allSquares, and make new
   // sets for each possibleVal Set. We don't need to deep copy peers, these won't ever change
   for (const squareId of allSquareIds) {
     newAllSquareObj[squareId] = {
       ...allSquares[squareId],
-      possibleVal: new Set(allSquares[squareId].possibleVal),
+      possibleVal: new Set(allSquares[squareId].possibleVal)
     };
   }
   return newAllSquareObj;
@@ -363,7 +363,7 @@ export const updateSquaresFromProgress = (allSquares: AllSquares, progress: stri
 export const newAllSquares = (
   allSquares: AllSquares,
   squareId: SquareId,
-  newVal: DisplayVal,
+  newVal: DisplayVal
 ): AllSquares => {
   // If the state value hasn't changed, skip the function and just return the original object
   if (allSquares[squareId].displayVal === newVal) {

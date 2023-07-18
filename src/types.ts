@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction, ChangeEvent } from 'react';
 
 // Using 'type' rather than 'interface' as the definition of the type shows up clearer on hover over, and I don't need
 // to extend/expand the defintion of any of theses objects in the code (the main reason for using interfaces)
@@ -88,6 +88,10 @@ export type SquareId =
 
 export type DisplayVal = '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9';
 
+export type CurrentVal = '' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9';
+
+export type PossibleVal = '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9';
+
 export type AllPeers = {
   [key: string]: Set<SquareId>;
 };
@@ -97,7 +101,7 @@ export type Square = {
   displayVal: DisplayVal;
   duplicate: boolean;
   fixedVal: boolean;
-  possibleVal: Set<string> | null;
+  possibleVal: Set<PossibleVal> | null;
   peers: Set<SquareId>;
 };
 
@@ -201,3 +205,7 @@ export type BackendPuzzleResponse = {
   status: QueryStatus;
   puzzleObj: Puzzle;
 };
+
+export type OnInputChange = (id: SquareId, newVal: DisplayVal) => void;
+
+export type HandleValueChange = (e: ChangeEvent<HTMLInputElement>) => void;

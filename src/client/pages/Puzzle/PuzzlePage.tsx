@@ -13,17 +13,29 @@ import {
   createProgressString,
   updateSquaresFromProgress
 } from '../../utils/squares';
+
+// Types
+import { AllSquares } from '../../utils/squares';
+import {
+  User,
+  PuzzleCollection,
+  SetUser,
+  UserContextValue,
+  PuzzleCollectionContextValue,
+  OnInputChange
+} from '../../../types';
+
 const savePuzzle = savePuzzleAtLeastOnce();
 
 const PuzzlePage = () => {
   const navigate = useNavigate();
   const puzzleNumber = Number(useParams().puzzleNumber);
-  const { user, setUser } = useContext(userContext);
-  const { puzzleCollection } = useContext(puzzleCollectionContext);
+  const { user, setUser } = useContext<UserContextValue>(userContext);
+  const { puzzleCollection } = useContext<PuzzleCollectionContextValue>(puzzleCollectionContext);
 
   // This implementation will calculate the initialState the first time the page loads, and then each
   // time reset is pressed it will skip recaluclating and just use the initialAllSquares value
-  const [initialAllSquares, setInitialSquares] = useState(
+  const [initialAllSquares, setInitialSquares] = useState<AllSquares>(
     createNewSquares(puzzleCollection[puzzleNumber]?.puzzle)
   );
 
@@ -32,7 +44,7 @@ const PuzzlePage = () => {
   // If they're different, it returns a deepCopy of the the initialAllSquares object with updated displayVals
   // By doing it in a two step process, every non-zero display value in the initialAllSquares object will have a
   // true "fixedVal" property, and any updates from the progress string don't.
-  const [allSquares, setAllSquares] = useState(
+  const [allSquares, setAllSquares] = useState<AllSquares>(
     firstAllSquares(initialAllSquares, puzzleNumber, user, puzzleCollection)
   );
 
@@ -74,11 +86,12 @@ const PuzzlePage = () => {
 
   // onInputChange is fired every time there's an onChange event in an individual square.
   // It updates the state of allSquares based on the inidividual square that's been updated.
-  const onInputChange = (id, newVal) => {
+  // const onInputChange: OnInputChange = (id: SquareId, newVal: DisplayVal): void => {
+  const onInputChange: OnInputChange = (id, newVal) => {
     setAllSquares(newAllSquares(allSquares, id, newVal));
   };
 
-  const resetPuzzle = () => {
+  const resetPuzzle = (): void => {
     setAllSquares(initialAllSquares);
   };
 
@@ -105,6 +118,7 @@ export default PuzzlePage;
 //---- HELPER FUNCTIONS --------------------------------------------------------------------------------------------------------------
 
 /** firstAllSquares
+ *
  * When the page first loads, the original puzzle needs to be used to make the initialAllSquares object to make sure the correct numbers
  * are given the fixedVal = true property. However, the puzzle also needs to be consistent with updated values from the user's progress string.
  *
@@ -112,13 +126,18 @@ export default PuzzlePage;
  * the initialAllSquares object is returned with no need for additional work. If there are differences, this function returns a deep copy
  * of the initialAllSquares object with the displayVal's updated to be consistent with the user's progress string.
  *
- * @param {Object} initialAllSquares
- * @param {Number} puzzleNumber
- * @param {Object} user
- * @param {Object} puzzleCollection
+ * @param initialAllSquares
+ * @param puzzleNumber
+ * @param user
+ * @param puzzleCollection
  * @returns an allSquares object
  */
-function firstAllSquares(initialAllSquares, puzzleNumber, user, puzzleCollection) {
+function firstAllSquares(
+  initialAllSquares: AllSquares,
+  puzzleNumber: number,
+  user: User,
+  puzzleCollection: PuzzleCollection
+) {
   // Check to see if the original puzzle and the user's progress on it are the same
   // If so, just return the initialAllSquares object made from the original puzzle
   if (!user || user.allPuzzles[puzzleNumber].progress === puzzleCollection[puzzleNumber].puzzle) {
@@ -142,7 +161,7 @@ function firstAllSquares(initialAllSquares, puzzleNumber, user, puzzleCollection
 function savePuzzleAtLeastOnce() {
   let firstSave = true;
 
-  return async (puzzleNumber, allSquares, user, setUser) => {
+  return async (puzzleNumber: number, allSquares: AllSquares, user: User, setUser: SetUser) => {
     // Don't allow a guest to save
     if (user.username === 'guest') {
       alert('Please sign up for a free account to save');
