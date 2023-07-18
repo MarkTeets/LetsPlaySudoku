@@ -25,10 +25,7 @@
   },
   "rules": {
     "no-unused-vars": ["off", { "vars": "local" }],
-    "indent": ["warn", 2],
-    "quotes": ["warn", "single"],
     "prefer-const": "warn",
-    "semi": ["warn", "always"],
     "no-console": "warn",
     "react/prefer-stateless-function": "warn",
     "react/prop-types": "off",
@@ -44,5 +41,6 @@
       "version": "detect"
     },
     "import/resolver": "webpack"
-  }
+  },
+  "ignorePatterns":["node_modules", "dist", "data"]
 }
