@@ -201,7 +201,7 @@ export type SignInResponse = {
   puzzleCollection?: PuzzleCollection;
 };
 
-export type BackendPuzzleResponse = {
+export type PuzzleResponse = {
   status: QueryStatus;
   puzzleObj: Puzzle;
 };

@@ -1,15 +1,14 @@
-const express = require('express');
-const app = express();
-const cookieParser = require('cookie-parser');
-const PORT = 3000;
+import express from 'express';
+import cookieParser from 'cookie-parser';
+import mongoose from 'mongoose';
+import usersRouter from './routes/userRouter';
+import puzzleRouter from './routes/puzzleRouter';
 
-const mongoose = require('mongoose');
+const app = express();
+const PORT = 3000;
 
 // const dotenv = require('dotenv');
 // dotenv.config();
-
-const usersRouter = require('./routes/userRouter');
-const puzzleRouter = require('./routes/puzzleRouter');
 
 // Allow guests to access database for now
 const MONGO_URI =

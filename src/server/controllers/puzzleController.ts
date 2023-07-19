@@ -1,19 +1,23 @@
-const models = {};
-models.Puzzle = require('../models/puzzleModel');
+// Models
+import Puzzle from '../models/puzzleModel';
+const models = { Puzzle };
+
+// Types
+import { RequestHandler } from 'express';
+import { PuzzleController, CustomErrorGenerator } from '../backendTypes';
 
 // Helper function: createErr will return an object formatted for the global error handler
-const controllerErrorMaker = require('../utils/controllerErrorMaker');
-const createErr = controllerErrorMaker('puzzleController');
+import controllerErrorMaker from '../utils/controllerErrorMaker';
+const createErr: CustomErrorGenerator = controllerErrorMaker('puzzleController');
 
-const totalPuzzles = 501;
-
-const puzzleController = {};
+// Global Variables
+import totalPuzzles from '../../globalUtils/totalPuzzles';
 
 //---GET PUZZLE BY NUMBER---------------------------------------------------------------------------------------------------
 
 // Given a puzzleNumber, retrieve associated puzzle from the database and return it as a json
 
-puzzleController.getPuzzleByNumber = async (req, res, next) => {
+const getPuzzleByNumber: RequestHandler = async (req, res, next) => {
   try {
     const { puzzleNumber } = req.params;
     // console.log('puzzleNumber:', puzzleNumber);
@@ -64,7 +68,7 @@ puzzleController.getPuzzleByNumber = async (req, res, next) => {
 // Given a frontendData object on res.locals from userController.verifyLogin, this function will return all of the puzzle details
 // for each puzzle in the frontendData user's allPuzzles
 
-puzzleController.getUserPuzzles = async (req, res, next) => {
+const getUserPuzzles: RequestHandler = async (req, res, next) => {
   // The login page already handles the "userNotFound" case, so I don't need to do anything else
   if (res.locals.status !== 'validUser' || !res.locals.userDocument) {
     return next();
@@ -109,7 +113,7 @@ puzzleController.getUserPuzzles = async (req, res, next) => {
 // There are two different ways to get the info for guests vs users as a user's allPuzzles array might be large, and eventually it'll be
 // cached for fast retrieval
 
-puzzleController.getNextPuzzle = async (req, res, next) => {
+const getNextPuzzle: RequestHandler = async (req, res, next) => {
   const { username, allPuzzles } = req.body;
 
   // Set nextPuzzleNum to null. It'll be reassigned if a valid puzzle is found
@@ -163,8 +167,14 @@ puzzleController.getNextPuzzle = async (req, res, next) => {
 };
 
 //---GET PUZZLE WITH FILTERS ------------------------------------------------------------------------------------------------------------------
-// puzzleController.getPuzzleWithFilters = async (req, res, next) => {
+// const getPuzzleWithFilters: RequestHandler = async (req, res, next) => {
 
 // };
 
-module.exports = puzzleController;
+const puzzleController: PuzzleController = {
+  getPuzzleByNumber,
+  getUserPuzzles,
+  getNextPuzzle
+};
+
+export default puzzleController;

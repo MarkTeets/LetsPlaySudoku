@@ -7,13 +7,13 @@ module.exports = {
   output: {
     path: path.join(__dirname, '/dist'),
     filename: 'bundle.js',
-    publicPath: '/',
+    publicPath: '/'
   },
 
   plugins: [
     new HTMLWebpackPlugin({
-      template: './src/client/index.html',
-    }),
+      template: './src/client/index.html'
+    })
   ],
 
   devServer: {
@@ -22,7 +22,7 @@ module.exports = {
 
     static: {
       // match the output path
-      directory: path.join(__dirname, '/dist'),
+      directory: path.join(__dirname, '/dist')
     },
 
     // headers: { 'Access-Control-Allow-Origin': '*' },
@@ -30,11 +30,11 @@ module.exports = {
     proxy: {
       '/api/**': {
         target: 'http://localhost:3000/',
-        secure: false,
-      },
+        secure: false
+      }
     },
     // for react router
-    historyApiFallback: true,
+    historyApiFallback: true
   },
 
   mode: process.env.NODE_ENV,
@@ -47,14 +47,15 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['@babel/preset-env', '@babel/preset-react'],
-          },
-        },
+            presets: ['@babel/preset-env', '@babel/preset-react']
+          }
+        }
       },
       {
         test: /\.tsx?/,
         exclude: /node_modules/,
         use: ['ts-loader'],
+        type: 'javascript/auto'
       },
       {
         test: /.(css|s[ac]ss)$/i,
@@ -64,16 +65,16 @@ module.exports = {
           // Translates CSS into CommonJS
           'css-loader',
           // Compiles Sass to CSS
-          'sass-loader',
-        ],
+          'sass-loader'
+        ]
       },
       {
         test: /\.(png|jpe?g|gif)$/i,
-        loader: 'file-loader',
-      },
-    ],
+        loader: 'file-loader'
+      }
+    ]
   },
   resolve: {
-    extensions: ['.js', '.jsx', '.ts', '.tsx'],
-  },
+    extensions: ['.js', '.jsx', '.ts', '.tsx']
+  }
 };

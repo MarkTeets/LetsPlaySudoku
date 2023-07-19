@@ -1,13 +1,15 @@
-// Error generation helper function
-const controllerErrorMaker = require('../utils/controllerErrorMaker');
-const createErr = controllerErrorMaker('cookieController');
+// Types
+import { RequestHandler } from 'express';
+import { CookieController, CustomErrorGenerator } from '../backendTypes';
 
-const cookieController = {};
+// Error generation helper function
+import controllerErrorMaker from '../utils/controllerErrorMaker';
+const createErr: CustomErrorGenerator = controllerErrorMaker('cookieController');
 
 //---SET SSID COOKIE ------------------------------------------------------------------------------------------------------
 
 //ssid cookie value will be the logged in user's mongodb document id
-cookieController.setSSIDCookie = async (req, res, next) => {
+const setSSIDCookie: RequestHandler = async (req, res, next) => {
   try {
     //Extract Mongodb id from getUser middleware userDocument
     const userId = res.locals.userDocument?.id;
@@ -37,4 +39,6 @@ cookieController.setSSIDCookie = async (req, res, next) => {
   }
 };
 
-module.exports = cookieController;
+const cookieController: CookieController = { setSSIDCookie };
+
+export default cookieController;

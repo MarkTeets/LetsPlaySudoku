@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { userContext, puzzleCollectionContext } from '../../context';
-// import { totalPuzzles } from '../../../globalUtils/totalPuzzles.mts';
-const totalPuzzles = 501;
+import totalPuzzles from '../../../globalUtils/totalPuzzles';
 
 // Types
 import {
@@ -14,7 +13,7 @@ import {
   UserContextValue,
   PuzzleCollectionContextValue,
   QueryStatus,
-  BackendPuzzleResponse
+  PuzzleResponse
 } from '../../../types';
 
 const PuzzleSelectMenu = () => {
@@ -61,7 +60,7 @@ const PuzzleSelectMenu = () => {
         return;
       }
 
-      const { status, puzzleObj: fetchedPuzzleData }: BackendPuzzleResponse = await res.json();
+      const { status, puzzleObj: fetchedPuzzleData }: PuzzleResponse = await res.json();
 
       // if the status is anything other than valid, alert specific string and exit method without adding to user or puzzle collection
       if (!isValidStatus(status)) return;

@@ -1,18 +1,21 @@
-const models = {};
-models.User = require('../models/userModel');
-// models.Puzzle = require('../models/puzzleModel');
+// Models
+import User from '../models/userModel';
+const models = { User };
 
-const bcrypt = require('bcryptjs');
+// Bcrypt
+import bcrypt from 'bcryptjs';
 const saltRound = 10;
 
-// Helper function: createErr will return an object formatted for the global error handler
-const controllerErrorMaker = require('../utils/controllerErrorMaker');
-const createErr = controllerErrorMaker('userController');
+// Types
+import { RequestHandler } from 'express';
+import { UserController, CustomErrorGenerator } from '../backendTypes';
 
-const userController = {};
+// Helper function: createErr will return an object formatted for the global error handler
+import controllerErrorMaker from '../utils/controllerErrorMaker';
+const createErr: CustomErrorGenerator = controllerErrorMaker('userController');
 
 //---GET USER --------------------------------------------------------------------------------------------------------------------
-userController.getUser = async (req, res, next) => {
+const getUser: RequestHandler = async (req, res, next) => {
   const { username } = req.body;
 
   // In the case of delete-session, we want the username specifically, not the cookies
@@ -29,7 +32,7 @@ userController.getUser = async (req, res, next) => {
         method: 'getUser',
         overview: 'problem retrieving user from request body or userId from cookies',
         status: 400,
-        err: 'username wasn\'t included in request body or userId wasn\'t included in cookies'
+        err: "username wasn't included in request body or userId wasn't included in cookies"
       })
     );
   }
@@ -55,7 +58,7 @@ userController.getUser = async (req, res, next) => {
 };
 
 //---CLEAN USER -------------------------------------------------------------------------------------------------------------
-userController.cleanUser = async (req, res, next) => {
+const cleanUser: RequestHandler = async (req, res, next) => {
   // if userDocument was found via getUser, extract relevant properties from the immutable returned Mongo document
   // and send it to next middleware via res.locals.frontendData
 
@@ -90,7 +93,7 @@ userController.cleanUser = async (req, res, next) => {
 };
 
 //---CREATE USER -------------------------------------------------------------------------------------------------------------
-userController.createUser = async (req, res, next) => {
+const createUser: RequestHandler = async (req, res, next) => {
   // if userDocument on res.locals is not null, send frontendData object with status to frontend
   if (res.locals.userDocument !== null) {
     res.locals.frontendData = { status: 'userNameExists' };
@@ -109,7 +112,7 @@ userController.createUser = async (req, res, next) => {
         method: 'createUser',
         overview: 'problem extracting username, password, or displayName from request body',
         status: 400,
-        err: 'username, password, or displayName wasn\'t included in request body'
+        err: "username, password, or displayName wasn't included in request body"
       })
     );
   }
@@ -142,7 +145,7 @@ userController.createUser = async (req, res, next) => {
 };
 
 //---VERIFY USER LOGIN --------------------------------------------------------------------------------------------
-userController.verifyUser = async (req, res, next) => {
+const verifyUser: RequestHandler = async (req, res, next) => {
   // if userDocument on res.locals is null, send frontendData object with status to frontend
   if (res.locals.userDocument === null) {
     res.locals.frontendData = { status: 'userNotFound' };
@@ -179,7 +182,7 @@ userController.verifyUser = async (req, res, next) => {
 //---SAVE PUZZLE -----------------------------------------------------------------------------------------------------
 // I may switch the entire schema set-up to include puzzle objects, including a Map of said objects in the User schema
 
-userController.savePuzzle = async (req, res, next) => {
+const savePuzzle: RequestHandler = async (req, res, next) => {
   // Make sure getUser found the user
   if (res.locals.userDocument === null) {
     res.locals.frontendData = { status: 'userNotFound' };
@@ -249,4 +252,12 @@ userController.savePuzzle = async (req, res, next) => {
   }
 };
 
-module.exports = userController;
+const userController: UserController = {
+  getUser,
+  cleanUser,
+  createUser,
+  verifyUser,
+  savePuzzle
+};
+
+export default userController;

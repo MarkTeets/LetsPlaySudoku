@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 // Each puzzle document will include the following details. The names of different techniques denotes
@@ -80,4 +80,4 @@ const puzzleSchema = new Schema({
 
 const Puzzle = mongoose.model('puzzles', puzzleSchema);
 
-module.exports = Puzzle;
+export default Puzzle;

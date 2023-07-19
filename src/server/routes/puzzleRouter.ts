@@ -1,7 +1,7 @@
-const express = require('express');
+import express from 'express';
 const puzzleRouter = express.Router();
-const userController = require('../controllers/userController');
-const puzzleController = require('../controllers/puzzleController');
+import userController from '../controllers/userController';
+import puzzleController from '../controllers/puzzleController';
 
 puzzleRouter.get('/:puzzleNumber',
   puzzleController.getPuzzleByNumber,
@@ -25,4 +25,4 @@ puzzleRouter.post('/get-next-puzzle-for-guest',
   }
 );
 
-module.exports = puzzleRouter;
+export default puzzleRouter;

@@ -1,14 +1,17 @@
-const Session = require('../models/sessionModel');
+// Models
+import Session from '../models/sessionModel';
+
+// Types
+import { RequestHandler } from 'express';
+import { SessionController, CustomErrorGenerator } from '../backendTypes';
 
 // Helper function: createErr will return an object formatted for the global error handler
-const controllerErrorMaker = require('../utils/controllerErrorMaker');
-const createErr = controllerErrorMaker('sessionController');
-
-const sessionController = {};
+import controllerErrorMaker from '../utils/controllerErrorMaker';
+const createErr: CustomErrorGenerator = controllerErrorMaker('sessionController');
 
 //---START SESSION --------------------------------------------------------------------------------------------------------------------------
 
-sessionController.startSession = async (req, res, next) => {
+const startSession: RequestHandler = async (req, res, next) => {
   try {
     //Extract Mongodb id from getUser middleware userDocument
     const userId = res.locals.userDocument?.id;
@@ -49,7 +52,7 @@ sessionController.startSession = async (req, res, next) => {
 
 //---IS LOGGED IN --------------------------------------------------------------------------------------------------------------------------
 
-sessionController.isLoggedIn = async (req, res, next) => {
+const isLoggedIn: RequestHandler = async (req, res, next) => {
   try {
     //find request for session with key cookieId with value matching cookie ssid
     const verifiedLogin = await Session.findOne({ cookieId: req.cookies.ssid });
@@ -76,7 +79,7 @@ sessionController.isLoggedIn = async (req, res, next) => {
 
 //---LOG OUT --------------------------------------------------------------------------------------------------------------------------
 
-sessionController.logOut = async (req, res, next) => {
+const logOut: RequestHandler = async (req, res, next) => {
   try {
     // console.log(
     //   'res.locals.userDocument.id',
@@ -117,4 +120,6 @@ sessionController.logOut = async (req, res, next) => {
   }
 };
 
-module.exports = sessionController;
+const sessionController: SessionController = { startSession, isLoggedIn, logOut };
+
+export default sessionController;

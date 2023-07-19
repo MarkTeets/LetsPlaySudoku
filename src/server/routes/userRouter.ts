@@ -1,10 +1,10 @@
-const express = require('express');
+import express from 'express';
 const userRouter = express.Router();
 
-const userController = require('../controllers/userController');
-const puzzleController = require('../controllers/puzzleController');
-const cookieController = require('../controllers/cookieController');
-const sessionController = require('../controllers/sessionController');
+import userController from '../controllers/userController';
+import puzzleController from '../controllers/puzzleController';
+import cookieController from '../controllers/cookieController';
+import sessionController from '../controllers/sessionController';
 
 userRouter.post('/signup',
   userController.getUser,
@@ -61,4 +61,4 @@ userRouter.post('/save-puzzle',
   }
 );
 
-module.exports = userRouter;
+export default userRouter;
