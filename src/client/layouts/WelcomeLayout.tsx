@@ -10,7 +10,7 @@ const WelcomeLayout = () => {
       username: 'guest',
       displayName: 'Guest',
       lastPuzzle: 0,
-      allPuzzles: {},
+      allPuzzles: {}
     });
   };
 

@@ -75,7 +75,7 @@ const router = createBrowserRouter(
 );
 
 const App = (): JSX.Element => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User>(null);
   const [puzzleCollection, setPuzzleCollection] = useState<PuzzleCollection>({});
   const pageInfo = useRef<string>('index');
 

@@ -1,4 +1,6 @@
+// Types
 import { Dispatch, SetStateAction, ChangeEvent } from 'react';
+import { Date } from 'mongoose';
 
 // Using 'type' rather than 'interface' as the definition of the type shows up clearer on hover over, and I don't need
 // to extend/expand the defintion of any of theses objects in the code (the main reason for using interfaces)
@@ -105,10 +107,14 @@ export type Square = {
   peers: Set<SquareId>;
 };
 
-// type UserPuzzleObj = {
-//   puzzleNumber: number
-//   progress: string,
-// }
+export type UserPuzzleObj = {
+  puzzleNumber: number;
+  progress: string;
+};
+
+export type AllPuzzles = {
+  [key: number]: UserPuzzleObj;
+};
 
 /**
  * @type User: object - holds all info related to a user required for frontend
@@ -122,12 +128,15 @@ export type User = {
   username: string;
   displayName: string;
   lastPuzzle: number;
-  allPuzzles: {
-    [key: number]: {
-      puzzleNumber: number;
-      progress: string;
-    };
-  };
+  allPuzzles: AllPuzzles;
+} | null;
+
+export type UserDocument = {
+  username: string;
+  password: string;
+  displayName: string;
+  lastPuzzle: number;
+  allPuzzles: UserPuzzleObj[];
 };
 
 export type SetUser = Dispatch<SetStateAction<User>>;
@@ -138,7 +147,7 @@ export type SetUser = Dispatch<SetStateAction<User>>;
  * @member setUser - the dispactch function corresponding to the useState User object above
  */
 export type UserContextValue = {
-  user: User | null;
+  user: User;
   setUser: SetUser;
 };
 
@@ -180,6 +189,11 @@ export type PageInfo = { current: string };
 
 export type PageContextValue = {
   pageInfo: PageInfo;
+};
+
+export type Session = {
+  cookieId: string;
+  createdAt: Date;
 };
 
 export type SignInData = {

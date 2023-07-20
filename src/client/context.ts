@@ -3,14 +3,14 @@ import { UserContextValue, PuzzleCollectionContextValue, PageContextValue } from
 
 export const userContext = createContext<UserContextValue>({
   user: null,
-  setUser: () => {},
+  setUser: () => {}
 });
 
 export const puzzleCollectionContext = createContext<PuzzleCollectionContextValue>({
   puzzleCollection: {},
-  setPuzzleCollection: () => {},
+  setPuzzleCollection: () => {}
 });
 
 export const pageContext = createContext<PageContextValue>({
-  pageInfo: { current: 'index' },
+  pageInfo: { current: 'index' }
 });

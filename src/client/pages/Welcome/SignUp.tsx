@@ -74,7 +74,13 @@ export const signUpAction = async ({ request }: { request: Request }): Promise<S
     displayName: submitData.get('displayName')
   };
 
-  if (body.displayName.length === 0) {
+  // Handles case where submissions return null rather than user's info
+  if (!body.username || !body.password) {
+    return { error: 'Submission failed, please try again' };
+  }
+
+  // This will acount for either displayName being an empty string or null
+  if (!body.displayName) {
     body.displayName = body.username;
   }
 
@@ -84,9 +90,9 @@ export const signUpAction = async ({ request }: { request: Request }): Promise<S
     body: JSON.stringify(body)
   });
 
-  // If the response status isn't in 200s, direct user to error component
+  // If the response status isn't in 200s, tell user submission failed
   if (!res.ok) {
-    throw Error('There was an error while trying to signup');
+    return { error: 'Submission failed, please try again' };
   }
 
   // The request repsonse has status 200, convert the response back to JS from JSON and proceed

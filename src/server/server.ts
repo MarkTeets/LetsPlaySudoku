@@ -1,8 +1,9 @@
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import cookieParser from 'cookie-parser';
-import mongoose from 'mongoose';
+import mongoose, { Error } from 'mongoose';
 import usersRouter from './routes/userRouter';
 import puzzleRouter from './routes/puzzleRouter';
+import { CustomErrorOutput } from './backendTypes';
 
 const app = express();
 const PORT = 3000;
@@ -37,7 +38,7 @@ app.use('/', (req, res) => {
 });
 
 //Global error handler
-app.use((err, req, res, next) => {
+app.use((err: Error | CustomErrorOutput, req: Request, res: Response, next: NextFunction) => {
   const defaultErr = {
     log: 'Express error handler caught unknown middleware error',
     status: 500,

@@ -28,7 +28,7 @@ export type CustomErrorInput = {
   method: string;
   overview: string;
   status?: number;
-  err: string | Error;
+  err: string | Error | unknown;
 };
 
 export type CustomErrorOutput = {

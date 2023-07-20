@@ -29,7 +29,7 @@ const Login = () => {
   useEffect(() => {
     pageInfo.current = 'JustLoadedLogin';
 
-    if (sessionData.status === 'valid') {
+    if (sessionData.status === 'valid' && sessionData.user && sessionData.puzzleCollection) {
       populateContext(
         sessionData.user,
         setUser,
@@ -49,7 +49,7 @@ const Login = () => {
   }, [user]);
 
   useEffect(() => {
-    if (newLoginData?.user !== undefined) {
+    if (newLoginData?.user !== undefined && newLoginData.user && newLoginData.puzzleCollection) {
       populateContext(
         newLoginData.user,
         setUser,
@@ -102,18 +102,25 @@ export const loginAction = async ({ request }: { request: Request }): Promise<Si
   // Data from the form submission is available via the following function
   const loginInfo = await request.formData();
   // On form submit, we need to send a post request to the backend with the proposed username and password
+  const body = {
+    username: loginInfo.get('username'),
+    password: loginInfo.get('password')
+  };
+
+  // Handles case where submissions return null rather than user's info
+  if (!body.username || !body.password) {
+    return { error: 'Submission failed, please try again' };
+  }
+
   const res: Response = await fetch('/api/user/login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      username: loginInfo.get('username'),
-      password: loginInfo.get('password')
-    })
+    body: JSON.stringify(body)
   });
 
-  // If the response status isn't in 200s, direct user to error component
+  // If the response status isn't in 200s, inform user
   if (!res.ok) {
-    throw Error('There was an error while trying to login');
+    return { error: 'Submission failed, please try again' };
   }
 
   // The request repsonse has status 200, convert the response back to JS from JSON and proceed

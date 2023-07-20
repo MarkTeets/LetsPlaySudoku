@@ -5,10 +5,10 @@ import { userContext } from '../context';
 const UserLayout = () => {
   const { user, setUser } = useContext(userContext);
   const [puzzleSelectMenuURL, setPuzzleSelectMenuURL] = useState(
-    user === null ? '/' : `/${encodeURIComponent(user.username)}`,
+    user === null ? '/' : `/${encodeURIComponent(user.username)}`
   );
   const [lastPuzzleURL, setlastPuzzleURL] = useState(
-    user === null ? '/' : `/${encodeURIComponent(user.username)}/play/${user.lastPuzzle}`,
+    user === null ? '/' : `/${encodeURIComponent(user.username)}/play/${user.lastPuzzle}`
   );
 
   useEffect(() => {
@@ -22,14 +22,16 @@ const UserLayout = () => {
   }, [user]);
 
   const logoutUser = async () => {
-    setUser(null);
+    if (!user) return;
+
     const res = await fetch('/api/user/delete-session', {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        username: user.username,
-      }),
+        username: user.username
+      })
     });
+    setUser(null);
     if (res.ok) {
       // console.log('Successfully deleted session');
     }
@@ -43,7 +45,7 @@ const UserLayout = () => {
           <NavLink to={puzzleSelectMenuURL} className='nav-link' end>
             Puzzle Select Menu
           </NavLink>
-          {user?.lastPuzzle > 0 && (
+          {user && user.lastPuzzle > 0 && (
             <NavLink to={lastPuzzleURL} className='nav-link'>
               Puzzle
             </NavLink>
