@@ -1,10 +1,12 @@
-import mongoose from 'mongoose';
-const Schema = mongoose.Schema;
+import { Schema, model } from 'mongoose';
+
+// Types
+import { Puzzle } from '../../types';
 
 // Each puzzle document will include the following details. The names of different techniques denotes
 // if said technique is required to solve the puzzle
 
-const puzzleSchema = new Schema({
+const puzzleSchema = new Schema<Puzzle>({
   puzzleNumber: Number,
   puzzle: String,
   solution: String,
@@ -78,6 +80,6 @@ const puzzleSchema = new Schema({
   }
 });
 
-const Puzzle = mongoose.model('puzzles', puzzleSchema);
+const Puzzle = model('puzzles', puzzleSchema);
 
 export default Puzzle;

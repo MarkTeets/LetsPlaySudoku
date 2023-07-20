@@ -1,5 +1,7 @@
-import mongoose from 'mongoose';
-const Schema = mongoose.Schema;
+import { Schema, model } from 'mongoose';
+
+// Types
+import { Session } from '../../types';
 
 /**
  * `createdAt` uses's Mongo's automatic document expiration service via the `expires` property.
@@ -7,11 +9,11 @@ const Schema = mongoose.Schema;
  * 1 week = 604800 seconds
  */
 
-const sessionSchema = new Schema({
+const sessionSchema = new Schema<Session>({
   cookieId: { type: String, required: true, unique: true },
   createdAt: { type: Date, expires: 604800, default: Date.now }
 });
 
-const Session = mongoose.model('Session', sessionSchema);
+const Session = model('Session', sessionSchema);
 
 export default Session;
