@@ -1,9 +1,14 @@
 import React, { useContext } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
+
+// Context
 import { userContext } from '../context';
 
+// Types
+import { UserContextValue } from '../../types';
+
 const WelcomeLayout = () => {
-  const { setUser } = useContext(userContext);
+  const { setUser } = useContext<UserContextValue>(userContext);
 
   const handleGuest = () => {
     setUser({

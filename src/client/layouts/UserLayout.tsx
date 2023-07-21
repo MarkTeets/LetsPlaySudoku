@@ -1,13 +1,18 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
+
+// Context
 import { userContext } from '../context';
 
+// Types
+import { UserContextValue } from '../../types';
+
 const UserLayout = () => {
-  const { user, setUser } = useContext(userContext);
-  const [puzzleSelectMenuURL, setPuzzleSelectMenuURL] = useState(
+  const { user, setUser } = useContext<UserContextValue>(userContext);
+  const [puzzleSelectMenuURL, setPuzzleSelectMenuURL] = useState<string>(
     user === null ? '/' : `/${encodeURIComponent(user.username)}`
   );
-  const [lastPuzzleURL, setlastPuzzleURL] = useState(
+  const [lastPuzzleURL, setlastPuzzleURL] = useState<string>(
     user === null ? '/' : `/${encodeURIComponent(user.username)}/play/${user.lastPuzzle}`
   );
 
