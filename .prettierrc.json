@@ -1,0 +1,14 @@
+{
+  "singleQuote": true,
+  "printWidth": 100,
+  "jsxSingleQuote": true,
+  "trailingComma": "none",
+  "overrides": [
+    {
+      "files": ["*.html", "*.css", "*.scss", "*.sass", "*.less"],
+      "options": {
+        "singleQuote": false
+      }
+    }
+  ]
+}

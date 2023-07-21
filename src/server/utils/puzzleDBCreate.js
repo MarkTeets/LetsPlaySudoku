@@ -8,13 +8,15 @@ const filePath = path.resolve(__dirname, '../../data/sudoku.csv');
 const limit = 500; // Update totalPuzzles after new limit choice successfully populates database
 const results = [];
 
-const MONGO_URI='mongodb+srv://markteets:PV0m4ZjwEg3wZwIT@sudoku-db.ox6sdpn.mongodb.net/?retryWrites=true&w=majority';
+const MONGO_URI =
+  'mongodb+srv://markteets:PV0m4ZjwEg3wZwIT@sudoku-db.ox6sdpn.mongodb.net/?retryWrites=true&w=majority';
 
-mongoose.connect(MONGO_URI, {
-  dbName: 'sudoku'
-})
+mongoose
+  .connect(MONGO_URI, {
+    dbName: 'sudoku'
+  })
   .then(() => console.log('Connected to Mongo DB!'))
-  .catch(err => console.log('Database error: ', err.message));
+  .catch((err) => console.log('Database error: ', err.message));
 
 fs.createReadStream(filePath)
   .pipe(csv())
@@ -28,9 +30,8 @@ fs.createReadStream(filePath)
     populatePuzzles(results);
   });
 
-
 const populatePuzzles = async (puzzleArray) => {
-  for (let i = 0; i < puzzleArray.length; i++){
+  for (let i = 0; i < puzzleArray.length; i++) {
     const puzzleObj = {
       puzzleNumber: i + 1,
       puzzle: puzzleArray[i].puzzle,
@@ -46,7 +47,6 @@ const populatePuzzles = async (puzzleArray) => {
     }
   }
 };
-  
 
 /* Old code used to manually enter puzzles
 const puzzle1 = '070000043040009610800634900094052000358460020000800530080070091902100005007040802';

@@ -1,10 +1,8 @@
 const path = require('path');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
 
-
 module.exports = {
-
-  entry: './src/client/index.js', 
+  entry: './src/client/index.tsx',
 
   output: {
     path: path.join(__dirname, '/dist'),
@@ -15,16 +13,16 @@ module.exports = {
   plugins: [
     new HTMLWebpackPlugin({
       template: './src/client/index.html'
-    }),
+    })
   ],
 
   devServer: {
     // host: 'localhost',
     port: 8080,
-   
+
     static: {
       // match the output path
-      directory: path.join(__dirname, '/dist'),
+      directory: path.join(__dirname, '/dist')
     },
 
     // headers: { 'Access-Control-Allow-Origin': '*' },
@@ -32,13 +30,13 @@ module.exports = {
     proxy: {
       '/api/**': {
         target: 'http://localhost:3000/',
-        secure: false,
-      },
+        secure: false
+      }
     },
     // for react router
-    historyApiFallback: true,
+    historyApiFallback: true
   },
-  
+
   mode: process.env.NODE_ENV,
 
   module: {
@@ -54,6 +52,12 @@ module.exports = {
         }
       },
       {
+        test: /\.tsx?/,
+        exclude: /node_modules/,
+        use: ['ts-loader'],
+        type: 'javascript/auto'
+      },
+      {
         test: /.(css|s[ac]ss)$/i,
         use: [
           // Creates `style` nodes from JS strings
@@ -61,16 +65,16 @@ module.exports = {
           // Translates CSS into CommonJS
           'css-loader',
           // Compiles Sass to CSS
-          'sass-loader',
-        ],
+          'sass-loader'
+        ]
       },
       {
         test: /\.(png|jpe?g|gif)$/i,
-        loader: 'file-loader',
+        loader: 'file-loader'
       }
     ]
   },
   resolve: {
-    extensions: ['.js', '.jsx']
+    extensions: ['.js', '.jsx', '.ts', '.tsx']
   }
 };
