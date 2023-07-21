@@ -31,9 +31,9 @@ app.use('/api/user', usersRouter);
 
 app.use('/api/puzzle', puzzleRouter);
 
-app.get('/favicon.ico', (req, res) => res.status(204));
+app.get('/favicon.ico', (req: Request, res: Response) => res.status(204));
 
-app.use('/', (req, res) => {
+app.use('/', (req: Request, res: Response) => {
   res.status(404).send('Nothing to see here!');
 });
 
@@ -50,7 +50,7 @@ app.use((err: Error | CustomErrorOutput, req: Request, res: Response, next: Next
 });
 
 app.listen(PORT, () => {
-  console.log(`Server listening on port: ${PORT}...`);
+  console.log(`Server listening on port: ${PORT}`);
 });
 
 module.exports = app;

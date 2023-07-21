@@ -1,6 +1,6 @@
 // Types
 import { Dispatch, SetStateAction, ChangeEvent } from 'react';
-import { Date } from 'mongoose';
+import { Date, Types } from 'mongoose';
 
 // Using 'type' rather than 'interface' as the definition of the type shows up clearer on hover over, and I don't need
 // to extend/expand the defintion of any of theses objects in the code (the main reason for using interfaces)
@@ -131,14 +131,6 @@ export type User = {
   allPuzzles: AllPuzzles;
 } | null;
 
-export type UserDocument = {
-  username: string;
-  password: string;
-  displayName: string;
-  lastPuzzle: number;
-  allPuzzles: UserPuzzleObj[];
-};
-
 export type SetUser = Dispatch<SetStateAction<User>>;
 
 /**
@@ -217,7 +209,7 @@ export type SignInResponse = {
 
 export type PuzzleResponse = {
   status: QueryStatus;
-  puzzleObj: Puzzle;
+  puzzleObj?: Puzzle;
 };
 
 export type OnInputChange = (id: SquareId, newVal: DisplayVal) => void;

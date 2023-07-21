@@ -5,11 +5,12 @@ Welcome to "Let's Play Sudoku," a free web application for accessing and playing
 ### Current features:
 
 - User sign-up and login
-- Sessions allow users to automatically log in after first sign-up or subsequent logins
+- Sessions allow users to automatically log in after first sign-up and/or subsequent logins
 - Guest mode, for those who want to play without signing in (can't save in guest mode)
 - Duplicate number flagging
 - Completed puzzle verification
 - Save progress made to puzzles so users can resume later
+- Typescript used to verify typing
 
 ### Future features:
 

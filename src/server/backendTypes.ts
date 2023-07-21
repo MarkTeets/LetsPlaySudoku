@@ -1,4 +1,7 @@
+// Types
 import { RequestHandler } from 'express';
+import { UserPuzzleObj } from '../types';
+import { Types } from 'mongoose';
 
 export type UserController = {
   getUser: RequestHandler;
@@ -24,6 +27,15 @@ export type SessionController = {
   logOut: RequestHandler;
 };
 
+export type UserDocument = {
+  username: string;
+  password: string;
+  displayName: string;
+  lastPuzzle: number;
+  allPuzzles: UserPuzzleObj[];
+  _id: Types.ObjectId;
+};
+
 export type CustomErrorInput = {
   method: string;
   overview: string;
@@ -40,3 +52,5 @@ export type CustomErrorOutput = {
 };
 
 export type CustomErrorGenerator = (customErrorInput: CustomErrorInput) => CustomErrorOutput;
+
+export type BackendStatus = 'validStatus';

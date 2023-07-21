@@ -4,7 +4,8 @@ const models = { Puzzle };
 
 // Types
 import { RequestHandler } from 'express';
-import { PuzzleController, CustomErrorGenerator } from '../backendTypes';
+import { AllPuzzles, PuzzleCollection, PuzzleResponse } from '../../types';
+import { PuzzleController, CustomErrorGenerator, UserDocument } from '../backendTypes';
 
 // Helper function: createErr will return an object formatted for the global error handler
 import controllerErrorMaker from '../utils/controllerErrorMaker';
@@ -18,22 +19,21 @@ import totalPuzzles from '../../globalUtils/totalPuzzles';
 // Given a puzzleNumber, retrieve associated puzzle from the database and return it as a json
 
 const getPuzzleByNumber: RequestHandler = async (req, res, next) => {
+  const puzzleNumber = Number(req.params.puzzleNumber);
+
+  if (!Number.isInteger(puzzleNumber) || puzzleNumber < 1 || puzzleNumber > totalPuzzles) {
+    return next(
+      createErr({
+        method: 'getPuzzleByNumber',
+        overview: 'invalid puzzleNumber',
+        status: 400,
+        err: "Either the puzzleNumber wasn't on req.params, or it doesn't correlate to a valid puzzleNumber"
+      })
+    );
+  }
+
   try {
-    const { puzzleNumber } = req.params;
-    // console.log('puzzleNumber:', puzzleNumber);
-
-    if (puzzleNumber === undefined) {
-      return next(
-        createErr({
-          method: 'getPuzzleByNumber',
-          overview: 'destructing puzzleNumber from req.params',
-          status: 400,
-          err: 'Failed to retrieve puzzleNumber params string from req.params'
-        })
-      );
-    }
-
-    const puzzleObj = await models.Puzzle.findOne({ puzzleNumber: Number(puzzleNumber) }).exec();
+    const puzzleObj = await models.Puzzle.findOne({ puzzleNumber: puzzleNumber }).exec();
 
     if (puzzleObj === null) {
       return next(
@@ -49,7 +49,7 @@ const getPuzzleByNumber: RequestHandler = async (req, res, next) => {
     res.locals.frontendData = {
       status: 'valid',
       puzzleObj
-    };
+    } as PuzzleResponse;
 
     return next();
   } catch (err) {
@@ -74,19 +74,21 @@ const getUserPuzzles: RequestHandler = async (req, res, next) => {
     return next();
   }
 
-  if (res.locals.userDocument.allPuzzles.length === 0) {
+  const userDocument: UserDocument = res.locals.userDocument;
+
+  if (userDocument.allPuzzles.length === 0) {
     res.locals.frontendData.puzzleCollection = [];
     return next();
   }
 
-  const userPuzzleNumbersFilter = res.locals.userDocument.allPuzzles.map((puzzleObj) => {
+  const userPuzzleNumbersFilter = userDocument.allPuzzles.map((puzzleObj) => {
     return { puzzleNumber: puzzleObj.puzzleNumber };
   });
 
   try {
     const foundPuzzles = await models.Puzzle.find({ $or: userPuzzleNumbersFilter });
 
-    const puzzleCollection = {};
+    const puzzleCollection: PuzzleCollection = {};
     for (const puzzleDoc of foundPuzzles) {
       puzzleCollection[puzzleDoc.puzzleNumber] = puzzleDoc;
     }
@@ -117,19 +119,25 @@ const getNextPuzzle: RequestHandler = async (req, res, next) => {
   const { username, allPuzzles } = req.body;
 
   // Set nextPuzzleNum to null. It'll be reassigned if a valid puzzle is found
-  let nextPuzzleNum = null;
+  let nextPuzzleNum: number | null = null;
 
+  //Now we'll handle two different cases for a user request and a guest request
+
+  // Case 1: User request
   // A user request will include a username and the getUser middleware is called to retreive the user.
-  if (username !== undefined) {
+  if (typeof username === 'string') {
+    // Having confirmed the request came from a user, check to see if the corresponding user document has been found
+    // If not send status back to frontend to show that getUser didn't find intended user
     if (res.locals.userDocument === null) {
       res.locals.frontendData = { status: 'userNotFound' };
       return next();
     }
+    const userDocument: UserDocument = res.locals.userDocument;
 
-    // add all puzzle numbers from user's allPuzzles array to a set
+    // Add all puzzle numbers from user's allPuzzles array to a set
     const puzzleNumSet = new Set();
 
-    for (const puzzleObj of res.locals.userDocument.allPuzzles) {
+    for (const puzzleObj of userDocument.allPuzzles) {
       puzzleNumSet.add(puzzleObj.puzzleNumber);
     }
 
@@ -143,25 +151,28 @@ const getNextPuzzle: RequestHandler = async (req, res, next) => {
     }
   }
 
+  // Case 2: Guest request
   // A guest request will include an allPuzzles object.
-  if (allPuzzles !== undefined) {
+  if (typeof allPuzzles === 'object') {
+    const guestAllPuzzles: AllPuzzles = allPuzzles;
     // Reassign nextPuzzleNum to the first unused puzzle number in the object that's less  than the total number of puzzles
     // Have to do this sequentially as user can choose any number to play via other methods, aka puzzle numbers can be sparse
     for (let i = 1; i <= totalPuzzles; i++) {
-      if (!allPuzzles[i]) {
+      if (!guestAllPuzzles[i]) {
         nextPuzzleNum = i;
         break;
       }
     }
   }
 
-  // nextPuzzleNum will be a valid number if one was available. Redirect if usable number was found
+  // After code has run for both cases: nextPuzzleNum will be a valid number if one was available.
+  // Redirect if usable number was found
   if (nextPuzzleNum !== null) {
     return res.redirect(`/api/puzzle/${nextPuzzleNum}`);
   }
 
   // If no usable number was found, it's because they've already played all of the puzzles. Send this info back to the frontend.
-  res.locals.frontendData = { status: 'allPuzzlesPlayed' };
+  res.locals.frontendData = { status: 'allPuzzlesPlayed' } as PuzzleResponse;
 
   return next();
 };

@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 const userRouter = express.Router();
 
 import userController from '../controllers/userController';
@@ -12,7 +12,7 @@ userRouter.post('/signup',
   userController.cleanUser,
   cookieController.setSSIDCookie,
   sessionController.startSession,
-  (req, res) => {
+  (req: Request, res: Response) => {
     res.status(200).json(res.locals.frontendData);
   }
 );
@@ -24,7 +24,7 @@ userRouter.post('/login',
   puzzleController.getUserPuzzles,
   cookieController.setSSIDCookie,
   sessionController.startSession,
-  (req, res) => {
+  (req: Request, res: Response) => {
     res.status(200).json(res.locals.frontendData);
   }
 );
@@ -35,19 +35,21 @@ userRouter.get('/resume-session',
   userController.cleanUser,
   puzzleController.getUserPuzzles,
   sessionController.startSession,
-  (req, res) => {
+  (req: Request, res: Response) => {
     res.status(200).json(res.locals.frontendData);
   }
 );
 
-userRouter.get('/no-session', (req, res) => {
-  res.status(200).json({ status: 'noSession' });
-});
+userRouter.get('/no-session',
+  (req: Request, res: Response) => {
+    res.status(200).json({ status: 'noSession' });
+  }
+);
 
 userRouter.delete('/delete-session',
   userController.getUser,
   sessionController.logOut,
-  (req, res) => {
+  (req: Request, res: Response) => {
     res.clearCookie('ssid');
     res.status(200).json(res.locals.frontendData);
   }
@@ -56,7 +58,7 @@ userRouter.delete('/delete-session',
 userRouter.post('/save-puzzle',
   userController.getUser,
   userController.savePuzzle,
-  (req, res) => {
+  (req: Request, res: Response) => {
     res.status(200).json(res.locals.frontendData);
   }
 );

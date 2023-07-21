@@ -65,7 +65,7 @@ const PuzzleSelectMenu = () => {
       const { status, puzzleObj: fetchedPuzzleData }: PuzzleResponse = await res.json();
 
       // if the status is anything other than valid, alert specific string and exit method without adding to user or puzzle collection
-      if (!isValidStatus(status)) return;
+      if (!isValidStatus(status) || !fetchedPuzzleData) return;
 
       addPuzzleToUserAndCollection(
         convertedPuzzleNumber,

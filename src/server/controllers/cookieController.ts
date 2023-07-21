@@ -1,6 +1,6 @@
 // Types
 import { RequestHandler } from 'express';
-import { CookieController, CustomErrorGenerator } from '../backendTypes';
+import { CookieController, CustomErrorGenerator, UserDocument } from '../backendTypes';
 
 // Error generation helper function
 import controllerErrorMaker from '../utils/controllerErrorMaker';
@@ -10,15 +10,16 @@ const createErr: CustomErrorGenerator = controllerErrorMaker('cookieController')
 
 //ssid cookie value will be the logged in user's mongodb document id
 const setSSIDCookie: RequestHandler = async (req, res, next) => {
+  // Make sure login/signup was successful and userDocument exists
+  if (res.locals.status !== 'validUser' || res.locals.userDocument === null) {
+    return next();
+  }
+
+  //Extract Mongodb id from getUser middleware userDocument
+  const userDocument: UserDocument = res.locals.userDocument;
+  const userId = userDocument._id.toString();
+
   try {
-    //Extract Mongodb id from getUser middleware userDocument
-    const userId = res.locals.userDocument?.id;
-
-    // If the login or signup was unsuccessful, move on without creating a cookie
-    if (res.locals.status !== 'validUser' || userId === undefined) {
-      return next();
-    }
-
     //create new cookie with key:value of ssid: Mongo ObjectID
     res.cookie('ssid', userId, {
       secure: true,

@@ -1,11 +1,11 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 const puzzleRouter = express.Router();
 import userController from '../controllers/userController';
 import puzzleController from '../controllers/puzzleController';
 
 puzzleRouter.get('/:puzzleNumber',
   puzzleController.getPuzzleByNumber,
-  (req, res) => {
+  (req: Request, res: Response) => {
     res.status(200).json(res.locals.frontendData);
   }
 );
@@ -13,14 +13,14 @@ puzzleRouter.get('/:puzzleNumber',
 puzzleRouter.post('/get-next-puzzle-for-user',
   userController.getUser,
   puzzleController.getNextPuzzle,
-  (req, res) => {
+  (req: Request, res: Response) => {
     res.status(200).json(res.locals.frontendData);
   }
 );
 
 puzzleRouter.post('/get-next-puzzle-for-guest',
   puzzleController.getNextPuzzle,
-  (req, res) => {
+  (req: Request, res: Response) => {
     res.status(200).json(res.locals.frontendData);
   }
 );
