@@ -29,7 +29,12 @@ const Login = () => {
   useEffect(() => {
     pageInfo.current = 'JustLoadedLogin';
 
-    if (sessionData.status === 'valid' && sessionData.user && sessionData.puzzleCollection) {
+    if (
+      sessionData &&
+      sessionData.status === 'valid' &&
+      sessionData.user &&
+      sessionData.puzzleCollection
+    ) {
       populateContext(
         sessionData.user,
         setUser,

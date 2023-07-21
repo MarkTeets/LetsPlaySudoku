@@ -43,13 +43,15 @@ const PuzzleSelectMenu = () => {
   };
 
   const onSeeSavedPuzzlesClick = () => {
-    navigate(`/${encodeURIComponent(user.username)}/savedPuzzleSelect`);
+    if (user) {
+      navigate(`/${encodeURIComponent(user.username)}/savedPuzzleSelect`);
+    }
   };
 
   const onNumberSelectClick = async () => {
     // If the text from the input isn't a valid puzzleNumber, return
     const convertedPuzzleNumber = Number(puzzleNumString.trim());
-    if (!isValidPuzzleNumber(convertedPuzzleNumber)) return;
+    if (!user || !isValidPuzzleNumber(convertedPuzzleNumber)) return;
 
     // If the selected puzzle isn't already in the user's allPuzzles, we'll add it there and to the puzzleCollection
     if (!user.allPuzzles[convertedPuzzleNumber]) {
@@ -88,6 +90,8 @@ const PuzzleSelectMenu = () => {
 
   // Backend will specifically return a puzzle that isn't already in user's allPuzzles
   const onNextPuzzleClick = async () => {
+    if (!user) return;
+
     let res;
 
     if (user.username === 'guest') {
@@ -135,7 +139,7 @@ const PuzzleSelectMenu = () => {
     <>
       <h2>Pick a puzzle!</h2>
       <div className='centered-div'>
-        {user?.lastPuzzle > 0 && (
+        {user && user.lastPuzzle > 0 && (
           <div className='puzzle-select-div'>
             <h3>Resume Last Puzzle:</h3>
             <button className='puzzle-select-button' onClick={onResumeLastPuzzleClick}>
@@ -244,6 +248,8 @@ function addPuzzleToUserAndCollection(
   puzzleCollection: PuzzleCollection,
   setPuzzleCollection: SetPuzzleCollection
 ) {
+  if (!user) return;
+
   const newUser = {
     ...user,
     lastPuzzle: puzzleNumber,

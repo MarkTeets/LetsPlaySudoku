@@ -163,7 +163,7 @@ function savePuzzleAtLeastOnce() {
 
   return async (puzzleNumber: number, allSquares: AllSquares, user: User, setUser: SetUser) => {
     // Don't allow a guest to save
-    if (user.username === 'guest') {
+    if (!user || user.username === 'guest') {
       alert('Please sign up for a free account to save');
       return;
     }

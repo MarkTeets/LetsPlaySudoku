@@ -32,6 +32,8 @@ const SavedPuzzleSelect = () => {
 export default SavedPuzzleSelect;
 
 const createPuzzleLinks = (user: User) => {
+  if (!user) return;
+
   const puzzleNumbers = Object.keys(user.allPuzzles).map((key) => Number(key));
 
   puzzleNumbers.sort((a: number, b: number) => a - b);
