@@ -7,8 +7,12 @@ import { SquareId, Square, DisplayVal, PossibleVal, AllPeers } from '../../types
  * signifying empty space. There are also several helper functions to utilize this object
  */
 
+/**
+ * Every SquareId from 'A1' to 'I9' in an array, utilized
+ * for generating arrays with the correct typing
+ */
 // prettier-ignore
-const allSquareIds: SquareId[] = [
+export const allSquareIds: SquareId[] = [
   'A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8', 'A9',
   'B1', 'B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B9',
   'C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9',
@@ -260,11 +264,9 @@ export const createNewSquares = (puzzleString: string) => {
  * @param allSquares
  * @returns a deep copy of the allSquares parameters
  */
-const deepCopyAllSquares = (allSquares: AllSquares): AllSquares => {
-  // Make a shallow copy of the allSquares object to maintain typescript typing
-  const newAllSquareObj: AllSquares = {
-    ...allSquares
-  };
+export const deepCopyAllSquares = (allSquares: AllSquares): AllSquares => {
+  // Make a new allSquares object to maintain typescript typing
+  const newAllSquareObj: AllSquares = new AllSquares();
   // Replace each square with a shallow copy of that square from allSquares, and make new
   // sets for each possibleVal Set. We don't need to deep copy peers, these won't ever change
   for (const squareId of allSquareIds) {
@@ -284,7 +286,7 @@ const deepCopyAllSquares = (allSquares: AllSquares): AllSquares => {
  * @param allSquares
  */
 
-const findDuplicates = (allSquares: AllSquares): void => {
+export const findDuplicates = (allSquares: AllSquares): void => {
   for (const squareId of allSquareIds) {
     //for each square,
     if (allSquares[squareId].displayVal === '0') continue;
