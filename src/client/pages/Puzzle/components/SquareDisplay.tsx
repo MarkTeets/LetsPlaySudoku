@@ -17,7 +17,6 @@ type SquareDisplayProps = {
 
 const SquareDisplay = ({ square, squareClassByLocation, onInputChange }: SquareDisplayProps) => {
   const { id, displayVal } = square;
-
   const [currentVal, setCurrentVal] = useState<CurrentVal>(displayVal === '0' ? '' : displayVal);
 
   // This useEffect will make sure that when the reset button is clicked, boxes that were
@@ -25,6 +24,8 @@ const SquareDisplay = ({ square, squareClassByLocation, onInputChange }: SquareD
   useEffect(() => {
     if (displayVal === '0' && currentVal !== '') {
       setCurrentVal('');
+    } else if (displayVal !== '0' && displayVal !== currentVal) {
+      setCurrentVal(displayVal);
     }
   }, [displayVal]);
 
