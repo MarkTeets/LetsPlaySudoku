@@ -1,6 +1,6 @@
 // Models
-import Puzzle from '../models/puzzleModel';
-const models = { Puzzle };
+import PuzzleModel from '../models/puzzleModel';
+const models = { PuzzleModel };
 
 // Types
 import { RequestHandler } from 'express';
@@ -33,7 +33,7 @@ const getPuzzleByNumber: RequestHandler = async (req, res, next) => {
   }
 
   try {
-    const puzzleObj = await models.Puzzle.findOne({ puzzleNumber: puzzleNumber }).exec();
+    const puzzleObj = await models.PuzzleModel.findOne({ puzzleNumber: puzzleNumber }).exec();
 
     if (puzzleObj === null) {
       return next(
@@ -86,7 +86,7 @@ const getUserPuzzles: RequestHandler = async (req, res, next) => {
   });
 
   try {
-    const foundPuzzles = await models.Puzzle.find({ $or: userPuzzleNumbersFilter });
+    const foundPuzzles = await models.PuzzleModel.find({ $or: userPuzzleNumbersFilter });
 
     const puzzleCollection: PuzzleCollection = {};
     for (const puzzleDoc of foundPuzzles) {
