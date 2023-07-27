@@ -55,7 +55,9 @@ const UserLayout = () => {
               Puzzle
             </NavLink>
           )}
-          {/* <NavLink to='playTest' className='nav-link'>Play Test</NavLink> */}
+          {/* <NavLink to='playTest' className='nav-link'>
+            Play Test
+          </NavLink> */}
           {user?.username !== 'guest' ? (
             <NavLink to='/' className='nav-link' onClick={logoutUser}>
               Log out

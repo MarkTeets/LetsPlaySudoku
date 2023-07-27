@@ -22,7 +22,7 @@ import PuzzleSelectMenu from './pages/PuzzleSelect/PuzzleSelectMenu';
 import SavedPuzzleSelect from './pages/PuzzleSelect/SavedPuzzleSelect';
 // import PuzzleSelectViaFilters from './pages/PuzzleSelect/PuzzleSelectViaFilters';
 import PuzzlePage from './pages/Puzzle/PuzzlePage';
-// import { PuzzlePageTest, puzzleTestLoader } from './pages/Puzzle/PuzzlePageTest';
+// import PuzzlePageTest, { puzzleTestLoader } from './pages/Puzzle/PuzzlePageTest';
 import NotFound from './pages/NotFound';
 import ErrorPage from './pages/ErrorPage';
 

@@ -41,8 +41,8 @@ const PuzzlePage = () => {
 
   // The firstAllSquares function compares the original puzzle string to a user's progress string.
   // If they're the same, it returns the initialAllSquares object
-  // If they're different, it returns a deepCopy of the the initialAllSquares object with updated displayVals
-  // By doing it in a two step process, every non-zero display value in the initialAllSquares object will have a
+  // If they're different, it returns a deepCopy of the the initialAllSquares object with updated puzzleVals
+  // By doing it in a two step process, every non-zero puzzle value in the initialAllSquares object will have a
   // true "fixedVal" property, and any updates from the progress string don't.
   const [allSquares, setAllSquares] = useState<AllSquares>(
     firstAllSquares(initialAllSquares, puzzleNumber, user, puzzleCollection)
@@ -86,7 +86,7 @@ const PuzzlePage = () => {
 
   // onInputChange is fired every time there's an onChange event in an individual square.
   // It updates the state of allSquares based on the inidividual square that's been updated.
-  // const onInputChange: OnInputChange = (id: SquareId, newVal: DisplayVal): void => {
+  // const onInputChange: OnInputChange = (id: SquareId, newVal: PuzzleVal): void => {
   const onInputChange: OnInputChange = (id, newVal) => {
     setAllSquares(newAllSquares(allSquares, id, newVal));
   };
@@ -124,7 +124,7 @@ export default PuzzlePage;
  *
  * Therefore, this function checks to see if there are any differences between a user's progress string and the original puzzle. If not,
  * the initialAllSquares object is returned with no need for additional work. If there are differences, this function returns a deep copy
- * of the initialAllSquares object with the displayVal's updated to be consistent with the user's progress string.
+ * of the initialAllSquares object with the puzzleVal's updated to be consistent with the user's progress string.
  *
  * @param initialAllSquares
  * @param puzzleNumber
@@ -144,7 +144,7 @@ function firstAllSquares(
     return initialAllSquares;
   }
 
-  // If not, return a deepCopy of the initialAllSquares object with "displayVal"s updated from the user's progress string
+  // If not, return a deepCopy of the initialAllSquares object with "puzzleVal"s updated from the user's progress string
   // This will preserve the correct "fixedVal" properties
   return updateSquaresFromProgress(initialAllSquares, user.allPuzzles[puzzleNumber].progress);
 }

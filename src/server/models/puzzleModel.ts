@@ -80,6 +80,6 @@ const puzzleSchema = new Schema<Puzzle>({
   }
 });
 
-const Puzzle = model('puzzles', puzzleSchema);
+const PuzzleModel = model('puzzles', puzzleSchema);
 
-export default Puzzle;
+export default PuzzleModel;

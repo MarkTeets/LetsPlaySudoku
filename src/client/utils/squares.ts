@@ -1,5 +1,4 @@
-// import { SquareId, Square, DisplayVal } from '../../types';
-import { SquareId, Square, DisplayVal, PossibleVal, AllPeers } from '../../types';
+import { SquareId, Square, PuzzleVal, PossibleVal, AllPeers } from '../../types';
 
 /**
  * This file exports a function that when invoked, returns a new instance of an allSquares object,
@@ -7,8 +6,12 @@ import { SquareId, Square, DisplayVal, PossibleVal, AllPeers } from '../../types
  * signifying empty space. There are also several helper functions to utilize this object
  */
 
+/**
+ * Every SquareId from 'A1' to 'I9' in an array, utilized
+ * for generating arrays with the correct typing
+ */
 // prettier-ignore
-const allSquareIds: SquareId[] = [
+export const allSquareIds: SquareId[] = [
   'A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8', 'A9',
   'B1', 'B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B9',
   'C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9',
@@ -33,8 +36,10 @@ const allSquareIds: SquareId[] = [
  */
 
 const makeAllPeers = (): {
-  allPeers: AllPeers;
+  rows: Set<SquareId>[];
+  cols: Set<SquareId>[];
   boxes: Set<SquareId>[];
+  allPeers: AllPeers;
 } => {
   const rows: Set<SquareId>[] = [];
   const cols: Set<SquareId>[] = [];
@@ -85,14 +90,16 @@ const makeAllPeers = (): {
   }
 
   return {
-    allPeers,
-    boxes
+    rows,
+    cols,
+    boxes,
+    allPeers
   };
 };
 
 //These variables are declared here to be used in the class definition to avoid recreating data
-const { allPeers, boxes } = makeAllPeers();
-export const unitBoxes = boxes;
+export const { rows, cols, boxes, allPeers } = makeAllPeers();
+// export const unitBoxes = boxes;
 const numbers: PossibleVal[] = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
 /** emptyPuzzleMaker
@@ -131,7 +138,7 @@ const isValidPuzzle = (puzzleString: string): boolean => {
 
 /** class AllSquares
  * produces an object holding each square of a sudoku grid, labeled 'A1'-'I9'. These squares have several
- * properties including a display value from a sudoku puzzle string, which is an 81 character string holding
+ * properties including a puzzle value from a sudoku puzzle string, which is an 81 character string holding
  * numbers 0-9, 0 indicating an empty square.
  */
 
@@ -226,7 +233,7 @@ export class AllSquares {
     for (let i = 0; i < allSquareIds.length; i += 1) {
       this[allSquareIds[i]] = {
         id: allSquareIds[i],
-        displayVal: puzzleString[i] as DisplayVal,
+        puzzleVal: puzzleString[i] as PuzzleVal,
         duplicate: false,
         fixedVal: true,
         possibleVal: null,
@@ -260,11 +267,9 @@ export const createNewSquares = (puzzleString: string) => {
  * @param allSquares
  * @returns a deep copy of the allSquares parameters
  */
-const deepCopyAllSquares = (allSquares: AllSquares): AllSquares => {
-  // Make a shallow copy of the allSquares object to maintain typescript typing
-  const newAllSquareObj: AllSquares = {
-    ...allSquares
-  };
+export const deepCopyAllSquares = (allSquares: AllSquares): AllSquares => {
+  // Make a new allSquares object to maintain typescript typing
+  const newAllSquareObj: AllSquares = new AllSquares();
   // Replace each square with a shallow copy of that square from allSquares, and make new
   // sets for each possibleVal Set. We don't need to deep copy peers, these won't ever change
   for (const squareId of allSquareIds) {
@@ -278,23 +283,23 @@ const deepCopyAllSquares = (allSquares: AllSquares): AllSquares => {
 
 /** findDuplicates
  * Takes a newly deep copied AllSquares object and checks every square to see if any of its peers have the
- * same non-zero displayVal. If so it changes the duplicate value on that square to true. As the param will
+ * same non-zero puzzleVal. If so it changes the duplicate value on that square to true. As the param will
  * always be a deep copied AllSquares object, I don't need to worry about mutating state in this function.
  *
  * @param allSquares
  */
 
-const findDuplicates = (allSquares: AllSquares): void => {
+export const findDuplicates = (allSquares: AllSquares): void => {
   for (const squareId of allSquareIds) {
     //for each square,
-    if (allSquares[squareId].displayVal === '0') continue;
+    if (allSquares[squareId].puzzleVal === '0') continue;
     //set duplicate to false
     allSquares[squareId].duplicate = false;
     //I need to iterate over the peers
     allSquares[squareId].peers.forEach((peer) => {
       //for each peer,
-      //I need to compare the display value of the allSquares[peer] to my square's display value.
-      if (allSquares[squareId].displayVal === allSquares[peer].displayVal) {
+      //I need to compare the puzzle value of the allSquares[peer] to my square's puzzle value.
+      if (allSquares[squareId].puzzleVal === allSquares[peer].puzzleVal) {
         //update duplicated to true if they're the same
         allSquares[squareId].duplicate = true;
         return;
@@ -322,7 +327,7 @@ export const createProgressString = (allSquares: AllSquares): string => {
   let progress = '';
 
   for (const squareId of allSquareIds) {
-    progress += allSquares[squareId].displayVal;
+    progress += allSquares[squareId].puzzleVal;
   }
 
   return progress;
@@ -340,9 +345,9 @@ export const updateSquaresFromProgress = (allSquares: AllSquares, progress: stri
   // Make a deep copy of the allSquares object
   const newAllSquareObj: AllSquares = deepCopyAllSquares(allSquares);
 
-  // Replace every display value to reflect the value from progress, but the "fixedVal" value will be preserved from the original allSquares creation
+  // Replace every puzzle value to reflect the value from progress, but the "fixedVal" value will be preserved from the original allSquares creation
   for (let i = 0; i < allSquareIds.length; i++) {
-    newAllSquareObj[allSquareIds[i]].displayVal = progress[i] as DisplayVal;
+    newAllSquareObj[allSquareIds[i]].puzzleVal = progress[i] as PuzzleVal;
   }
 
   // Account for duplicates
@@ -363,10 +368,10 @@ export const updateSquaresFromProgress = (allSquares: AllSquares, progress: stri
 export const newAllSquares = (
   allSquares: AllSquares,
   squareId: SquareId,
-  newVal: DisplayVal
+  newVal: PuzzleVal
 ): AllSquares => {
   // If the state value hasn't changed, skip the function and just return the original object
-  if (allSquares[squareId].displayVal === newVal) {
+  if (allSquares[squareId].puzzleVal === newVal) {
     // alert('state has not changed');
     return allSquares;
   }
@@ -374,7 +379,7 @@ export const newAllSquares = (
   const newAllSquaresObj: AllSquares = deepCopyAllSquares(allSquares);
 
   // Change the specific values for the square that was changed
-  newAllSquaresObj[squareId].displayVal = newVal;
+  newAllSquaresObj[squareId].puzzleVal = newVal;
   // Reset the duplicate value to false (makes find duplicates more efficient as it doesn't need to check for 0's with this reset)
   newAllSquaresObj[squareId].duplicate = false;
   // Iterate over the entire grid and check each square to see if it had duplicate values within the squares in its peers Set
@@ -392,7 +397,7 @@ export const newAllSquares = (
 
 export const isPuzzleFinished = (allSquares: AllSquares): boolean => {
   for (const squareId of allSquareIds) {
-    if (allSquares[squareId].displayVal === '0' || allSquares[squareId].duplicate) {
+    if (allSquares[squareId].puzzleVal === '0' || allSquares[squareId].duplicate) {
       return false;
     }
   }
@@ -414,6 +419,6 @@ findDuplicates(grid);
 // console.log(grid);
 
 const newGrid = newAllSquares(grid, 'A1', '1')
-// console.log(newGrid['A1'].displayVal)
+// console.log(newGrid['A1'].puzzleVal)
 
 // */
