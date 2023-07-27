@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import BoxUnitContainer from './BoxUnitContainer';
-import { unitBoxes } from '../../../utils/squares';
+import { boxes as unitBoxes } from '../../../utils/squares';
 
 // Types
 import { AllSquares } from '../../../utils/squares';

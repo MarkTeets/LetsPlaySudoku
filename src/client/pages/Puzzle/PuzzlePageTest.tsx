@@ -16,7 +16,7 @@ import {
 } from '../../utils/squares';
 import {
   SolutionProcedure,
-  possibleValUpdateViaDisplayValue,
+  possibleValUpdateViaPuzzleValue,
   puzzleSolver,
   singleCandidateSolver,
   soltutionExecuter
@@ -47,8 +47,8 @@ const PuzzlePageTest = () => {
 
   // The firstAllSquares function compares the original puzzle string to a user's progress string.
   // If they're the same, it returns the initialAllSquares object
-  // If they're different, it returns a deepCopy of the the initialAllSquares object with updated displayVals
-  // By doing it in a two step process, every non-zero display value in the initialAllSquares object will have a
+  // If they're different, it returns a deepCopy of the the initialAllSquares object with updated puzzleVals
+  // By doing it in a two step process, every non-zero puzzle value in the initialAllSquares object will have a
   // true "fixedVal" property, and any updates from the progress string don't.
   const [allSquares, setAllSquares] = useState<AllSquares>(initialAllSquares);
 
@@ -90,7 +90,7 @@ const PuzzlePageTest = () => {
 
   // onInputChange is fired every time there's an onChange event in an individual square.
   // It updates the state of allSquares based on the inidividual square that's been updated.
-  // const onInputChange: OnInputChange = (id: SquareId, newVal: DisplayVal): void => {
+  // const onInputChange: OnInputChange = (id: SquareId, newVal: PuzzleVal): void => {
   const onInputChange: OnInputChange = (id, newVal) => {
     setAllSquares(newAllSquares(allSquares, id, newVal));
   };
@@ -102,10 +102,10 @@ const PuzzlePageTest = () => {
   const solveOneSingleCandidate = () => {
     const singleCandidateOnce: SolutionProcedure = [[singleCandidateSolver, 1]];
 
-    // console.log("allSquares['A7'].displayVal", allSquares['A7'].displayVal);
+    // console.log("allSquares['A7'].puzzleVal", allSquares['A7'].puzzleVal);
     const newAllSquares = deepCopyAllSquares(allSquares);
     // console.log('deep copy made');
-    if (possibleValUpdateViaDisplayValue(newAllSquares)) {
+    if (possibleValUpdateViaPuzzleValue(newAllSquares)) {
       // console.log('updated possible vals');
     }
     if (soltutionExecuter(newAllSquares, singleCandidateOnce[0])) {

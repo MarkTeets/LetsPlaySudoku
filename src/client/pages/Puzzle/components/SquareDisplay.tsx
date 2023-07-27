@@ -1,13 +1,7 @@
-import React, { useState, useEffect, ChangeEvent } from 'react';
+import React, { useState, useEffect } from 'react';
 
 // Types
-import {
-  Square,
-  OnInputChange,
-  DisplayVal,
-  CurrentVal,
-  HandleValueChange
-} from '../../../../types';
+import { Square, OnInputChange, PuzzleVal, DisplayVal, HandleValueChange } from '../../../../types';
 
 type SquareDisplayProps = {
   square: Square;
@@ -16,18 +10,18 @@ type SquareDisplayProps = {
 };
 
 const SquareDisplay = ({ square, squareClassByLocation, onInputChange }: SquareDisplayProps) => {
-  const { id, displayVal } = square;
-  const [currentVal, setCurrentVal] = useState<CurrentVal>(displayVal === '0' ? '' : displayVal);
+  const { id, puzzleVal } = square;
+  const [displayVal, setDisplayVal] = useState<DisplayVal>(puzzleVal === '0' ? '' : puzzleVal);
 
   // This useEffect will make sure that when the reset button is clicked, boxes that were
-  // originally empty will be updated. Without this useEffect, currentVal state was persisting
+  // originally empty will be updated. Without this useEffect, displayVal state was persisting
   useEffect(() => {
-    if (displayVal === '0' && currentVal !== '') {
-      setCurrentVal('');
-    } else if (displayVal !== '0' && displayVal !== currentVal) {
-      setCurrentVal(displayVal);
+    if (puzzleVal === '0' && displayVal !== '') {
+      setDisplayVal('');
+    } else if (puzzleVal !== '0' && puzzleVal !== displayVal) {
+      setDisplayVal(puzzleVal);
     }
-  }, [displayVal]);
+  }, [puzzleVal]);
 
   // Function to be executed when user changes the value of a sudoku square.
   const handleValueChange: HandleValueChange = (e) => {
@@ -38,21 +32,21 @@ const SquareDisplay = ({ square, squareClassByLocation, onInputChange }: SquareD
       alert('Please enter a number from 1-9');
       return;
     }
-    // If they deleted the number, send a 0 to be updated as the new display value.
+    // If they deleted the number, send a 0 to be updated as the new puzzle value.
     // This will make saving the puzzle easier
     if (newVal === '') newVal = '0';
 
     const numStringRegex = /[0123456789]/;
 
     if (numStringRegex.test(newVal)) {
-      setCurrentVal(e.currentTarget.value as CurrentVal);
-      onInputChange(id, newVal as DisplayVal);
+      setDisplayVal(e.currentTarget.value as DisplayVal);
+      onInputChange(id, newVal as PuzzleVal);
     } else {
       alert('Please enter a number from 1-9');
     }
   };
 
-  return inputMaker(square, currentVal, squareClassByLocation, handleValueChange);
+  return inputMaker(square, displayVal, squareClassByLocation, handleValueChange);
 };
 
 export default SquareDisplay;
@@ -61,12 +55,12 @@ export default SquareDisplay;
 
 function inputMaker(
   square: Square,
-  currentVal: CurrentVal,
+  displayVal: DisplayVal,
   squareClassByLocation: string,
   handleValueChange: HandleValueChange
 ) {
-  const { id, displayVal, duplicate, fixedVal } = square;
-  let classes = `square-display _${displayVal} ${squareClassByLocation}`;
+  const { id, puzzleVal, duplicate, fixedVal } = square;
+  let classes = `square-display _${puzzleVal} ${squareClassByLocation}`;
 
   if (duplicate) classes += ' duplicate-number';
 
@@ -77,7 +71,7 @@ function inputMaker(
         type='text'
         className={classes}
         id={id}
-        value={displayVal}
+        value={puzzleVal}
         disabled
       />
     );
@@ -89,7 +83,7 @@ function inputMaker(
       className={classes}
       id={id}
       maxLength={1}
-      value={currentVal}
+      value={displayVal}
       onChange={(e) => handleValueChange(e)}
     />
   );
