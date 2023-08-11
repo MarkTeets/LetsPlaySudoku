@@ -22,7 +22,7 @@ import PuzzleSelectMenu from './pages/PuzzleSelect/PuzzleSelectMenu';
 import SavedPuzzleSelect from './pages/PuzzleSelect/SavedPuzzleSelect';
 // import PuzzleSelectViaFilters from './pages/PuzzleSelect/PuzzleSelectViaFilters';
 import PuzzlePage from './pages/Puzzle/PuzzlePage';
-import PuzzlePageTest, { puzzleTestLoader } from './pages/Puzzle/PuzzlePageTest';
+// import PuzzlePageTest, { puzzleTestLoader } from './pages/Puzzle/PuzzlePageTest';
 import NotFound from './pages/NotFound';
 import ErrorPage from './pages/ErrorPage';
 
@@ -61,11 +61,11 @@ const router = createBrowserRouter(
           path='puzzleSelectViaFilters'
           element={<PuzzleSelectViaFilters key='PuzzleSelectViaFilters' />}
         /> */}
-        <Route
+        {/* <Route
           path='playTest'
           element={<PuzzlePageTest key='PuzzlePageTest' />}
           loader={puzzleTestLoader}
-        />
+        /> */}
         <Route path='play/:puzzleNumber' element={<PuzzlePage key='PuzzlePage' />} />
       </Route>
 

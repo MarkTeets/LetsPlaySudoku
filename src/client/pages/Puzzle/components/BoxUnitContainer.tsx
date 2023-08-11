@@ -1,31 +1,28 @@
-import React, { useMemo } from 'react';
-import SquareDisplay from './SquareDisplay';
+import React from 'react';
+
+// Components
+import SquareContainer from './SquareContainer';
 
 // Types
-import { OnInputChange, Square } from '../../../../types';
+import { BoxUnitContainerProps, SquareContainerProps } from '../../../frontendTypes';
+import { SquareId } from '../../../../types';
 
-type BoxUnitContainerProps = {
-  boxUnit: Square[];
-  onInputChange: OnInputChange;
-};
-
-const BoxUnitContainer = ({ boxUnit, onInputChange }: BoxUnitContainerProps) => {
-  const squares = useMemo<JSX.Element[]>(() => generateSquares(boxUnit, onInputChange), [boxUnit]);
-
-  return <div className='box-unit-container'>{squares}</div>;
+const BoxUnitContainer = ({ boxUnit }: BoxUnitContainerProps) => {
+  return <div className='box-unit-container'>{generateSquares(boxUnit)}</div>;
 };
 
 export default BoxUnitContainer;
 
-function generateSquares(boxUnit: Square[], onInputChange: OnInputChange): JSX.Element[] {
-  return boxUnit.map((square, index) => {
-    return (
-      <SquareDisplay
-        squareClassByLocation={`square-${index + 1}`}
-        square={square}
-        key={`Square-${square.id}`}
-        onInputChange={onInputChange}
-      />
-    );
+function generateSquares(boxUnit: Set<SquareId>): React.JSX.Element[] {
+  const squares = [] as React.JSX.Element[];
+  let position = 1;
+  boxUnit.forEach((squareId) => {
+    const squareContainerProps: SquareContainerProps = {
+      squareId,
+      squareClassByLocation: `square-${position}`
+    };
+    squares.push(<SquareContainer key={`Square-${squareId}`} {...squareContainerProps} />);
+    position += 1;
   });
+  return squares;
 }

@@ -3,7 +3,8 @@ import { useNavigate, Form, useActionData } from 'react-router-dom';
 import { userContext, pageContext } from '../../context';
 
 // Types
-import { UserContextValue, PageContextValue, SignInData, SignInResponse } from '../../../types';
+import { UserContextValue, SignInData, SignInResponse } from '../../../types';
+import { PageContextValue } from '../../frontendTypes';
 
 const SignUp = () => {
   const navigate = useNavigate();

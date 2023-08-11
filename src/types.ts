@@ -1,5 +1,5 @@
 // Types
-import { Dispatch, SetStateAction, ChangeEvent } from 'react';
+import { Dispatch, SetStateAction } from 'react';
 
 /**
  * Using 'type' rather than 'interface' for objects as the definition of the type shows up clearer on hover over
@@ -114,6 +114,8 @@ export type DisplayVal = '' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9
  */
 export type PossibleVal = '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9';
 
+export type PuzzleVal2 = '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9';
+
 /**
  * An allPeers object uses this type definition. For any given first square, a peer is another
  * square that can't simultaneously hold the same number as the first square based on the rules
@@ -127,6 +129,29 @@ export type PossibleVal = '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9';
  */
 export type AllPeers = {
   [key: string]: Set<SquareId>;
+};
+
+export type FilledSquare = {
+  puzzleVal: PuzzleVal2;
+  duplicate: boolean;
+  fixedVal: boolean;
+  numberHighlight: boolean;
+};
+
+export type FilledSquares = {
+  size: number;
+} & {
+  [key in SquareId]?: FilledSquare;
+};
+
+export type PencilSquares = {
+  [key in SquareId]?: PencilSquare;
+};
+
+export type PencilSquare = {
+  size: number;
+} & {
+  [key in PuzzleVal2]?: PencilVal;
 };
 
 /** Square
@@ -146,25 +171,40 @@ export type AllPeers = {
  *
  * @member fixedVal - boolean - This will be true if the number for a given square was provided by the
  * original puzzle string. It's used to keep a user from changing the value of said square
- *
- * @member possibleVal - Set or null - Will be null for squares where fixedVal is true, and a Set of possible
- * value strings from '1' to '9' that the square could hold in a finished sudoku puzzle (aka not '0' or '').
- * Used by solver functions which remove possibleVal options from the set until only one possible value for a
- * square remains, such that said square can be filled in and eventually the puzzle will be solved
- *
+ * 
  * @member peers - Set - For any given first square, a peer is another square that can't simultaneously hold
  * the same number as the first square based on the rules of sudoku. This includes any square in the same
  * row, column, or unit box (box of 9 squares) as the first square. For example, the peers set for the square
  * with an id of 'A1' is {"A2", "A3", "A4", "A5", "A6", "A7", "A8", "A9", "B1", "C1", "D1", "E1", "F1", "G1",
  * "H1", "I1", "B2", "B3", "C2", "C3"}
+ *
+ * @member possibleVal - Set or null - Will be null for squares where fixedVal is true, and a Set of possible
+ * value strings from '1' to '9' that the square could hold in a finished sudoku puzzle (aka not '0' or '').
+ * Used by solver functions which remove possibleVal options from the set until only one possible value for a
+ * square remains, such that said square can be filled in and eventually the puzzle will be solved
+
  */
-export type Square = {
-  id: SquareId;
-  puzzleVal: PuzzleVal;
+// export type Square = {
+//   id: SquareId;
+//   puzzleVal: PuzzleVal;
+//   duplicate: boolean;
+//   fixedVal: boolean;
+//   peers: Set<SquareId>;
+//   pencilVals: PencilVals | null;
+//   possibleVal: Set<PossibleVal> | null;
+//   backgroundHighlight: boolean;
+//   numberHighlight: boolean;
+// };
+
+export type PencilVals = {
+  hasPencilNums?: boolean;
+} & {
+  [key: string]: PencilVal;
+};
+
+export type PencilVal = {
   duplicate: boolean;
-  fixedVal: boolean;
-  possibleVal: Set<PossibleVal> | null;
-  peers: Set<SquareId>;
+  highlightNumber: boolean;
 };
 
 /** UserPuzzleObj
@@ -180,6 +220,7 @@ export type Square = {
 export type UserPuzzleObj = {
   puzzleNumber: number;
   progress: string;
+  pencilProgress: string;
 };
 
 /** AllPuzzles
@@ -274,12 +315,6 @@ export type PuzzleCollectionContextValue = {
   setPuzzleCollection: SetPuzzleCollection;
 };
 
-export type PageInfo = { current: string };
-
-export type PageContextValue = {
-  pageInfo: PageInfo;
-};
-
 export type SignInData = {
   user?: User;
   puzzleCollection?: PuzzleCollection;
@@ -303,7 +338,3 @@ export type PuzzleResponse = {
   status: QueryStatus;
   puzzleObj?: Puzzle;
 };
-
-export type OnInputChange = (id: SquareId, newVal: PuzzleVal) => void;
-
-export type HandleValueChange = (e: ChangeEvent<HTMLInputElement>) => void;

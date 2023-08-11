@@ -8,13 +8,12 @@ import {
   SetUser,
   PuzzleCollection,
   SetPuzzleCollection,
-  PageInfo,
   UserContextValue,
   PuzzleCollectionContextValue,
-  PageContextValue,
   SignInData,
   SignInResponse
 } from '../../../types';
+import { PageInfo, PageContextValue } from '../../frontendTypes';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -83,16 +82,6 @@ const Login = () => {
             </label>
             {newLoginData?.error && <p>{newLoginData.error}</p>}
             <button className='login-button'>Login</button>
-            {/* <div
-              style={{
-                position: 'absolute',
-                background: 'black',
-                height: '100px',
-                width: '100px',
-              }}
-            >
-              Big block
-            </div> */}
           </div>
         </Form>
       </div>

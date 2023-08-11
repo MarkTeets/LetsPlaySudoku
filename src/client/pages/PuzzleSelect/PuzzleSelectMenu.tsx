@@ -258,7 +258,8 @@ function addPuzzleToUserAndCollection(
 
   newUser.allPuzzles[puzzleNumber] = {
     puzzleNumber,
-    progress: fetchedPuzzleData.puzzle
+    progress: fetchedPuzzleData.puzzle,
+    pencilProgress: ''
   };
 
   setUser(newUser);
