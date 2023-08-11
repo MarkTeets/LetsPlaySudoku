@@ -101,6 +101,11 @@ button {
   border-radius: 5px;
 }
 
+.highlight-number-button {
+  background-color: lighten($buttonBackground, 20%);
+  box-shadow: 2px 2px 3px rgb(191, 0, 255);
+}
+
 #puzzle-container {
   display: grid;
   grid-template-rows: repeat(3, 1fr);
@@ -120,11 +125,32 @@ button {
   border: $bigBorderColor solid 1px;
 }
 
-*:disabled {
-color: inherit;
-}
+// *:disabled {
+// color: inherit;
+// }
 
 .square-display {
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  background-color: $squareBackground;
+  border: $innerBorderColor dotted 1px;
+  border-radius: 0;
+  outline: none;
+  appearance: none;
+  width: 100%;
+  height: 100%;
+  font-size: 25px;
+  color: $numberColor;
+}
+
+.square-display:focus{
+  background-color: darken($squareBackground, 5%);
+}
+
+.pencil-container {
   box-sizing: border-box;
   padding: 0;
   background-color: $squareBackground;
@@ -134,9 +160,29 @@ color: inherit;
   appearance: none;
   width: 100%;
   height: 100%;
-  text-align: center;
-  font-size: 20px;
   color: $numberColor;
+}
+
+.pencil-container:focus{
+  background-color: darken($squareBackground, 5%);
+}
+
+.pencil-square {
+  box-sizing: border-box;
+  display: grid;
+  grid-template-rows: repeat(3, 1fr);
+  grid-template-columns: repeat(3, 1fr);
+  color: lighten($numberColor, 2%);
+  width: 100%;
+  height: 100%;
+  align-items: center;
+}
+
+.pencil-val-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
 }
 
 .square-1, .square-2, .square-3 {
