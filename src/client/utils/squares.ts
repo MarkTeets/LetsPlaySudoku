@@ -1,21 +1,21 @@
+// Types
 import {
   SquareId,
-  PossibleVal,
+  PuzzleVal,
   AllPeers,
   FilledSquares,
   FilledSquare,
   PencilSquares,
-  PuzzleVal2,
   PencilSquare,
-  PencilVal
-} from '../../types';
-import { OnNumberChange, HandleFirstPencilSquaresDuplicates } from '../frontendTypes';
+  PencilData,
+  OnNumberChange,
+  HandleFirstPencilSquaresDuplicates,
+  AutofillPencilSquares
+} from '../frontendTypes';
 
-/**
- * This file exports a function that when invoked, returns a new instance of an allSquares object,
- * it takes a string parameter of length 81 representing sudoku puzzle, each char is 0-9, with 0
- * signifying empty space. There are also several helper functions to utilize this object
- */
+// Utilities
+
+import { newSolveSquares, updateSolveSquares } from './solutionFunctions';
 
 /**
  * Every SquareId from 'A1' to 'I9' in an array, utilized
@@ -111,7 +111,7 @@ const makeAllPeers = (): {
 //These variables are declared here to be used in the class definition to avoid recreating data
 export const { rows, cols, boxes, allPeers } = makeAllPeers();
 // export const unitBoxes = boxes;
-const numbers: PossibleVal[] = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
+const numbers: PuzzleVal[] = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
 /** isValidPuzzle
  *
@@ -139,6 +139,15 @@ const isValidPuzzle = (puzzleString: string): boolean => {
   return result;
 };
 
+export const newFilledSquare = (puzzleVal: PuzzleVal, fixedVal: boolean) => {
+  return {
+    puzzleVal,
+    duplicate: false,
+    fixedVal,
+    numberHighlight: false
+  };
+};
+
 export const filledSquaresFromString = (puzzleString?: string): FilledSquares => {
   const filledSquares: FilledSquares = { size: 0 };
 
@@ -150,13 +159,8 @@ export const filledSquaresFromString = (puzzleString?: string): FilledSquares =>
 
   allSquareIds.forEach((squareId, i) => {
     if (puzzleString[i] !== '0') {
-      const puzzleVal = puzzleString[i] as PuzzleVal2;
-      filledSquares[squareId] = {
-        puzzleVal,
-        duplicate: false,
-        fixedVal: true,
-        numberHighlight: false
-      };
+      const puzzleVal = puzzleString[i] as PuzzleVal;
+      filledSquares[squareId] = newFilledSquare(puzzleVal, true);
       filledSquares.size += 1;
     }
   });
@@ -195,7 +199,7 @@ export const pencilSquaresFromString = (pencilString?: string): PencilSquares =>
 
   for (let i = 0; i < matches.length; i += 2) {
     const squareId = matches[i] as SquareId;
-    const pencilNums = matches[i + 1].split('') as PuzzleVal2[];
+    const pencilNums = matches[i + 1].split('') as PuzzleVal[];
     pencilSquares[squareId] = { size: 0 } as PencilSquare;
     const pencilSquare = pencilSquares[squareId] as PencilSquare;
 
@@ -238,7 +242,7 @@ const isPencilSquaresDuplicateChange = (
   const squareIds = Object.keys(pencilSquares) as SquareId[];
   for (const squareId of squareIds) {
     const pencilSquare = pencilSquares[squareId] as PencilSquare;
-    const puzzleVals = Object.keys(pencilSquare).filter((key) => key !== 'size') as PuzzleVal2[];
+    const puzzleVals = Object.keys(pencilSquare).filter((key) => key !== 'size') as PuzzleVal[];
     for (const puzzleVal of puzzleVals) {
       let isDuplicate = false;
       allPeers[squareId].forEach((peerId) => {
@@ -250,7 +254,7 @@ const isPencilSquaresDuplicateChange = (
   return false;
 };
 
-const updateFilledSquaresDuplicates = (
+export const updateFilledSquaresDuplicates = (
   filledSquares: FilledSquares,
   pencilSquares: PencilSquares
 ) => {
@@ -274,12 +278,12 @@ const updatePencilSquaresDuplicates = (
   const squareIds = Object.keys(pencilSquares) as SquareId[];
   for (const squareId of squareIds) {
     const pencilSquare = pencilSquares[squareId] as PencilSquare;
-    const puzzleVals = Object.keys(pencilSquare).filter((key) => key !== 'size') as PuzzleVal2[];
+    const puzzleVals = Object.keys(pencilSquare).filter((key) => key !== 'size') as PuzzleVal[];
     for (const puzzleVal of puzzleVals) {
-      const pencilVal = pencilSquare[puzzleVal] as PencilVal;
-      pencilVal.duplicate = false;
+      const pencilData = pencilSquare[puzzleVal] as PencilData;
+      pencilData.duplicate = false;
       allPeers[squareId].forEach((peerId) => {
-        if (filledSquares[peerId]?.puzzleVal === puzzleVal) pencilVal.duplicate = true;
+        if (filledSquares[peerId]?.puzzleVal === puzzleVal) pencilData.duplicate = true;
       });
     }
   }
@@ -299,11 +303,11 @@ const deepCopyPencilSquares = (pencilSquares: PencilSquares) => {
   const squareIds = Object.keys(pencilSquares) as SquareId[];
   for (const squareId of squareIds) {
     const pencilSquare = pencilSquares[squareId] as PencilSquare;
-    const puzzleVals = Object.keys(pencilSquare).filter((key) => key !== 'size') as PuzzleVal2[];
+    const puzzleVals = Object.keys(pencilSquare).filter((key) => key !== 'size') as PuzzleVal[];
     newPencilSquares[squareId] = { size: pencilSquare.size };
     const newPencilSquare = newPencilSquares[squareId] as PencilSquare;
     for (const puzzleVal of puzzleVals) {
-      newPencilSquare[puzzleVal] = { ...(pencilSquare[puzzleVal] as PencilVal) };
+      newPencilSquare[puzzleVal] = { ...(pencilSquare[puzzleVal] as PencilData) };
     }
   }
   return newPencilSquares;
@@ -322,16 +326,12 @@ export const updateFilledSquaresFromProgress = (
   for (let i = 0; i < allSquareIds.length; i++) {
     const squareId = allSquareIds[i];
     if (filledSquareProgress[i] !== '0') {
-      const progressVal = filledSquareProgress[i] as PuzzleVal2;
+      const progressVal = filledSquareProgress[i] as PuzzleVal;
       // Case 1 : progressVal is non-zero and square doesn't exist
       // Make new square, add it to newFilledSquares
       if (!newFilledSquares[squareId]) {
-        newFilledSquares[squareId] = {
-          puzzleVal: progressVal,
-          duplicate: false,
-          fixedVal: false,
-          numberHighlight: false
-        };
+        newFilledSquares[squareId] = newFilledSquare(progressVal, false);
+        newFilledSquares.size += 1;
       } else {
         // Case 2: progressVal is non-zero and square exists and square.puzzleVal is different
         // Change puzzleVal to progressVal
@@ -380,12 +380,8 @@ export const onNumberChange: OnNumberChange = (
     // update value at newFilledSquares[clickedSquare] accordingly:
     //  add if empty or another number, remove if puzzleVal matches number clicked
     if (!newFilledSquares[squareId]) {
-      newFilledSquares[squareId] = {
-        puzzleVal: buttonVal,
-        duplicate: false,
-        fixedVal: false,
-        numberHighlight: false
-      };
+      newFilledSquares[squareId] = newFilledSquare(buttonVal, false);
+      newFilledSquares.size += 1;
     } else {
       const square = newFilledSquares[squareId] as FilledSquare;
       if (square.puzzleVal !== buttonVal) {
@@ -397,11 +393,31 @@ export const onNumberChange: OnNumberChange = (
         newFilledSquares.size -= 1;
       }
     }
+
     if (pencilSquares[squareId]) {
       newPencilSquares = deepCopyPencilSquares(pencilSquares);
       delete newPencilSquares[squareId];
     } else if (isPencilSquaresDuplicateChange(newFilledSquares, pencilSquares)) {
       newPencilSquares = deepCopyPencilSquares(pencilSquares);
+    }
+
+    let haveToDeleteSomePencilSquares = false;
+    allPeers[squareId].forEach((peerId) => {
+      if (pencilSquares[peerId]?.[buttonVal]) {
+        haveToDeleteSomePencilSquares = true;
+      }
+    });
+
+    if (!newPencilSquares && haveToDeleteSomePencilSquares) {
+      newPencilSquares = deepCopyPencilSquares(pencilSquares);
+    }
+
+    if (haveToDeleteSomePencilSquares) {
+      allPeers[squareId].forEach((peerId) => {
+        if (newPencilSquares?.[peerId]?.[buttonVal]) {
+          delete newPencilSquares?.[peerId]?.[buttonVal];
+        }
+      });
     }
   } else {
     newPencilSquares = deepCopyPencilSquares(pencilSquares);
@@ -485,7 +501,7 @@ export const createProgressString = (filledSquares: FilledSquares): string => {
   return progress;
 };
 
-const puzzleVals: PuzzleVal2[] = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
+const puzzleVals: PuzzleVal[] = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
 export const createPencilProgressString = (pencilSquares: PencilSquares) => {
   let pencilProgress = '';
@@ -499,4 +515,37 @@ export const createPencilProgressString = (pencilSquares: PencilSquares) => {
     }
   }
   return pencilProgress;
+};
+
+export const autofillPencilSquares: AutofillPencilSquares = (
+  filledSquares,
+  setFilledSquares,
+  setPencilSquares
+) => {
+  const pencilSquares = {} as PencilSquares;
+  const solveSquares = newSolveSquares();
+  updateSolveSquares(filledSquares, solveSquares);
+
+  for (const squareId of allSquareIds) {
+    if (solveSquares[squareId].size > 0) {
+      pencilSquares[squareId] = { size: 0 };
+      const pencilSquare = pencilSquares[squareId] as PencilSquare;
+      solveSquares[squareId].forEach((puzzleVal) => {
+        pencilSquare[puzzleVal] = {
+          duplicate: false,
+          highlightNumber: false
+        };
+        pencilSquare.size += 1;
+      });
+    }
+  }
+  if (isFilledSquaresDuplicateChange(filledSquares, pencilSquares)) {
+    const newFilledSquares = deepCopyFilledSquares(filledSquares);
+    updateFilledSquaresDuplicates(newFilledSquares, pencilSquares);
+    updatePencilSquaresDuplicates(newFilledSquares, pencilSquares);
+    setFilledSquares(newFilledSquares);
+  } else {
+    updatePencilSquaresDuplicates(filledSquares, pencilSquares);
+  }
+  setPencilSquares(pencilSquares);
 };

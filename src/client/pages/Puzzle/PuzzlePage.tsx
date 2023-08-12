@@ -1,6 +1,19 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
+// Types
+import {
+  FilledSquares,
+  PencilSquares,
+  NumberSelectBarProps,
+  SquareContextValue,
+  ClickedSquare,
+  SetUser,
+  UserContextValue,
+  PuzzleCollectionContextValue
+} from '../../frontendTypes';
+import { User, PuzzleCollection } from '../../../types';
+
 // Components
 import PuzzleContainer from './components/PuzzleContainer';
 import NumberSelectBar from './components/NumberSelectBar';
@@ -10,28 +23,18 @@ import { userContext, puzzleCollectionContext, squareContext } from '../../conte
 
 // Utilities
 import {
+  filledSquaresFromString,
+  updateFilledSquaresFromProgress,
+  handleFirstPencilSquaresDuplicates,
+  pencilSquaresFromString,
   isPuzzleFinished,
   createProgressString,
-  updateFilledSquaresFromProgress,
   createPencilProgressString,
-  handleFirstPencilSquaresDuplicates
+  autofillPencilSquares
 } from '../../utils/squares';
-
-// Types
-import { filledSquaresFromString, pencilSquaresFromString } from '../../utils/squares';
-import { NumberSelectBarProps, SquareContextValue, ClickedSquare } from '../../frontendTypes';
-import {
-  User,
-  PuzzleCollection,
-  SetUser,
-  UserContextValue,
-  PuzzleCollectionContextValue,
-  FilledSquares,
-  PencilSquares
-} from '../../../types';
-
 const savePuzzle = savePuzzleAtLeastOnce();
 
+// Main Component
 const PuzzlePage = () => {
   const navigate = useNavigate();
   const puzzleNumber = Number(useParams().puzzleNumber);
@@ -83,7 +86,7 @@ const PuzzlePage = () => {
     // setTimeout is used so the allSquares update is painted before this alert goes out
     if (isPuzzleFinished(filledSquares)) {
       const clear = setTimeout(() => {
-        alert('You win!');
+        alert('You finished the puzzle!');
       }, 0);
       return () => clearTimeout(clear);
     }
@@ -95,8 +98,16 @@ const PuzzlePage = () => {
   //   // console.log('useEffect allSquares', allSquares);
   // });
 
-  const pencilModeSwitch = (): void => {
+  const pencilModeSwitch = () => {
     setPencilMode(!pencilMode);
+  };
+
+  const onAutofillPencilClick = () => {
+    autofillPencilSquares(filledSquares, setFilledSquares, setPencilSquares);
+  };
+
+  const onSaveClick = () => {
+    savePuzzle(puzzleNumber, filledSquares, pencilSquares, user, setUser);
   };
 
   const resetPuzzle = (): void => {
@@ -107,6 +118,7 @@ const PuzzlePage = () => {
   };
 
   const SquareContextValue: SquareContextValue = {
+    clickedSquare,
     setClickedSquare,
     filledSquares,
     pencilSquares
@@ -135,11 +147,8 @@ const PuzzlePage = () => {
           <button onClick={pencilModeSwitch} className={pencilClasses}>
             Pencil Mode
           </button>
-          <button
-            onClick={() => savePuzzle(puzzleNumber, filledSquares, pencilSquares, user, setUser)}
-          >
-            Save
-          </button>
+          <button onClick={onAutofillPencilClick}>Auto-fill Pencil</button>
+          <button onClick={onSaveClick}>Save</button>
           <button onClick={resetPuzzle}>Reset</button>
           <button onClick={() => alert('Game Data feature is currently being built')}>
             Game Data
@@ -152,8 +161,7 @@ const PuzzlePage = () => {
 
 export default PuzzlePage;
 
-//---- HELPER FUNCTIONS --------------------------------------------------------------------------------------------------------------
-
+// Helper Functions
 /** firstFilledSquares
  *
  * When the page first loads, the original puzzle needs to be used to make the initialFilledSquares object to make sure the correct numbers

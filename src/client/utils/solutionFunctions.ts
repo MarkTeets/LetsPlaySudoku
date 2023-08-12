@@ -1,13 +1,20 @@
+// Types
+import { ESLint } from 'eslint';
+import { Puzzle } from '../../types';
+import { PuzzleVal, FilledSquares, PencilSquares } from '../frontendTypes';
+
+// Utilities
 import {
   rows,
   cols,
   boxes,
-  AllSquares,
   allSquareIds,
-  findDuplicates,
-  isPuzzleFinished
+  allPeers,
+  isPuzzleFinished,
+  newFilledSquare,
+  filledSquaresFromString,
+  updateFilledSquaresDuplicates
 } from './squares';
-import { PuzzleVal, PossibleVal, Puzzle, SquareId } from '../../types';
 
 /**
  * Includes all of the names of the solution techniques used to solve the puzzle
@@ -73,7 +80,11 @@ type ConversionCache = {
  * take the allSquares object to be manipulated, as well as a solutionCache
  * so that the solutionCache can be updated if the solveTechnique is used
  */
-type SolveTechnique = (allSquares: AllSquares, solutionCache: SolutionCache) => boolean;
+type SolveTechnique = (
+  filledSquares: FilledSquares,
+  solveSquares: SolveSquares,
+  solutionCache: SolutionCache
+) => boolean;
 
 /**
  * A solve order is an array including a SolveTechnique function at the 0th
@@ -111,24 +122,73 @@ type PuzzleResult = [SolutionCache, number];
  */
 type CompletedPuzzleResults = PuzzleResult[];
 
-/** possibleValUpdateViaPuzzleValue
+const printFilledSquaresKeys = (filledSquares: FilledSquares) => {
+  const keys = [];
+  for (const squareId of allSquareIds) {
+    if (filledSquares[squareId]) {
+      keys.push(squareId);
+    }
+  }
+
+  console.log('size:', filledSquares.size); // eslint-disable-line
+  console.log('Squares present:', keys); // eslint-disable-line
+};
+
+type SolveSquares = {
+  [key: string]: Set<PuzzleVal>;
+};
+
+const numbers: PuzzleVal[] = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
+
+export const newSolveSquares = () => {
+  const solveSquares: SolveSquares = {};
+  for (const squareId of allSquareIds) {
+    solveSquares[squareId] = new Set(numbers);
+  }
+  return solveSquares;
+};
+
+//  Testing
+// const samplePuzzle1 =
+//   '070000043040009610800634900094052000358460020000800530080070091902100005007040802';
+// const samplePuzzle2 =
+//   '679518243543729618821634957794352186358461729216897534485276391962183475137945860';
+// const samplePuzzle3 =
+//   '679518243543729618821634957794352186358461729216897534485276391962183475000000000';
+// const sampleSolution1 =
+//   '679518243543729618821634957794352186358461729216897534485276391962183475137945862';
+
+// const currentSample = samplePuzzle1;
+// const sampleFilledSquares = filledSquaresFromString(currentSample);
+// console.log('currentSample:', currentSample);
+// console.log('sampleFilledSquares', sampleFilledSquares);
+
+/** solveSquaresUpdateViaPuzzleValue
  *
- * Takes an allSquares objects and updates the possibleVal sets of the squares based on
- * the puzzleVals present in the squares. It does this iteratively, checking each square
- * and updating the possibleVals of its peers if said square has a non-zero puzzle value
+ * Updates the set of possible values for a square stored on the solveSquares object
+ * based on the puzzleVals present in the squares of filledSquares. solveSquares square
+ * sets are left containing only the puzzleVals that could go in that square without causing
+ * a duplicate based on filledSquares. solveSquares square sets are cleared for squares that
+ * are already present in filledSquares.
  *
- * @param allSquares
+ * @param filledSquares
+ * @param solveSquares
  * @returns A boolean, true if a change was made to the allSquares argument
  */
-export const possibleValUpdateViaPuzzleValue = (allSquares: AllSquares): boolean => {
+export const updateSolveSquares = (
+  filledSquares: FilledSquares,
+  solveSquares: SolveSquares
+): boolean => {
   let changeMade = false;
 
   allSquareIds.forEach((squareId) => {
-    if (allSquares[squareId].puzzleVal !== '0') {
-      const val = allSquares[squareId].puzzleVal as PossibleVal;
-      allSquares[squareId].peers.forEach((peer) => {
-        if (allSquares[peer].possibleVal?.has(val)) {
-          allSquares[peer].possibleVal?.delete(val);
+    if (filledSquares[squareId]) {
+      solveSquares[squareId].clear();
+    } else {
+      allPeers[squareId].forEach((peer) => {
+        if (filledSquares[peer]) {
+          const val = filledSquares[peer]?.puzzleVal as PuzzleVal;
+          solveSquares[squareId].delete(val);
           changeMade = true;
         }
       });
@@ -138,137 +198,30 @@ export const possibleValUpdateViaPuzzleValue = (allSquares: AllSquares): boolean
   return changeMade;
 };
 
-/** neighboringLinearUnits
+/** newSolutionCache
  *
- * for use in singlePositionNumbersOnlySolver. Given a number from 0-8 denoting a
- * sudoku grid row or col, this function returns an array of the numbers of the other
- * rows or grid in the same unit box. For example, if given the input 0, it'll return
- * [1,2]. If given input 4, it'll return [3,5]. These returned line numbers can be used
- * with the rows and cols arrays to access the squareIds in a row or col of interest
+ * Factory function that produces a new solution cache object.
  *
- * @param linearPosition - number - from 0-8 representing a row or grid line in a sudoku puzzle
- * @returns - number array of length 2
+ * @returns SolutionCache object
  */
-const neighboringLinearUnits = (linearPosition: number): number[] => {
-  const section = Math.floor(linearPosition / 3);
-  const mod = linearPosition % 3;
-  let firstNum: number;
-  let secondNum: number;
-  if (mod === 0) {
-    firstNum = section * 3 + 1;
-    secondNum = section * 3 + 2;
-  } else if (mod === 1) {
-    firstNum = section * 3;
-    secondNum = section * 3 + 2;
-  } else {
-    firstNum = section * 3;
-    secondNum = section * 3 + 1;
-  }
-  return [firstNum, secondNum];
-};
-
-/** fillPuzzleVals
- *
- * Given an allSquares object, a unit (set of 9 correlated squares, could be row or col for this function),
- * and the current box for a given square, this function returns an array containing every non-zero puzzle value
- * in that unit that's not in the current box.
- *
- * @param allSquares
- * @param unit
- * @param currentBox
- * @returns
- */
-const fillPuzzleVals = (
-  allSquares: AllSquares,
-  unit: Set<SquareId>,
-  currentBox: Set<SquareId>
-): PuzzleVal[] => {
-  const result: PuzzleVal[] = [];
-
-  unit.forEach((squareId) => {
-    if (!currentBox.has(squareId) && allSquares[squareId].puzzleVal !== '0') {
-      result.push(allSquares[squareId].puzzleVal);
-    }
-  });
-
-  return result;
-};
-
-/** puzzleValIntersection
- *
- * Function is used in singlePositionSolver. It takes 4 arrays of puzzleVals
- * and returns an arrray holding the numbers common to all 4 arrays. Given the nature
- * of sudoku, if a number is returned in the array it will necessarily be the number
- * for the square. Otherwise it'll be empty
- *
- * @param puzzleValArrays
- */
-const puzzleValIntersection = (...puzzleValArrays: PuzzleVal[][]): PuzzleVal[] => {
-  return puzzleValArrays.reduce((accumulator, currentArray): PuzzleVal[] => {
-    const intermediate: PuzzleVal[] = [];
-    for (const puzzleVal of accumulator) {
-      if (currentArray.includes(puzzleVal)) {
-        intermediate.push(puzzleVal);
-      }
-    }
-    return intermediate;
-  });
-};
-
-/**
- * This method only takes into account the numbers filled in, not possible positions,
- * making it much worse than the actual single position technique. A lot of the ideas
- * will carry over though for the more efficient mthod to come
- */
-export const singlePositionNumbersOnlySolver: SolveTechnique = (allSquares, solutionCache) => {
-  let changeMade = false;
-  for (const squareId of allSquareIds) {
-    // console.log('squareId', squareId);
-    // If there's already a value for a certain square, skip over it
-    if (allSquares[squareId].puzzleVal !== '0') continue;
-    // We need the rows and cols required to look in for a match. Get them by using the
-    // squareId's position
-    const rowNum = squareId.charCodeAt(0) - 65;
-    const colNum = Number(squareId[1]) - 1;
-    const [firstRow, secondRow] = neighboringLinearUnits(rowNum);
-    const [firstCol, secondCol] = neighboringLinearUnits(colNum);
-    // Now find the current box the squareId is in so we can ignore all of the numbers there
-    let currentBox = boxes[0];
-    for (const box of boxes) {
-      if (box.has(squareId)) {
-        currentBox = box;
-      }
-    }
-
-    const firstRowPuzzleVals = fillPuzzleVals(allSquares, rows[firstRow], currentBox);
-    const secondRowPuzzleVals = fillPuzzleVals(allSquares, rows[secondRow], currentBox);
-    const firstColPuzzleVals = fillPuzzleVals(allSquares, cols[firstCol], currentBox);
-    const secondColPuzzleVals = fillPuzzleVals(allSquares, cols[secondCol], currentBox);
-
-    const commonPuzzleVal: PuzzleVal[] = puzzleValIntersection(
-      firstRowPuzzleVals,
-      secondRowPuzzleVals,
-      firstColPuzzleVals,
-      secondColPuzzleVals
-    );
-
-    if (commonPuzzleVal.length > 0) {
-      allSquares[squareId].puzzleVal = commonPuzzleVal[0];
-      allSquares[squareId].possibleVal?.clear();
-      solutionCache.singleCandidate += 1;
-      changeMade = true;
-      // console.log(
-      //   'singlePositionSolver:',
-      //   squareId,
-      //   'puzzleVal set to',
-      //   commonPuzzleVal[0],
-      //   ', possibleVal size is now',
-      //   allSquares[squareId].possibleVal?.size
-      // );
-      break;
-    }
-  }
-  return changeMade;
+export const newSolutionCache = () => {
+  const solutionCache: SolutionCache = {
+    singleCandidate: 0,
+    singlePosition: 0,
+    candidateLines: 0,
+    doublePairs: 0,
+    multipleLines: 0,
+    nakedPair: 0,
+    hiddenPair: 0,
+    nakedTriple: 0,
+    hiddenTriple: 0,
+    xWing: 0,
+    forcingChains: 0,
+    nakedQuad: 0,
+    hiddenQuad: 0,
+    swordfish: 0
+  };
+  return solutionCache;
 };
 
 /** singleCandidateSolver
@@ -278,25 +231,31 @@ export const singlePositionNumbersOnlySolver: SolveTechnique = (allSquares, solu
  * happens, the function returns true. If the function iterates over the entire allSquares object without
  * finding a possibleVal set of size 1, it returns false.
  *
- * @param allSquares
+ * @param filledSquares
+ * @param solveSquares
  * @param solutionCache object which tracks how many times a particular solution technique is used
  * @returns A boolean, true if a change was made to the allSquares argument
  */
-export const singleCandidateSolver: SolveTechnique = (allSquares, solutionCache) => {
-  possibleValUpdateViaPuzzleValue(allSquares);
+export const singleCandidateSolver: SolveTechnique = (
+  filledSquares,
+  solveSquares,
+  solutionCache
+) => {
+  updateSolveSquares(filledSquares, solveSquares);
   for (const squareId of allSquareIds) {
-    if (allSquares[squareId].possibleVal?.size === 1) {
-      const val: PuzzleVal = allSquares[squareId].possibleVal?.values().next().value as PossibleVal;
-      allSquares[squareId].puzzleVal = val;
-      allSquares[squareId].possibleVal?.delete(val);
+    if (solveSquares[squareId].size === 1) {
+      const val = solveSquares[squareId].values().next().value as PuzzleVal;
+      filledSquares[squareId] = newFilledSquare(val, false);
+      filledSquares.size += 1;
+      solveSquares[squareId].delete(val);
       solutionCache.singleCandidate += 1;
       // console.log(
       //   'singleCandidateSolver:',
       //   squareId,
       //   'puzzleVal set to',
       //   val,
-      //   ', possibleVal size is now',
-      //   allSquares[squareId].possibleVal?.size
+      //   `, solveSquares[${squareId}] size is now`,
+      //   solveSquares[squareId].size
       // );
       return true;
     }
@@ -304,6 +263,9 @@ export const singleCandidateSolver: SolveTechnique = (allSquares, solutionCache)
   // console.log('solutionCache.singleCandidate:', solutionCache.singleCandidate);
   return false;
 };
+
+// Testing:
+// singleCandidateSolver(sampleFilledSquares, newSolveSquares(), newSolutionCache());
 
 const defaultSolutionProcedure: SolutionProcedure = [[singleCandidateSolver, 81]];
 
@@ -321,26 +283,26 @@ const defaultSolutionProcedure: SolutionProcedure = [[singleCandidateSolver, 81]
  * @returns A boolean, true if a change was made to the allSquares argument
  */
 export const soltutionExecuter = (
-  allSquares: AllSquares,
+  filledSquares: FilledSquares,
+  solveSquares: SolveSquares = newSolveSquares(),
   solveOrder: SolveOrder = defaultSolutionProcedure[0],
-  solutionCache: SolutionCache = defaultSolutionCache()
+  solutionCache: SolutionCache = newSolutionCache()
 ): boolean => {
   let changeMade = false;
   const [solveTechnique, timesToPerform] = solveOrder;
 
   for (let i = 0; i < timesToPerform; i++) {
     // console.log('About to try solution technique:', solveTechnique);
-    // possibleValUpdateViaPuzzleValue(allSquares); moved into single candidate solver for now
-    if (solveTechnique(allSquares, solutionCache)) {
+    if (solveTechnique(filledSquares, solveSquares, solutionCache)) {
       changeMade = true;
-      // console.log('solve technique updated a square');
-      // This will update the possibleVal set every time a change is made
-      // Remove this call and call in puzzleSolver instead for batch processing
     } else break;
   }
-
+  // printFilledSquaresKeys(filledSquares);
   return changeMade;
 };
+
+// Testing
+// soltutionExecuter(sampleFilledSquares);
 
 const conversionCache: ConversionCache = {
   singleCandidate: [10, 10],
@@ -393,9 +355,10 @@ const convertSolutionCacheToDifficultyScore = (solutionCache: SolutionCache): nu
  * @returns a boolean representing whether or not the allSquares object was changed
  */
 export const puzzleSolver = (
-  allSquares: AllSquares,
+  filledSquares: FilledSquares,
+  solveSquares: SolveSquares = newSolveSquares(),
   solutionProcedure: SolutionProcedure = defaultSolutionProcedure,
-  solutionCache: SolutionCache = defaultSolutionCache()
+  solutionCache: SolutionCache = newSolutionCache()
 ): boolean => {
   let changeMade = false;
   let changedLastIteration = false;
@@ -403,7 +366,7 @@ export const puzzleSolver = (
     changedLastIteration = false;
     for (const solveOrder of solutionProcedure) {
       // console.log('solveOrder:', solveOrder);
-      if (soltutionExecuter(allSquares, solveOrder, solutionCache)) {
+      if (soltutionExecuter(filledSquares, solveSquares, solveOrder, solutionCache)) {
         changedLastIteration = true;
         changeMade = true;
       }
@@ -411,11 +374,15 @@ export const puzzleSolver = (
   } while (changedLastIteration);
 
   if (changeMade) {
-    findDuplicates(allSquares);
+    // To see if the puzzle is finished correctly in puzzleDocumentPopulater
+    updateFilledSquaresDuplicates(filledSquares, {} as PencilSquares);
   }
-
+  // printFilledSquaresKeys(filledSquares);
   return changeMade;
 };
+
+// Testing
+// puzzleSolver(sampleFilledSquares);
 
 /** defaultPuzzleDocument
  *
@@ -453,32 +420,6 @@ const defaultPuzzleDocument = (puzzleNumber: number, puzzle: string, solution: s
   return puzzleDoc;
 };
 
-/** defaultSolutionCache
- *
- * Factory function that produces a default solution cache object.
- *
- * @returns SolutionCache object
- */
-export const defaultSolutionCache = () => {
-  const solutionCache: SolutionCache = {
-    singleCandidate: 0,
-    singlePosition: 0,
-    candidateLines: 0,
-    doublePairs: 0,
-    multipleLines: 0,
-    nakedPair: 0,
-    hiddenPair: 0,
-    nakedTriple: 0,
-    hiddenTriple: 0,
-    xWing: 0,
-    forcingChains: 0,
-    nakedQuad: 0,
-    hiddenQuad: 0,
-    swordfish: 0
-  };
-  return solutionCache;
-};
-
 /** puzzleDocumentPopulater
  *
  * Takes a puzzle string and generates a Puzzle object based on it. This
@@ -499,11 +440,11 @@ export const puzzleDocumentPopulater = (
   const completedPuzzleResults: CompletedPuzzleResults = [];
 
   for (const solutionProcedure of solutionProcedureSet) {
-    const solutionCache = defaultSolutionCache();
-    const allSquares = new AllSquares(puzzle);
+    const solutionCache = newSolutionCache();
+    const filledSquares = filledSquaresFromString(puzzle);
     // console.log('solutionProcedure', solutionProcedure);
-    puzzleSolver(allSquares, solutionProcedure, solutionCache);
-    if (isPuzzleFinished(allSquares)) {
+    puzzleSolver(filledSquares, newSolveSquares(), solutionProcedure, solutionCache);
+    if (isPuzzleFinished(filledSquares)) {
       completedPuzzleResults.push([
         solutionCache,
         convertSolutionCacheToDifficultyScore(solutionCache)
@@ -515,7 +456,7 @@ export const puzzleDocumentPopulater = (
     return 'failed to solve puzzle';
   }
 
-  let easiestSolution = defaultSolutionCache();
+  let easiestSolution = newSolutionCache();
   let minScore = Infinity;
 
   for (const result of completedPuzzleResults) {
@@ -534,4 +475,7 @@ export const puzzleDocumentPopulater = (
   return puzzleDoc;
 };
 
-// //const hasUniqueSolution = (allSquares? puzzle?): boolean => {}
+// Testing
+// console.log(puzzleDocumentPopulater(1, samplePuzzle1, sampleSolution1));
+
+// const hasUniqueSolution = (allSquares? puzzle?): boolean => {}
