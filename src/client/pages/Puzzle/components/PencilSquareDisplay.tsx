@@ -1,21 +1,39 @@
 import React, { useContext } from 'react';
 
 // Types
-import { PencilSquares, PencilVal, PencilSquare, PuzzleVal2, SquareId } from '../../../../types';
-import { SquareContextValue, SquareIdProp } from '../../../frontendTypes';
+import {
+  SquareId,
+  PuzzleVal,
+  SquareProps,
+  PencilSquares,
+  PencilSquare,
+  PencilData,
+  SquareContextValue
+} from '../../../frontendTypes';
 
 // Context
 import { squareContext } from '../../../context';
 
-const PencilSquareDisplay = (props: SquareIdProp) => {
-  const { squareId } = props;
+// Main Component
+const PencilSquareDisplay = (props: SquareProps) => {
+  const { squareId, squareClasses, onSquareClick } = props;
   const { pencilSquares } = useContext<SquareContextValue>(squareContext);
-  return <div className='pencil-square'>{makePencilGrid(squareId, pencilSquares)}</div>;
+
+  return (
+    <div
+      className={`pencil-square ${squareClasses}`}
+      data-square={squareId}
+      onClick={(event) => onSquareClick(event)}
+    >
+      {makePencilGrid(squareId, pencilSquares)}
+    </div>
+  );
 };
 
 export default PencilSquareDisplay;
 
-const puzzleVals: PuzzleVal2[] = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
+// Helper Functions
+const puzzleVals: PuzzleVal[] = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
 function makePencilGrid(squareId: SquareId, pencilSquares: PencilSquares) {
   const pencilSquare = pencilSquares[squareId] as PencilSquare;
@@ -25,19 +43,19 @@ function makePencilGrid(squareId: SquareId, pencilSquares: PencilSquares) {
   }
 
   for (const puzzleVal of puzzleVals) {
+    let classes = 'pencil-val-div';
     if (pencilSquare[puzzleVal]) {
-      let classes = 'pencil-val-div';
-      const pencilVal = pencilSquare[puzzleVal] as PencilVal;
-      if (pencilVal.duplicate) {
+      const pencilData = pencilSquare[puzzleVal] as PencilData;
+      if (pencilData.duplicate) {
         classes += ' duplicate-number';
       }
       pencilGrid.push(
-        <div className={classes}>
+        <div key={`${squareId}-pencil-${puzzleVal}`} className={classes}>
           <span>{puzzleVal}</span>
         </div>
       );
     } else {
-      pencilGrid.push(<div className='pencil-val-div'></div>);
+      pencilGrid.push(<div key={`${squareId}-pencil-${puzzleVal}`} className={classes}></div>);
     }
   }
   return pencilGrid;

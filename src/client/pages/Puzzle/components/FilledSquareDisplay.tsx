@@ -1,17 +1,17 @@
 import React, { useContext } from 'react';
 
+// Types
+import { FilledSquare, SquareContextValue, SquareProps } from '../../../frontendTypes';
+
 // Context
 import { squareContext } from '../../../context';
 
-// Types
-import { FilledSquare } from '../../../../types';
-import { SquareContextValue, SquareProps } from '../../../frontendTypes';
-
+// Main Component
 const FilledSquareDisplay = (props: SquareProps) => {
-  const { squareId, squareClassByLocation, onSquareClick } = props;
+  const { squareId, squareClasses, onSquareClick } = props;
   const { filledSquares } = useContext<SquareContextValue>(squareContext);
   const square = filledSquares[squareId] as FilledSquare;
-  let classes = `square-display ${squareClassByLocation}`;
+  let classes = `square-display ${squareClasses}`;
 
   if (square.duplicate) {
     classes += ' duplicate-number';

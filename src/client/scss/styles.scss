@@ -103,7 +103,7 @@ button {
 
 .highlight-number-button {
   background-color: lighten($buttonBackground, 20%);
-  box-shadow: 2px 2px 3px rgb(191, 0, 255);
+  box-shadow: 2px 2px 3px rgb(168, 40, 210);
 }
 
 #puzzle-container {
@@ -146,11 +146,7 @@ button {
   color: $numberColor;
 }
 
-.square-display:focus{
-  background-color: darken($squareBackground, 5%);
-}
-
-.pencil-container {
+.pencil-square {
   box-sizing: border-box;
   padding: 0;
   background-color: $squareBackground;
@@ -160,21 +156,10 @@ button {
   appearance: none;
   width: 100%;
   height: 100%;
-  color: $numberColor;
-}
-
-.pencil-container:focus{
-  background-color: darken($squareBackground, 5%);
-}
-
-.pencil-square {
-  box-sizing: border-box;
   display: grid;
   grid-template-rows: repeat(3, 1fr);
   grid-template-columns: repeat(3, 1fr);
-  color: lighten($numberColor, 2%);
-  width: 100%;
-  height: 100%;
+  color: lighten($numberColor, 5%);
   align-items: center;
 }
 
@@ -183,6 +168,14 @@ button {
   justify-content: center;
   align-items: center;
   font-size: 12px;
+}
+
+.current-square {
+background-color: darken($squareBackground, 9%);
+}
+
+.current-peer {
+  background-color: darken($squareBackground, 4.5%);
 }
 
 .square-1, .square-2, .square-3 {

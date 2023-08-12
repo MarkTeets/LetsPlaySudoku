@@ -1,7 +1,12 @@
 import React from 'react';
+
+// Components
 import BoxUnitContainer from './BoxUnitContainer';
+
+// Utilities
 import { boxes as unitBoxes } from '../../../utils/squares';
 
+// Main Component
 const PuzzleContainer = () => {
   return (
     <div key='puzzle-container' id='puzzle-container'>
@@ -12,6 +17,7 @@ const PuzzleContainer = () => {
 
 export default PuzzleContainer;
 
+// Helper Functions
 /** generateBoxes
  *
  * For each array in unitBoxes, I'd like to send down a Set of 9 squareIds that box will need to render

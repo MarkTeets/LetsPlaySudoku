@@ -1,51 +1,61 @@
 import React, { useContext } from 'react';
 
+// Types
+import {
+  SquareId,
+  OnSquareClick,
+  SquareContainerProps,
+  SquareContextValue,
+  SquareProps
+} from '../../../frontendTypes';
+
 // Components
 import FilledSquareDisplay from './FilledSquareDisplay';
-import PencilContainer from './PencilContainer';
+import PencilSquareDisplay from './PencilSquareDisplay';
+import EmptySquareDisplay from './EmptySquareDisplay';
 
 // Context
 import { squareContext } from '../../../context';
 
-// Types
-import {
-  SquareContainerProps,
-  SquareContextValue,
-  SquareProps,
-  OnSquareClick
-} from '../../../frontendTypes';
-import { SquareId } from '../../../../types';
+// Utilities
+import { allPeers } from '../../../utils/squares';
 
+// Main Component
 const SquareContainer = (props: SquareContainerProps) => {
-  const { squareId, squareClassByLocation } = props;
-  const { setClickedSquare, filledSquares, pencilSquares } =
+  const { squareId, squareClasses } = props;
+  const { clickedSquare, setClickedSquare, filledSquares, pencilSquares } =
     useContext<SquareContextValue>(squareContext);
 
   const onSquareClick: OnSquareClick = (event) => {
     setClickedSquare(event.currentTarget.dataset.square as SquareId);
     // console.log('clickedSquare:', event.currentTarget.dataset.square);
   };
+
+  let classes = squareClasses;
+  if (clickedSquare) {
+    if (squareId === clickedSquare) {
+      classes += ' current-square';
+    }
+    if (allPeers[squareId].has(clickedSquare)) {
+      classes += ' current-peer';
+    }
+  }
+
   const squareProps: SquareProps = {
     squareId,
-    squareClassByLocation,
+    squareClasses: classes,
     onSquareClick
   };
 
   if (filledSquares[squareId]) {
-    return <FilledSquareDisplay key={`SquareDisplay-${squareId}`} {...squareProps} />;
+    return <FilledSquareDisplay key={`FilledSquareDisplay-${squareId}`} {...squareProps} />;
   }
 
   if (pencilSquares[squareId]) {
-    return <PencilContainer key={`PencilContainer-${squareId}`} {...squareProps} />;
+    return <PencilSquareDisplay key={`PencilContainer-${squareId}`} {...squareProps} />;
   }
 
-  return (
-    <div
-      className={`square-display ${squareClassByLocation}`}
-      data-square={squareId}
-      onClick={(event) => onSquareClick(event)}
-    ></div>
-  );
+  return <EmptySquareDisplay key={`EmptySquareDisplay-${squareId}`} {...squareProps} />;
 };
 
 export default SquareContainer;
