@@ -36,6 +36,11 @@ export type UserDocument = {
   _id: Types.ObjectId;
 };
 
+export type Session = {
+  cookieId: string;
+  createdAt: Date;
+};
+
 export type CustomErrorInput = {
   method: string;
   overview: string;

@@ -1,12 +1,13 @@
 import React, { useContext } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 
+// Types
+import { UserContextValue } from '../frontendTypes';
+
 // Context
 import { userContext } from '../context';
 
-// Types
-import { UserContextValue } from '../../types';
-
+// Main Component
 const WelcomeLayout = () => {
   const { setUser } = useContext<UserContextValue>(userContext);
 

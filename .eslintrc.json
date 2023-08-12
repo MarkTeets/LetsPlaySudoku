@@ -5,12 +5,11 @@
     "es2021": true,
     "node": true
   },
-  "plugins": ["import", "react", "jsx-a11y", "react-hooks", "@typescript-eslint", "prettier"],
+  "plugins": ["import", "react", "react-hooks", "@typescript-eslint", "prettier"],
   "extends": [
     "eslint:recommended",
     "plugin:import/errors",
     "plugin:react/recommended",
-    "plugin:jsx-a11y/recommended",
     "plugin:react-hooks/recommended",
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",

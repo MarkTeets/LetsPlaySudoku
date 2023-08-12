@@ -4,18 +4,16 @@ import { userContext, puzzleCollectionContext, pageContext } from '../../context
 
 // Types
 import {
-  User,
   SetUser,
-  PuzzleCollection,
   SetPuzzleCollection,
-  PageInfo,
   UserContextValue,
   PuzzleCollectionContextValue,
-  PageContextValue,
-  SignInData,
-  SignInResponse
-} from '../../../types';
+  PageInfo,
+  PageContextValue
+} from '../../frontendTypes';
+import { User, PuzzleCollection, SignInData, SignInResponse } from '../../../types';
 
+// Main Component
 const Login = () => {
   const navigate = useNavigate();
   const { user, setUser } = useContext<UserContextValue>(userContext);
@@ -83,16 +81,6 @@ const Login = () => {
             </label>
             {newLoginData?.error && <p>{newLoginData.error}</p>}
             <button className='login-button'>Login</button>
-            {/* <div
-              style={{
-                position: 'absolute',
-                background: 'black',
-                height: '100px',
-                width: '100px',
-              }}
-            >
-              Big block
-            </div> */}
           </div>
         </Form>
       </div>
@@ -102,6 +90,7 @@ const Login = () => {
 
 export default Login;
 
+// Helper Functions
 // This action function is called when the Form above is submitted (see router setup in App.jsx).
 export const loginAction = async ({ request }: { request: Request }): Promise<SignInData> => {
   // Data from the form submission is available via the following function

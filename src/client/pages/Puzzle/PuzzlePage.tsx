@@ -1,51 +1,64 @@
-import React, { useState, useEffect, useContext, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+
+// Types
+import {
+  FilledSquares,
+  PencilSquares,
+  NumberSelectBarProps,
+  SquareContextValue,
+  ClickedSquare,
+  SetUser,
+  UserContextValue,
+  PuzzleCollectionContextValue
+} from '../../frontendTypes';
+import { User, PuzzleCollection } from '../../../types';
 
 // Components
 import PuzzleContainer from './components/PuzzleContainer';
+import NumberSelectBar from './components/NumberSelectBar';
 
-// Context and utilities
-import { userContext, puzzleCollectionContext } from '../../context';
+// Context
+import { userContext, puzzleCollectionContext, squareContext } from '../../context';
+
+// Utilities
 import {
-  createNewSquares,
-  newAllSquares,
+  filledSquaresFromString,
+  updateFilledSquaresFromProgress,
+  handleFirstPencilSquaresDuplicates,
+  pencilSquaresFromString,
   isPuzzleFinished,
   createProgressString,
-  updateSquaresFromProgress
+  createPencilProgressString,
+  autofillPencilSquares
 } from '../../utils/squares';
-
-// Types
-import { AllSquares } from '../../utils/squares';
-import {
-  User,
-  PuzzleCollection,
-  SetUser,
-  UserContextValue,
-  PuzzleCollectionContextValue,
-  OnInputChange
-} from '../../../types';
-
 const savePuzzle = savePuzzleAtLeastOnce();
 
+// Main Component
 const PuzzlePage = () => {
   const navigate = useNavigate();
   const puzzleNumber = Number(useParams().puzzleNumber);
   const { user, setUser } = useContext<UserContextValue>(userContext);
   const { puzzleCollection } = useContext<PuzzleCollectionContextValue>(puzzleCollectionContext);
+  const [pencilMode, setPencilMode] = useState<boolean>(false);
+  const [clickedSquare, setClickedSquare] = useState<ClickedSquare>(null);
 
   // This implementation will calculate the initialState the first time the page loads, and then each
-  // time reset is pressed it will skip recaluclating and just use the initialAllSquares value
-  const [initialAllSquares, setInitialSquares] = useState<AllSquares>(
-    createNewSquares(puzzleCollection[puzzleNumber]?.puzzle)
+  // time reset is pressed it will skip recaluclating and just use the initialFilledSquares value
+  const [initialFilledSquares, setInitialFilledSquares] = useState<FilledSquares>(
+    filledSquaresFromString(puzzleCollection[puzzleNumber]?.puzzle)
+  );
+  const [pencilSquares, setPencilSquares] = useState<PencilSquares>(
+    pencilSquaresFromString(user?.allPuzzles[puzzleNumber]?.pencilProgress)
   );
 
-  // The firstAllSquares function compares the original puzzle string to a user's progress string.
-  // If they're the same, it returns the initialAllSquares object
-  // If they're different, it returns a deepCopy of the the initialAllSquares object with updated displayVals
-  // By doing it in a two step process, every non-zero display value in the initialAllSquares object will have a
+  // The firstFilledSquares function compares the original puzzle string to a user's progress string.
+  // If they're the same, it returns the initialFilledSquares object
+  // If they're different, it returns a deepCopy of the the initialFilledSquares object with updated puzzleVals
+  // By doing it in a two step process, every non-zero puzzle value in the initialFilledSquares object will have a
   // true "fixedVal" property, and any updates from the progress string don't.
-  const [allSquares, setAllSquares] = useState<AllSquares>(
-    firstAllSquares(initialAllSquares, puzzleNumber, user, puzzleCollection)
+  const [filledSquares, setFilledSquares] = useState<FilledSquares>(
+    firstFilledSquares(initialFilledSquares, pencilSquares, puzzleNumber, user, puzzleCollection)
   );
 
   // For tracking renders:
@@ -65,18 +78,19 @@ const PuzzlePage = () => {
         });
       }
     }
+    handleFirstPencilSquaresDuplicates(filledSquares, pencilSquares, setPencilSquares);
   }, []);
 
   // Checks to see if user has solved puzzle on each allSquares update
   useEffect(() => {
     // setTimeout is used so the allSquares update is painted before this alert goes out
-    if (isPuzzleFinished(allSquares)) {
+    if (isPuzzleFinished(filledSquares)) {
       const clear = setTimeout(() => {
-        alert('You win!');
+        alert('You finished the puzzle!');
       }, 0);
       return () => clearTimeout(clear);
     }
-  }, [allSquares]);
+  }, [filledSquares]);
 
   // useEffect(() => {
   //   console.log('Puzzle Page render number:', renderCount.current);
@@ -84,69 +98,105 @@ const PuzzlePage = () => {
   //   // console.log('useEffect allSquares', allSquares);
   // });
 
-  // onInputChange is fired every time there's an onChange event in an individual square.
-  // It updates the state of allSquares based on the inidividual square that's been updated.
-  // const onInputChange: OnInputChange = (id: SquareId, newVal: DisplayVal): void => {
-  const onInputChange: OnInputChange = (id, newVal) => {
-    setAllSquares(newAllSquares(allSquares, id, newVal));
+  const pencilModeSwitch = () => {
+    setPencilMode(!pencilMode);
+  };
+
+  const onAutofillPencilClick = () => {
+    autofillPencilSquares(filledSquares, setFilledSquares, setPencilSquares);
+  };
+
+  const onSaveClick = () => {
+    savePuzzle(puzzleNumber, filledSquares, pencilSquares, user, setUser);
   };
 
   const resetPuzzle = (): void => {
-    setAllSquares(initialAllSquares);
+    setFilledSquares(initialFilledSquares);
+    setPencilSquares(pencilSquaresFromString());
+    setClickedSquare(null);
+    setPencilMode(false);
   };
 
+  const SquareContextValue: SquareContextValue = {
+    clickedSquare,
+    setClickedSquare,
+    filledSquares,
+    pencilSquares
+  };
+
+  const numberSelectBarProps: NumberSelectBarProps = {
+    pencilMode,
+    clickedSquare,
+    filledSquares,
+    setFilledSquares,
+    pencilSquares,
+    setPencilSquares
+  };
+
+  let pencilClasses = '';
+  if (pencilMode) {
+    pencilClasses += 'highlight-number-button';
+  }
+
   return (
-    <div id='puzzle-page-container'>
-      <PuzzleContainer
-        key='PuzzleContainer'
-        allSquares={allSquares}
-        onInputChange={onInputChange}
-      />
-      <div className='button-container'>
-        <button onClick={() => savePuzzle(puzzleNumber, allSquares, user, setUser)}>Save</button>
-        <button onClick={resetPuzzle}>Reset</button>
-        <button onClick={() => alert('Game Data feature is currently being built')}>
-          Game Data
-        </button>
+    <squareContext.Provider value={SquareContextValue}>
+      <div id='puzzle-page-container'>
+        <PuzzleContainer key='PuzzleContainer' />
+        <NumberSelectBar key='NumberSelectBar' {...numberSelectBarProps} />
+        <div className='button-container'>
+          <button onClick={pencilModeSwitch} className={pencilClasses}>
+            Pencil Mode
+          </button>
+          <button onClick={onAutofillPencilClick}>Auto-fill Pencil</button>
+          <button onClick={onSaveClick}>Save</button>
+          <button onClick={resetPuzzle}>Reset</button>
+          <button onClick={() => alert('Game Data feature is currently being built')}>
+            Game Data
+          </button>
+        </div>
       </div>
-    </div>
+    </squareContext.Provider>
   );
 };
 
 export default PuzzlePage;
 
-//---- HELPER FUNCTIONS --------------------------------------------------------------------------------------------------------------
-
-/** firstAllSquares
+// Helper Functions
+/** firstFilledSquares
  *
- * When the page first loads, the original puzzle needs to be used to make the initialAllSquares object to make sure the correct numbers
+ * When the page first loads, the original puzzle needs to be used to make the initialFilledSquares object to make sure the correct numbers
  * are given the fixedVal = true property. However, the puzzle also needs to be consistent with updated values from the user's progress string.
  *
  * Therefore, this function checks to see if there are any differences between a user's progress string and the original puzzle. If not,
- * the initialAllSquares object is returned with no need for additional work. If there are differences, this function returns a deep copy
- * of the initialAllSquares object with the displayVal's updated to be consistent with the user's progress string.
+ * the initialFilledSquares object is returned with no need for additional work. If there are differences, this function returns a deep copy
+ * of the initialFilledSquares object with the puzzleVal's updated to be consistent with the user's progress string.
  *
- * @param initialAllSquares
+ * @param initialFilledSquares
  * @param puzzleNumber
  * @param user
  * @param puzzleCollection
  * @returns an allSquares object
  */
-function firstAllSquares(
-  initialAllSquares: AllSquares,
+function firstFilledSquares(
+  initialFilledSquares: FilledSquares,
+  pencilSquares: PencilSquares,
   puzzleNumber: number,
   user: User,
   puzzleCollection: PuzzleCollection
 ) {
   // Check to see if the original puzzle and the user's progress on it are the same
-  // If so, just return the initialAllSquares object made from the original puzzle
+  // If so, just return the initialFilledSquares object made from the original puzzle
   if (!user || user.allPuzzles[puzzleNumber].progress === puzzleCollection[puzzleNumber].puzzle) {
-    return initialAllSquares;
+    return initialFilledSquares;
   }
 
-  // If not, return a deepCopy of the initialAllSquares object with "displayVal"s updated from the user's progress string
+  // If not, return a deepCopy of the initialFilledSquares object with "puzzleVal"s updated from the user's progress string
   // This will preserve the correct "fixedVal" properties
-  return updateSquaresFromProgress(initialAllSquares, user.allPuzzles[puzzleNumber].progress);
+  return updateFilledSquaresFromProgress(
+    initialFilledSquares,
+    pencilSquares,
+    user.allPuzzles[puzzleNumber].progress
+  );
 }
 
 /** savePuzzleAtLeastOnce
@@ -161,7 +211,13 @@ function firstAllSquares(
 function savePuzzleAtLeastOnce() {
   let firstSave = true;
 
-  return async (puzzleNumber: number, allSquares: AllSquares, user: User, setUser: SetUser) => {
+  return async (
+    puzzleNumber: number,
+    filledSquares: FilledSquares,
+    pencilSquares: PencilSquares,
+    user: User,
+    setUser: SetUser
+  ) => {
     // Don't allow a guest to save
     if (!user || user.username === 'guest') {
       alert('Please sign up for a free account to save');
@@ -169,13 +225,16 @@ function savePuzzleAtLeastOnce() {
     }
 
     // createProgressString generates a puzzle string that reflects the current state of allSquares
-    const currentProgress = createProgressString(allSquares);
+    const currentProgress = createProgressString(filledSquares);
+    const currentPencilProgress = createPencilProgressString(pencilSquares);
 
     // Check to see if there are differences between the current state and a user's progress string
     const isPuzzleDifference = currentProgress !== user.allPuzzles[puzzleNumber].progress;
+    const isPencilSquaresDifference =
+      currentPencilProgress !== user.allPuzzles[puzzleNumber].pencilProgress;
 
     // Save only if it's the first time or there's a difference. Otherwise, skip saving
-    if (firstSave || isPuzzleDifference) {
+    if (firstSave || isPuzzleDifference || isPencilSquaresDifference) {
       // Play with optimistic rendering here later. For now, confirm things happened in real time
       const res = await fetch('/api/user/save-puzzle', {
         method: 'POST',
@@ -183,7 +242,8 @@ function savePuzzleAtLeastOnce() {
         body: JSON.stringify({
           username: user.username,
           puzzleNumber,
-          progress: currentProgress
+          progress: currentProgress,
+          pencilProgress: currentPencilProgress
         })
       });
 
@@ -209,6 +269,7 @@ function savePuzzleAtLeastOnce() {
       };
 
       newUser.allPuzzles[puzzleNumber].progress = currentProgress;
+      newUser.allPuzzles[puzzleNumber].pencilProgress = currentPencilProgress;
 
       setUser(newUser);
 

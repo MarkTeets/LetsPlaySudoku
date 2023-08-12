@@ -1,7 +1,7 @@
 import { Schema, model } from 'mongoose';
 
 // Types
-import { Session } from '../../types';
+import { Session } from '../../server/backendTypes';
 
 /**
  * `createdAt` uses's Mongo's automatic document expiration service via the `expires` property.

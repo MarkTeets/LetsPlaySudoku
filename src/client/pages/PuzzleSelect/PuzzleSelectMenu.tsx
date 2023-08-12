@@ -1,21 +1,22 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { userContext, puzzleCollectionContext } from '../../context';
-import totalPuzzles from '../../../globalUtils/totalPuzzles';
 
 // Types
 import {
-  User,
   SetUser,
-  Puzzle,
-  PuzzleCollection,
   SetPuzzleCollection,
   UserContextValue,
-  PuzzleCollectionContextValue,
-  QueryStatus,
-  PuzzleResponse
-} from '../../../types';
+  PuzzleCollectionContextValue
+} from '../../frontendTypes';
+import { User, Puzzle, PuzzleCollection, QueryStatus, PuzzleResponse } from '../../../types';
 
+// Context
+import { userContext, puzzleCollectionContext } from '../../context';
+
+// Utilities
+import totalPuzzles from '../../../globalUtils/totalPuzzles';
+
+// Main Component
 const PuzzleSelectMenu = () => {
   const navigate = useNavigate();
   const { user, setUser } = useContext<UserContextValue>(userContext);
@@ -258,7 +259,8 @@ function addPuzzleToUserAndCollection(
 
   newUser.allPuzzles[puzzleNumber] = {
     puzzleNumber,
-    progress: fetchedPuzzleData.puzzle
+    progress: fetchedPuzzleData.puzzle,
+    pencilProgress: ''
   };
 
   setUser(newUser);

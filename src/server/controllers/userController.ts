@@ -75,7 +75,8 @@ const cleanUser: RequestHandler = async (req, res, next) => {
     for (const puzzleObj of userDocument.allPuzzles) {
       allPuzzles[puzzleObj.puzzleNumber] = {
         puzzleNumber: puzzleObj.puzzleNumber,
-        progress: puzzleObj.progress
+        progress: puzzleObj.progress,
+        pencilProgress: puzzleObj.pencilProgress
       };
     }
 
@@ -204,9 +205,12 @@ const savePuzzle: RequestHandler = async (req, res, next) => {
 
   const userDocument: UserDocument = res.locals.userDocument;
   const puzzleNumber = Number(req.body.puzzleNumber);
-  const { progress } = req.body;
-
-  if (!Number.isInteger(puzzleNumber) || typeof progress !== 'string') {
+  const { progress, pencilProgress } = req.body;
+  if (
+    !Number.isInteger(puzzleNumber) ||
+    typeof progress !== 'string' ||
+    typeof pencilProgress !== 'string'
+  ) {
     return next(
       createErr({
         method: 'savePuzzle',
@@ -232,12 +236,14 @@ const savePuzzle: RequestHandler = async (req, res, next) => {
     if (currentPuzzleIndex !== null) {
       // If the user already has saved progress for that puzzle, update it to the new progress value
       res.locals.userDocument.allPuzzles[currentPuzzleIndex].progress = progress;
+      res.locals.userDocument.allPuzzles[currentPuzzleIndex].pencilProgress = pencilProgress;
     } else {
       // If this is the first time a puzzle is being saved to a user:
       // Make the puzzle object to push it to the user's array
       const puzzleObj: UserPuzzleObj = {
         puzzleNumber,
-        progress
+        progress,
+        pencilProgress
       };
 
       res.locals.userDocument.allPuzzles.push(puzzleObj);

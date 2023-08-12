@@ -3,8 +3,10 @@ import { useNavigate, Form, useActionData } from 'react-router-dom';
 import { userContext, pageContext } from '../../context';
 
 // Types
-import { UserContextValue, PageContextValue, SignInData, SignInResponse } from '../../../types';
+import { UserContextValue, PageContextValue } from '../../frontendTypes';
+import { SignInData, SignInResponse } from '../../../types';
 
+// Main Component
 const SignUp = () => {
   const navigate = useNavigate();
   const { user, setUser } = useContext<UserContextValue>(userContext);
@@ -63,6 +65,7 @@ const SignUp = () => {
   );
 };
 
+// Helper Functions
 // This action function is called when the Form above is submitted (see router setup in App.jsx).
 export const signUpAction = async ({ request }: { request: Request }): Promise<SignInData> => {
   // Data from the form submission is available via the following function

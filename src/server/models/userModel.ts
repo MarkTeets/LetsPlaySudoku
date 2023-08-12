@@ -11,7 +11,8 @@ const userSchema = new Schema<UserDocument>({
   allPuzzles: [
     {
       puzzleNumber: Number,
-      progress: String
+      progress: String,
+      pencilProgress: String
     }
   ]
 });
