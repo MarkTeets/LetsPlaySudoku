@@ -1,10 +1,17 @@
 import React from 'react';
 
 // Types
-import { OnNumberClick, NumberSelectBarProps, MakeButtons } from '../../../frontendTypes';
-import { PuzzleVal2 } from '../../../../types';
+import {
+  PuzzleVal,
+  OnNumberClick,
+  NumberSelectBarProps,
+  MakeButtons
+} from '../../../frontendTypes';
+
+//Utilities
 import { onNumberChange } from '../../../utils/squares';
 
+// Main Component
 const NumberSelectBar = (props: NumberSelectBarProps) => {
   const {
     pencilMode,
@@ -30,6 +37,7 @@ const NumberSelectBar = (props: NumberSelectBarProps) => {
 
 export default NumberSelectBar;
 
+// Helper Functions
 const onNumberClick: OnNumberClick = (
   event,
   pencilMode,
@@ -43,7 +51,7 @@ const onNumberClick: OnNumberClick = (
     alert('Please select a square before clicking a number button');
     return;
   }
-  const buttonVal = event.currentTarget.innerText as PuzzleVal2;
+  const buttonVal = event.currentTarget.innerText as PuzzleVal;
 
   onNumberChange(
     buttonVal,
@@ -68,14 +76,14 @@ const makeButtons: MakeButtons = (
   for (let i = 1; i < 10; i++) {
     let classes = '';
     let isDisabled = false;
-    const buttonVal = i.toString() as PuzzleVal2;
+    const buttonVal = i.toString() as PuzzleVal;
     if (clickedSquare) {
       if (filledSquares[clickedSquare]?.fixedVal) {
         isDisabled = true;
       } else {
-        if (filledSquares[clickedSquare]?.puzzleVal === buttonVal) {
+        if (!pencilMode && filledSquares[clickedSquare]?.puzzleVal === buttonVal) {
           classes += 'highlight-number-button';
-        } else if (pencilSquares[clickedSquare]?.[buttonVal]) {
+        } else if (pencilMode && pencilSquares[clickedSquare]?.[buttonVal]) {
           classes += 'highlight-number-button';
         }
       }
