@@ -5,8 +5,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import { userContext } from '../../context';
 
 // Types
-import { User, UserContextValue } from '../../../types';
+import { UserContextValue } from '../../frontendTypes';
+import { User } from '../../../types';
 
+// Main Component
 const SavedPuzzleSelect = () => {
   const navigate = useNavigate();
   const { user } = useContext<UserContextValue>(userContext);
