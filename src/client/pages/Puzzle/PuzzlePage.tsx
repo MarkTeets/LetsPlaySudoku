@@ -95,7 +95,6 @@ const PuzzlePage = () => {
   // useEffect(() => {
   //   console.log('Puzzle Page render number:', renderCount.current);
   //   renderCount.current += 1;
-  //   // console.log('useEffect allSquares', allSquares);
   // });
 
   const pencilModeSwitch = () => {
@@ -133,9 +132,10 @@ const PuzzlePage = () => {
     setPencilSquares
   };
 
-  let pencilClasses = '';
+  const puzzleButtonClass = 'puzzle-button';
+  let pencilClasses = puzzleButtonClass;
   if (pencilMode) {
-    pencilClasses += 'highlight-number-button';
+    pencilClasses += ' highlight-number-button';
   }
 
   return (
@@ -143,14 +143,23 @@ const PuzzlePage = () => {
       <div id='puzzle-page-container'>
         <PuzzleContainer key='PuzzleContainer' />
         <NumberSelectBar key='NumberSelectBar' {...numberSelectBarProps} />
-        <div className='button-container'>
+        <div className='button-container puzzle-button-container'>
           <button onClick={pencilModeSwitch} className={pencilClasses}>
             Pencil Mode
           </button>
-          <button onClick={onAutofillPencilClick}>Auto-fill Pencil</button>
-          <button onClick={onSaveClick}>Save</button>
-          <button onClick={resetPuzzle}>Reset</button>
-          <button onClick={() => alert('Game Data feature is currently being built')}>
+          <button onClick={onAutofillPencilClick} className={puzzleButtonClass}>
+            Auto-fill Pencil
+          </button>
+          <button onClick={onSaveClick} className={puzzleButtonClass}>
+            Save
+          </button>
+          <button onClick={resetPuzzle} className={puzzleButtonClass}>
+            Reset
+          </button>
+          <button
+            onClick={() => alert('Game Data feature is currently being built')}
+            className={puzzleButtonClass}
+          >
             Game Data
           </button>
         </div>
