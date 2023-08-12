@@ -74,18 +74,21 @@ const makeButtons: MakeButtons = (
 ) => {
   const buttons = [] as React.JSX.Element[];
   for (let i = 1; i < 10; i++) {
-    let classes = '';
-    let isDisabled = false;
     const buttonVal = i.toString() as PuzzleVal;
+    let isDisabled = false;
+    let classes = 'number-button';
+
+    if (!pencilMode) classes += ' fill-mode';
+    else classes += ' pencil-mode';
+
     if (clickedSquare) {
       if (filledSquares[clickedSquare]?.fixedVal) {
         isDisabled = true;
-      } else {
-        if (!pencilMode && filledSquares[clickedSquare]?.puzzleVal === buttonVal) {
-          classes += 'highlight-number-button';
-        } else if (pencilMode && pencilSquares[clickedSquare]?.[buttonVal]) {
-          classes += 'highlight-number-button';
-        }
+      }
+      if (!pencilMode && filledSquares[clickedSquare]?.puzzleVal === buttonVal) {
+        classes += ' highlight-number-button';
+      } else if (pencilMode && pencilSquares[clickedSquare]?.[buttonVal]) {
+        classes += ' highlight-number-button';
       }
     }
     buttons.push(
