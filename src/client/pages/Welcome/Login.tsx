@@ -4,17 +4,16 @@ import { userContext, puzzleCollectionContext, pageContext } from '../../context
 
 // Types
 import {
-  User,
   SetUser,
-  PuzzleCollection,
   SetPuzzleCollection,
   UserContextValue,
   PuzzleCollectionContextValue,
-  SignInData,
-  SignInResponse
-} from '../../../types';
-import { PageInfo, PageContextValue } from '../../frontendTypes';
+  PageInfo,
+  PageContextValue
+} from '../../frontendTypes';
+import { User, PuzzleCollection, SignInData, SignInResponse } from '../../../types';
 
+// Main Component
 const Login = () => {
   const navigate = useNavigate();
   const { user, setUser } = useContext<UserContextValue>(userContext);
@@ -91,6 +90,7 @@ const Login = () => {
 
 export default Login;
 
+// Helper Functions
 // This action function is called when the Form above is submitted (see router setup in App.jsx).
 export const loginAction = async ({ request }: { request: Request }): Promise<SignInData> => {
   // Data from the form submission is available via the following function

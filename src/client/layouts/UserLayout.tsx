@@ -1,12 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 
+// Types
+import { UserContextValue } from '../frontendTypes';
+
 // Context
 import { userContext } from '../context';
 
-// Types
-import { UserContextValue } from '../../types';
-
+// Main Component
 const UserLayout = () => {
   const { user, setUser } = useContext<UserContextValue>(userContext);
   const [puzzleSelectMenuURL, setPuzzleSelectMenuURL] = useState<string>(

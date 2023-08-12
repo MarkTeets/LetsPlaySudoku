@@ -1,7 +1,14 @@
 import { createContext } from 'react';
-import { UserContextValue, PuzzleCollectionContextValue } from '../types';
-import { PageContextValue, SquareContextValue } from './frontendTypes';
-import { filledSquaresFromString, pencilSquaresFromString } from './utils/squares';
+
+// Types
+import {
+  UserContextValue,
+  PuzzleCollectionContextValue,
+  PageContextValue,
+  SquareContextValue,
+  FilledSquares,
+  PencilSquares
+} from './frontendTypes';
 
 export const userContext = createContext<UserContextValue>({
   user: null,
@@ -18,7 +25,8 @@ export const pageContext = createContext<PageContextValue>({
 });
 
 export const squareContext = createContext<SquareContextValue>({
+  clickedSquare: null,
   setClickedSquare: () => {},
-  filledSquares: filledSquaresFromString(),
-  pencilSquares: pencilSquaresFromString()
+  filledSquares: {} as FilledSquares,
+  pencilSquares: {} as PencilSquares
 });
