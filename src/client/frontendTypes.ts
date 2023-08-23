@@ -182,6 +182,25 @@ export type OnNumberClick = (
   setPencilSquares: SetPencilSquares
 ) => void;
 
+export type OnNumberDelete = (
+  pencilMode: boolean,
+  clickedSquare: ClickedSquare,
+  filledSquares: FilledSquares,
+  setFilledSquares: SetFilledSquares,
+  pencilSquares: PencilSquares,
+  setPencilSquares: SetPencilSquares
+) => void;
+
+export type OnPuzzleKeyDown = (
+  e: React.KeyboardEvent<HTMLElement>,
+  pencilMode: boolean,
+  clickedSquare: ClickedSquare,
+  filledSquares: FilledSquares,
+  setFilledSquares: SetFilledSquares,
+  pencilSquares: PencilSquares,
+  setPencilSquares: SetPencilSquares
+) => void;
+
 export type MakeButtons = (
   pencilMode: boolean,
   clickedSquare: ClickedSquare,
@@ -199,6 +218,5 @@ export type HandleFirstPencilSquaresDuplicates = (
 
 export type AutofillPencilSquares = (
   filledSquares: FilledSquares,
-  setFilledSquares: SetFilledSquares,
   setPencilSquares: SetPencilSquares
 ) => void;

@@ -25,6 +25,7 @@ import {
   isPuzzleFinished,
   autofillPencilSquares
 } from '../../utils/squares';
+import { onPuzzleKeyDown } from './PuzzlePage';
 import {
   SolutionProcedure,
   puzzleSolver,
@@ -38,6 +39,7 @@ const PuzzlePageTest = () => {
   const puzzleData = useLoaderData() as { puzzle: string };
   const [pencilMode, setPencilMode] = useState<boolean>(false);
   const [clickedSquare, setClickedSquare] = useState<ClickedSquare>(null);
+  const keepSquareFocus = useRef<boolean>(false);
 
   // This implementation will calculate the initialState the first time the page loads, and then each
   // time reset is pressed it will skip recaluclating and just use the initialFilledSquares value
@@ -76,12 +78,24 @@ const PuzzlePageTest = () => {
   //   renderCount.current += 1;
   // });
 
+  const setSquareFocusTrue = (): void => {
+    keepSquareFocus.current = true;
+  };
+
+  const onPuzzleContainerBlur = (): void => {
+    if (!keepSquareFocus.current) setClickedSquare(null);
+  };
+
+  const setSquareFocusFalse = (): void => {
+    keepSquareFocus.current = false;
+  };
+
   const pencilModeSwitch = () => {
     setPencilMode(!pencilMode);
   };
 
   const onAutofillPencilClick = () => {
-    autofillPencilSquares(filledSquares, setFilledSquares, setPencilSquares);
+    autofillPencilSquares(filledSquares, setPencilSquares);
   };
 
   const resetPuzzle = (): void => {
@@ -141,28 +155,57 @@ const PuzzlePageTest = () => {
 
   return (
     <squareContext.Provider value={SquareContextValue}>
-      <div id='puzzle-page-container'>
-        <PuzzleContainer key='PuzzleContainer' />
-        <NumberSelectBar key='NumberSelectBar' {...numberSelectBarProps} />
-        <div className='button-container'>
-          <button onClick={pencilModeSwitch} className={pencilClasses}>
-            Pencil Mode
-          </button>
-          <button onClick={onAutofillPencilClick} className={puzzleButtonClass}>
-            Auto-fill Pencil
-          </button>
-          {/* <button onClick={onSaveClick}>Save</button> */}
-          <button onClick={resetPuzzle} className={puzzleButtonClass}>
-            Reset
-          </button>
-          <button
-            onClick={() => alert('Game Data feature is currently being built')}
-            className={puzzleButtonClass}
-          >
-            Game Data
-          </button>
-          {/* <button onClick={solveOneSingleCandidate}>Solve one square via Single Candidate</button>
+      {/* puzzle-page div is here to reduce the size of the puzzle-page-container for the onBlur event*/}
+      <div id='puzzle-page'>
+        <div
+          id='puzzle-page-container'
+          tabIndex={0}
+          // onPuzzleContainerBlur will remove the current clicked square if the user clicks elsewhere on the screen.
+          // The onMouseDown and onClick events are used to track whether or not the blur event was caused by a click
+          // on a button within "puzzle-page-container", and if so to avoid setting clickedSquare to null.
+          // For example, if the user clicks a square (setting clickedSquare to its squareId) and then they click a number button:
+          // 1. onMouseDown will fire setting keepSquareFocus.current to true
+          // 2. onBlur event for the puzzle-page-container will fire as focus is shifting to the specific number button, but
+          //    onPuzzleContainerBlur will not set clickedSquare to null as keepSquareFocus.current is true
+          // 3. onClick event for the puzzle-page-container sets keepSquareFocus.current to false so if the
+          //    next click isn't in puzzle-page-container, onPuzzleContainerBlur can set clickedSquare to null
+          onMouseDown={setSquareFocusTrue}
+          onBlur={onPuzzleContainerBlur}
+          onClick={setSquareFocusFalse}
+          onKeyDown={(event) =>
+            onPuzzleKeyDown(
+              event,
+              pencilMode,
+              clickedSquare,
+              filledSquares,
+              setFilledSquares,
+              pencilSquares,
+              setPencilSquares
+            )
+          }
+        >
+          <PuzzleContainer key='PuzzleContainer' />
+          <NumberSelectBar key='NumberSelectBar' {...numberSelectBarProps} />
+          <div className='button-container'>
+            <button onClick={pencilModeSwitch} className={pencilClasses}>
+              Pencil Mode
+            </button>
+            <button onClick={onAutofillPencilClick} className={puzzleButtonClass}>
+              Auto-fill Pencil
+            </button>
+            {/* <button onClick={onSaveClick}>Save</button> */}
+            <button onClick={resetPuzzle} className={puzzleButtonClass}>
+              Reset
+            </button>
+            <button
+              onClick={() => alert('Game Data feature is currently being built')}
+              className={puzzleButtonClass}
+            >
+              Game Data
+            </button>
+            {/* <button onClick={solveOneSingleCandidate}>Solve one square via Single Candidate</button>
         <button onClick={solveAsMuchAsPossible}>Solve as much as possible</button> */}
+          </div>
         </div>
       </div>
     </squareContext.Provider>

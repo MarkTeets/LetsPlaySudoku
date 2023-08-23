@@ -11,6 +11,6 @@ if (rootElement === null) {
 const root = createRoot(rootElement);
 root.render(
   <StrictMode>
-    <App />
+    <App key='App' />
   </StrictMode>
 );

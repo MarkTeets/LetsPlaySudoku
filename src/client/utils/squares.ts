@@ -9,12 +9,12 @@ import {
   PencilSquare,
   PencilData,
   OnNumberChange,
+  OnNumberDelete,
   HandleFirstPencilSquaresDuplicates,
   AutofillPencilSquares
 } from '../frontendTypes';
 
 // Utilities
-
 import { newSolveSquares, updateSolveSquares } from './solutionFunctions';
 
 /**
@@ -108,7 +108,7 @@ const makeAllPeers = (): {
   };
 };
 
-//These variables are declared here to be used in the class definition to avoid recreating data
+//These variables are declared here to be used in the factory functions below to avoid recreating data
 export const { rows, cols, boxes, allPeers } = makeAllPeers();
 // export const unitBoxes = boxes;
 const numbers: PuzzleVal[] = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
@@ -121,14 +121,12 @@ const numbers: PuzzleVal[] = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
  * @param {string} puzzleString A string to be tested to see if it's a valid sudoku puzzle
  * @returns boolean
  */
-
 const isValidPuzzle = (puzzleString: string): boolean => {
   if (puzzleString.length !== 81) {
     return false;
   }
 
   const numStringRegex = /[0123456789]/;
-
   let result = true;
 
   for (let i = 0; i < puzzleString.length; i += 1) {
@@ -139,7 +137,15 @@ const isValidPuzzle = (puzzleString: string): boolean => {
   return result;
 };
 
-export const newFilledSquare = (puzzleVal: PuzzleVal, fixedVal: boolean) => {
+/** newFilledSquare
+ *
+ * Returns a new FilledSquare object based on the parameters with duplicate and numberHighlight set to false
+ *
+ * @param puzzleVal string from '1' to '9'
+ * @param fixedVal boolean representing if the square's value was present in the original puzzle string
+ * @returns FilledSquare object
+ */
+export const newFilledSquare = (puzzleVal: PuzzleVal, fixedVal: boolean): FilledSquare => {
   return {
     puzzleVal,
     duplicate: false,
@@ -148,6 +154,29 @@ export const newFilledSquare = (puzzleVal: PuzzleVal, fixedVal: boolean) => {
   };
 };
 
+/** filledSquaresFromString
+ *
+ * Takes an 81 character puzzle string and returns a sparsely populated FilledSquares object. Non-zero puzzle
+ * values produce properties on the FilledSquares object having a key of the squareId. For example, if the
+ * first characters of the puzzle string were "1050", the FilledSquares object would contain the properties:
+ * A1: {
+ *  puzzleVal: 1,
+ *  duplicate: false,
+ *  fixedVal: true,
+ *  numberHighlight: false
+ * },
+ * A3: {
+ *  puzzleVal: 5,
+ *  duplicate: false,
+ *  fixedVal: true,
+ *  numberHighlight: false
+ * }
+ *
+ * Notice how it doesn't include properties for squareIds "A2" or "A4" as these values were "0".
+ *
+ * @param puzzleString 81 character string of chars "0" to "9", which represent a sudoku puzzle where "0" is an empty square
+ * @returns FilledSquares object
+ */
 export const filledSquaresFromString = (puzzleString?: string): FilledSquares => {
   const filledSquares: FilledSquares = { size: 0 };
 
@@ -172,13 +201,25 @@ const pencilRegex = /[A-I][1-9]{2,10}/g;
 const squareRegex = /[A-I][1-9]/g;
 const splitPencilRegex = /[A-I][1-9]|[1-9]{1,9}/g;
 
+/** isValidPencilString
+ *
+ * Checks an incoming pencil string to make sure it's a valid string. Pencil strings are comprised of
+ * squareIds followed by whatever numbers are present in for that square. For example, a pencil square
+ * string representing pencilled in numbers 1 and 4 at square A1 and 5 and 8 at G6 is "A114G658".
+ * Returns true if the string matches the pattern, and false if not
+ *
+ * @param pencilString
+ * @returns boolean
+ */
 const isValidPencilString = (pencilString: string): boolean => {
+  // First check to see if the general shape is correct
   const matches = pencilString.match(pencilRegex);
   if (!matches) return false;
 
   const joinedMatches = matches.join('');
   if (joinedMatches.length !== pencilString.length) return false;
 
+  // Then check to make sure there are no duplicate squareIds
   const squareMatches = pencilString.match(squareRegex);
   if (!squareMatches) return false;
 
@@ -186,6 +227,27 @@ const isValidPencilString = (pencilString: string): boolean => {
   return squareMatches.length === uniqueMatches.size;
 };
 
+/** pencilSquaresFromString
+ *
+ * Creates and returns a new sparsely filled pencilSquares object from a valid pencil square string. For example,
+ * a pencil square string representing pencilled in numbers 1 and 4 at square A1 and 5 and 8 at G6
+ * is "A114G658". A pencilSquares object created from such a string would include properties
+ * A1: {
+ *  size: 2
+ *  1: {
+ *    duplicate: false
+ *    highlightNumber: false
+ *  }
+ *  4: {
+ *    duplicate: false
+ *    highlightNumber: false
+ *  }
+ * },
+ * G6: {...}
+ *
+ * @param pencilString
+ * @returns
+ */
 export const pencilSquaresFromString = (pencilString?: string): PencilSquares => {
   const pencilSquares: PencilSquares = {};
 
@@ -195,8 +257,9 @@ export const pencilSquaresFromString = (pencilString?: string): PencilSquares =>
     throw new Error('Invalid pencil string');
   }
 
+  //splitPencilRegex = /[A-I][1-9]|[1-9]{1,9}/g;
   const matches = pencilString.match(splitPencilRegex) as RegExpMatchArray;
-
+  // matches will be an array where every two elements are a squareId first and said squareId's corresponding pencil nums second
   for (let i = 0; i < matches.length; i += 2) {
     const squareId = matches[i] as SquareId;
     const pencilNums = matches[i + 1].split('') as PuzzleVal[];
@@ -215,52 +278,90 @@ export const pencilSquaresFromString = (pencilString?: string): PencilSquares =>
   return pencilSquares;
 };
 
+/** isFilledSquaresDuplicateChange
+ *
+ * Iterates over a filledSquares object and returns true if any current duplicate property is inconsistent with what it should
+ * be based on itself and a corresponding pencilSquares object. Returns false if no changes needs to be made. By doing this,
+ * we can avoid deep cloning filledSquares if no changes need to be made
+ *
+ * @param filledSquares - FilledSquares object
+ * @param pencilSquares - PencilSquares object
+ * @returns boolean
+ */
 const isFilledSquaresDuplicateChange = (
   filledSquares: FilledSquares,
   pencilSquares: PencilSquares
-) => {
-  // I have to iterate over filledSquares and check each square to see if it should be a duplicate or not
+): boolean => {
+  // Iterate over every filledSquare in filledSquares
   const squareIds = Object.keys(filledSquares).filter((key) => key !== 'size') as SquareId[];
-  // Then I need to check its current status against the found value. The first time I find one, I return true
   for (const squareId of squareIds) {
     const square = filledSquares[squareId] as FilledSquare;
+    // Find current duplicate status by comparing the puzzleVal of the current square to its peers
     let isDuplicate = false;
     allPeers[squareId].forEach((peerId) => {
       if (filledSquares[peerId]?.puzzleVal === square.puzzleVal) isDuplicate = true;
       if (pencilSquares[peerId]?.[square.puzzleVal]) isDuplicate = true;
     });
+    // Compare whether it was found to be a duplicate against it's current status
+    // If they're different, break out of the iteration and return true
     if (isDuplicate !== square.duplicate) return true;
   }
-  // If I get to the end without finding a change, return false
+  // If a difference in duplicate status is never found, return false
+  // so that deep copying the filledSquares object can be avoided
   return false;
 };
 
+/** isPencilSquaresDuplicateChange
+ *
+ * Iterates over a pencilSquares object and returns true if any current duplicate property is inconsistent with what it should
+ * be based on a corresponding filledSquares object. Returns false if no changes needs to be made. By doing this, we can avoid
+ * deep cloning pencilSquares if no changes need to be made
+ *
+ * @param filledSquares - FilledSquares object
+ * @param pencilSquares - PencilSquares object
+ * @returns boolean
+ */
 const isPencilSquaresDuplicateChange = (
   filledSquares: FilledSquares,
   pencilSquares: PencilSquares
 ) => {
+  // Iterate over every pencilSquare in pencilSquares
   const squareIds = Object.keys(pencilSquares) as SquareId[];
   for (const squareId of squareIds) {
     const pencilSquare = pencilSquares[squareId] as PencilSquare;
+    // For each pencilSquare, grab all present puzzle values
     const puzzleVals = Object.keys(pencilSquare).filter((key) => key !== 'size') as PuzzleVal[];
     for (const puzzleVal of puzzleVals) {
+      // For every puzzle value, check to see if it's a duplicate value in a peer's filledSquare
       let isDuplicate = false;
       allPeers[squareId].forEach((peerId) => {
         if (filledSquares[peerId]?.puzzleVal === puzzleVal) isDuplicate = true;
       });
+      // Compare whether it was found to be a duplicate against it's current status
+      // If they're different, break out of the iteration and return true
       if (isDuplicate !== pencilSquare[puzzleVal]?.duplicate) return true;
     }
   }
+  // If a difference in duplicate status is never found, return false
+  // so that deep copying the pencilSquares object can be avoided
   return false;
 };
 
+/** updateFilledSquaresDuplicates
+ *
+ * Iterates over a filledSquares object and updates the value of each filledSquare's duplicate property so that
+ * it's accurate based on its filledSquare and pencilSquare peers
+ *
+ * @param filledSquares - FilledSquares object
+ * @param pencilSquares - PencilSquares object
+ */
 export const updateFilledSquaresDuplicates = (
   filledSquares: FilledSquares,
   pencilSquares: PencilSquares
-) => {
-  // I have to iterate over filledSquares and check each square to see if it should be a duplicate or not
+): void => {
+  // Iterate over every filledSquare in filledSquares
   const squareIds = Object.keys(filledSquares).filter((key) => key !== 'size') as SquareId[];
-  // Then I need to check its current status against the found value. The first time I find one, I return true
+  // Update each filledSquare's duplicate status based on its peers filledSquare and pencilSquare values
   for (const squareId of squareIds) {
     const square = filledSquares[squareId] as FilledSquare;
     square.duplicate = false;
@@ -271,6 +372,14 @@ export const updateFilledSquaresDuplicates = (
   }
 };
 
+/** updatePencilSquaresDuplicates
+ *
+ * Iterates over a pencilSquares object and updates the value of each pencilSquare's duplicate property so that
+ * it's accurate based on it's filledSquare peers
+ *
+ * @param filledSquares - FilledSquares object
+ * @param pencilSquares - PencilSquares object
+ */
 const updatePencilSquaresDuplicates = (
   filledSquares: FilledSquares,
   pencilSquares: PencilSquares
@@ -289,6 +398,14 @@ const updatePencilSquaresDuplicates = (
   }
 };
 
+/** deepCopyFilledSquares
+ *
+ * Returns a deep copy of a filledSquares object so that said deep copy can be altered and used to replace the
+ * state of filledSquares in PuzzlePage.tsx
+ *
+ * @param filledSquares - FilledSquares object
+ * @returns FilledSquares object
+ */
 const deepCopyFilledSquares = (filledSquares: FilledSquares) => {
   const newFilledSquares: FilledSquares = { size: filledSquares.size };
   const squareIds = Object.keys(filledSquares).filter((key) => key !== 'size') as SquareId[];
@@ -298,6 +415,14 @@ const deepCopyFilledSquares = (filledSquares: FilledSquares) => {
   return newFilledSquares;
 };
 
+/** deepCopyPencilSquares
+ *
+ * Returns a deep copy of a pencilSquares object so that said deep copy can be altered and used to replace the
+ * state of pencilSquares in PuzzlePage.tsx
+ *
+ * @param pencilSquares - PencilSquares object
+ * @returns PencilSquares object
+ */
 const deepCopyPencilSquares = (pencilSquares: PencilSquares) => {
   const newPencilSquares: PencilSquares = {};
   const squareIds = Object.keys(pencilSquares) as SquareId[];
@@ -313,8 +438,19 @@ const deepCopyPencilSquares = (pencilSquares: PencilSquares) => {
   return newPencilSquares;
 };
 
+/** updateFilledSquaresFromProgress
+ *
+ * The original puzzle string needs to be used the first time a filledSquares object is made when the puzzle first loads
+ * so the "fixedVal" property on each filledSquare has the correct value. This function deep copies that first filledSquares
+ * and updates said copy to reflect a user's progress and returns said copy
+ *
+ * @param firstFilledSquares - FilledSquares object
+ * @param pencilSquares - PencilSquares object
+ * @param filledSquareProgress - 81 character string representing user's progress
+ * @returns updated FilledSquares object
+ */
 export const updateFilledSquaresFromProgress = (
-  filledSquares: FilledSquares,
+  firstFilledSquares: FilledSquares,
   pencilSquares: PencilSquares,
   filledSquareProgress: string
 ): FilledSquares => {
@@ -322,7 +458,7 @@ export const updateFilledSquaresFromProgress = (
     throw new Error('Invalid puzzle string');
   }
 
-  const newFilledSquares = deepCopyFilledSquares(filledSquares);
+  const newFilledSquares = deepCopyFilledSquares(firstFilledSquares);
   for (let i = 0; i < allSquareIds.length; i++) {
     const squareId = allSquareIds[i];
     if (filledSquareProgress[i] !== '0') {
@@ -338,8 +474,6 @@ export const updateFilledSquaresFromProgress = (
         const square = newFilledSquares[squareId] as FilledSquare;
         if (square.puzzleVal !== progressVal) {
           square.puzzleVal = progressVal;
-          square.duplicate = false;
-          square.numberHighlight = false;
         }
       }
     }
@@ -348,19 +482,180 @@ export const updateFilledSquaresFromProgress = (
   return newFilledSquares;
 };
 
+/** handleFirstPencilSquaresDuplicates
+ *
+ * After the filledSquares object is updated from a user's progress for the first time, this method runs
+ * to update the duplicate status of pencilSquares based on the updated filledSquares
+ *
+ * @param filledSquares - FilledSquares object
+ * @param pencilSquares - PencilSquares object
+ * @param setPencilSquares - dispatch action for setting pencilSquares in PuzzlePage.tsx
+ */
 export const handleFirstPencilSquaresDuplicates: HandleFirstPencilSquaresDuplicates = (
   filledSquares,
   pencilSquares,
   setPencilSquares
-) => {
+): void => {
   if (!isPencilSquaresDuplicateChange(filledSquares, pencilSquares)) return;
   const newPencilSquares = deepCopyPencilSquares(pencilSquares);
   updatePencilSquaresDuplicates(filledSquares, newPencilSquares);
   setPencilSquares(newPencilSquares);
 };
 
+/** onNumberChange
+ *
+ * This function takes a button value and updates filledSquares and/or pencilSquares based on whether
+ * or not the user is in pencilMode. This function will also check and update duplicates if necessary,
+ * and utilize the setFilledSquares and setPencilSquares dispatch actions if a change is made. It's
+ * optimized to avoid deep copying a filledSquares or pencilSquares object if possible.
+ *
+ * @param buttonVal - string - value from '1' to '9'
+ * @param pencilMode - boolean - represents whether or not pencil mode is active
+ * @param clickedSquare - string - the squareId of the clicked square
+ * @param filledSquares - FilledSquares object
+ * @param setFilledSquares - dispatch action for setting filledSquares in PuzzlePage.tsx
+ * @param pencilSquares - PencilSquares object
+ * @param setPencilSquares - dispatch action for setting pencilSquares in PuzzlePage.tsx
+ */
 export const onNumberChange: OnNumberChange = (
   buttonVal,
+  pencilMode,
+  clickedSquare,
+  filledSquares,
+  setFilledSquares,
+  pencilSquares,
+  setPencilSquares
+) => {
+  const squareId = clickedSquare as SquareId;
+
+  // newFilledSquares and newPencilSquares will only be generated via deep copy if necessary
+  // if they're made, their duplicate values will be updated at the end of the method
+  let newFilledSquares: FilledSquares | undefined;
+  let newPencilSquares: PencilSquares | undefined;
+  //take two different courses based on pencilMode
+  if (!pencilMode) {
+    //pencilMode is false, so we're changing a filledSquare value:
+    //deep clone filledSquares to newFilledSquares
+    newFilledSquares = deepCopyFilledSquares(filledSquares);
+    // update value at newFilledSquares[clickedSquare] accordingly:
+    if (!newFilledSquares[squareId]) {
+      // add new filledSquare as there wasn't one
+      newFilledSquares[squareId] = newFilledSquare(buttonVal, false);
+      newFilledSquares.size += 1;
+    } else {
+      const square = newFilledSquares[squareId] as FilledSquare;
+      if (square.puzzleVal !== buttonVal) {
+        // change square's puzzleVal as clicked button has a different value
+        square.puzzleVal = buttonVal;
+      } else {
+        // delete square's puzzleVal as value clicked was already there
+        delete newFilledSquares[squareId];
+        newFilledSquares.size -= 1;
+      }
+    }
+
+    if (pencilSquares[squareId]) {
+      // there was a pencilVal there already, delete it
+      newPencilSquares = deepCopyPencilSquares(pencilSquares);
+      delete newPencilSquares[squareId];
+    } else if (isPencilSquaresDuplicateChange(newFilledSquares, pencilSquares)) {
+      // otherwise deep clone pencilSquares as duplicate values need to be changed
+      newPencilSquares = deepCopyPencilSquares(pencilSquares);
+    }
+
+    // Adding a value to a filled square will remove all conflicting peer pencilSquare values automatically
+    // To avoid unecessary duplication of pencilSquares, we first check to see if there are conflicting pencil squares
+    let haveToDeleteSomePencilSquares = false;
+    allPeers[squareId].forEach((peerId) => {
+      if (pencilSquares[peerId]?.[buttonVal]) {
+        haveToDeleteSomePencilSquares = true;
+      }
+    });
+
+    // Make a deep clone if necessary and one hasn't already been made
+    if (!newPencilSquares && haveToDeleteSomePencilSquares) {
+      newPencilSquares = deepCopyPencilSquares(pencilSquares);
+    }
+
+    // Delete every peer's conflicting pencil square number
+    if (haveToDeleteSomePencilSquares) {
+      allPeers[squareId].forEach((peerId) => {
+        if (newPencilSquares?.[peerId]?.[buttonVal]) {
+          delete newPencilSquares?.[peerId]?.[buttonVal];
+        }
+      });
+    }
+  } else {
+    // In the case that pencilMode is active:
+    newPencilSquares = deepCopyPencilSquares(pencilSquares);
+    if (!newPencilSquares[squareId]) {
+      // There isn't a pencilSquare already, make a new one
+      newPencilSquares[squareId] = {
+        size: 1,
+        [buttonVal]: {
+          duplicate: false,
+          highlightNumber: false
+        }
+      };
+    } else {
+      const pencilSquare = newPencilSquares[squareId] as PencilSquare;
+      if (!pencilSquare[buttonVal]) {
+        // pencilSquare exists but the value isn't already in the pencilSquare, add it
+        pencilSquare.size += 1;
+        pencilSquare[buttonVal] = {
+          duplicate: false,
+          highlightNumber: false
+        };
+      } else {
+        // The value is in the pencil square, delete it
+        // Delete the whole square if that was the last value in the square
+        pencilSquare.size -= 1;
+        if (pencilSquare.size === 0) delete newPencilSquares[squareId];
+        else delete pencilSquare[buttonVal];
+      }
+    }
+
+    if (filledSquares[squareId]) {
+      // There was a value in the filledSquare, delete it so it's overwritten by the pencilSquare
+      newFilledSquares = deepCopyFilledSquares(filledSquares);
+      delete newFilledSquares[squareId];
+    } else if (isFilledSquaresDuplicateChange(filledSquares, newPencilSquares)) {
+      // Make a deep copy as filledSquares duplicates need to be updated
+      newFilledSquares = deepCopyFilledSquares(filledSquares);
+    }
+  }
+
+  // Update duplicates based on what new objects were created
+  if (newFilledSquares && newPencilSquares) {
+    updateFilledSquaresDuplicates(newFilledSquares, newPencilSquares);
+    updatePencilSquaresDuplicates(newFilledSquares, newPencilSquares);
+  } else if (newFilledSquares) {
+    updateFilledSquaresDuplicates(newFilledSquares, pencilSquares);
+  } else if (newPencilSquares) {
+    updatePencilSquaresDuplicates(filledSquares, newPencilSquares);
+  }
+
+  // Set state with new copies if they were made
+  if (newFilledSquares) setFilledSquares(newFilledSquares);
+  if (newPencilSquares) setPencilSquares(newPencilSquares);
+};
+
+/** onNumberDelete
+ *
+ * This method is used purely for when the user presses delete of backspace while a square
+ * is clicked. It'll delete a square from either filledSquares or pencilSquares based on
+ * pencil mode. This function will also check and update duplicates if necessary, and utilize
+ * the setFilledSquares and setPencilSquares dispatch actions if a change is made. It's optimized
+ * to avoid deep copying a filledSquares or pencilSquares object if possible.
+ *
+ * @param pencilMode - boolean - represents whether or not pencil mode is active
+ * @param clickedSquare - string - the squareId of the clicked square
+ * @param filledSquares - FilledSquares object
+ * @param setFilledSquares - dispatch action for setting filledSquares in PuzzlePage.tsx
+ * @param pencilSquares - PencilSquares object
+ * @param setPencilSquares - dispatch action for setting pencilSquares in PuzzlePage.tsx
+ */
+export const onNumberDelete: OnNumberDelete = (
   pencilMode,
   clickedSquare,
   filledSquares,
@@ -373,86 +668,25 @@ export const onNumberChange: OnNumberChange = (
   let newFilledSquares: FilledSquares | undefined;
   let newPencilSquares: PencilSquares | undefined;
   //take two different courses based on pencilMode
-  //if pencilMode is false, we're changing a filledSquare value so:
-  if (!pencilMode) {
-    //deep clone filledSquares to newFilledSquares
+  if (!pencilMode && filledSquares[squareId]) {
+    //if pencilMode is false and there's a filledSquare to delete:
     newFilledSquares = deepCopyFilledSquares(filledSquares);
-    // update value at newFilledSquares[clickedSquare] accordingly:
-    //  add if empty or another number, remove if puzzleVal matches number clicked
-    if (!newFilledSquares[squareId]) {
-      newFilledSquares[squareId] = newFilledSquare(buttonVal, false);
-      newFilledSquares.size += 1;
-    } else {
-      const square = newFilledSquares[squareId] as FilledSquare;
-      if (square.puzzleVal !== buttonVal) {
-        square.puzzleVal = buttonVal;
-        square.duplicate = false;
-        square.numberHighlight = false;
-      } else {
-        delete newFilledSquares[squareId];
-        newFilledSquares.size -= 1;
-      }
-    }
+    delete newFilledSquares[squareId];
+    newFilledSquares.size -= 1;
 
-    if (pencilSquares[squareId]) {
-      newPencilSquares = deepCopyPencilSquares(pencilSquares);
-      delete newPencilSquares[squareId];
-    } else if (isPencilSquaresDuplicateChange(newFilledSquares, pencilSquares)) {
+    if (isPencilSquaresDuplicateChange(newFilledSquares, pencilSquares)) {
       newPencilSquares = deepCopyPencilSquares(pencilSquares);
     }
-
-    let haveToDeleteSomePencilSquares = false;
-    allPeers[squareId].forEach((peerId) => {
-      if (pencilSquares[peerId]?.[buttonVal]) {
-        haveToDeleteSomePencilSquares = true;
-      }
-    });
-
-    if (!newPencilSquares && haveToDeleteSomePencilSquares) {
-      newPencilSquares = deepCopyPencilSquares(pencilSquares);
-    }
-
-    if (haveToDeleteSomePencilSquares) {
-      allPeers[squareId].forEach((peerId) => {
-        if (newPencilSquares?.[peerId]?.[buttonVal]) {
-          delete newPencilSquares?.[peerId]?.[buttonVal];
-        }
-      });
-    }
-  } else {
+  } else if (pencilMode && pencilSquares[squareId]) {
+    //if pencilMode is true and there's a pencilSquare to delete:
     newPencilSquares = deepCopyPencilSquares(pencilSquares);
+    delete newPencilSquares[squareId];
 
-    if (!newPencilSquares[squareId]) {
-      newPencilSquares[squareId] = {
-        size: 1,
-        [buttonVal]: {
-          duplicate: false,
-          highlightNumber: false
-        }
-      };
-    } else {
-      const pencilSquare = newPencilSquares[squareId] as PencilSquare;
-      if (!pencilSquare[buttonVal]) {
-        pencilSquare.size += 1;
-        pencilSquare[buttonVal] = {
-          duplicate: false,
-          highlightNumber: false
-        };
-      } else {
-        pencilSquare.size -= 1;
-        if (pencilSquare.size === 0) delete newPencilSquares[squareId];
-        else delete pencilSquare[buttonVal];
-      }
-    }
-
-    if (filledSquares[squareId]) {
-      newFilledSquares = deepCopyFilledSquares(filledSquares);
-      delete newFilledSquares[squareId];
-    } else if (isFilledSquaresDuplicateChange(filledSquares, newPencilSquares)) {
+    if (isFilledSquaresDuplicateChange(filledSquares, newPencilSquares)) {
       newFilledSquares = deepCopyFilledSquares(filledSquares);
     }
   }
-
+  // Update duplicates based on what new objects were created
   if (newFilledSquares && newPencilSquares) {
     updateFilledSquaresDuplicates(newFilledSquares, newPencilSquares);
     updatePencilSquaresDuplicates(newFilledSquares, newPencilSquares);
@@ -462,6 +696,7 @@ export const onNumberChange: OnNumberChange = (
     updatePencilSquaresDuplicates(filledSquares, newPencilSquares);
   }
 
+  // Set state with new copies if they were made
   if (newFilledSquares) setFilledSquares(newFilledSquares);
   if (newPencilSquares) setPencilSquares(newPencilSquares);
 };
@@ -469,10 +704,9 @@ export const onNumberChange: OnNumberChange = (
 /** isPuzzleFinished
  *  Checks if a puzzle is complete by checking to see if there are no empty spaces and no duplicates in the puzzle
  *
- * @param allSquares Current state of the puzzle
+ * @param filledSquares - FilledSquares object
  * @returns boolean
  */
-
 export const isPuzzleFinished = (filledSquares: FilledSquares): boolean => {
   if (filledSquares.size !== 81) return false;
   for (const squareId of allSquareIds) {
@@ -489,7 +723,6 @@ export const isPuzzleFinished = (filledSquares: FilledSquares): boolean => {
  * @param filledSquares current filledSquares object
  * @returns string representing the current state of the puzzle
  */
-
 export const createProgressString = (filledSquares: FilledSquares): string => {
   let progress = '';
 
@@ -503,6 +736,15 @@ export const createProgressString = (filledSquares: FilledSquares): string => {
 
 const puzzleVals: PuzzleVal[] = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
+/** createPencilProgressString
+ *
+ * Takes a pencilSquares object and returns a pencil string. Pencil strings are comprised of
+ * squareIds followed by whatever numbers are present in for that square. For example, a pencil square
+ * string representing pencilled in numbers 1 and 4 at square A1 and 5 and 8 at G6 is "A114G658".
+ *
+ * @param pencilSquares - PencilSquares object
+ * @returns
+ */
 export const createPencilProgressString = (pencilSquares: PencilSquares) => {
   let pencilProgress = '';
 
@@ -517,11 +759,16 @@ export const createPencilProgressString = (pencilSquares: PencilSquares) => {
   return pencilProgress;
 };
 
-export const autofillPencilSquares: AutofillPencilSquares = (
-  filledSquares,
-  setFilledSquares,
-  setPencilSquares
-) => {
+/** autofillPencilSquares
+ *
+ * Generates a pencilSquares object based on the current filledSquares object and uses the
+ * dispatch function to set pencilSquares on PuzzlePage.tsx to this new pencilSquare object.
+ * Penciled in values are based solely on filled in squares without applying advanced techniques.
+ *
+ * @param filledSquares - FilledSquares object
+ * @param setPencilSquares - dispatch action for setting pencilSquares in PuzzlePage.tsx
+ */
+export const autofillPencilSquares: AutofillPencilSquares = (filledSquares, setPencilSquares) => {
   const pencilSquares = {} as PencilSquares;
   const solveSquares = newSolveSquares();
   updateSolveSquares(filledSquares, solveSquares);
@@ -539,13 +786,7 @@ export const autofillPencilSquares: AutofillPencilSquares = (
       });
     }
   }
-  if (isFilledSquaresDuplicateChange(filledSquares, pencilSquares)) {
-    const newFilledSquares = deepCopyFilledSquares(filledSquares);
-    updateFilledSquaresDuplicates(newFilledSquares, pencilSquares);
-    updatePencilSquaresDuplicates(newFilledSquares, pencilSquares);
-    setFilledSquares(newFilledSquares);
-  } else {
-    updatePencilSquaresDuplicates(filledSquares, pencilSquares);
-  }
+
+  updatePencilSquaresDuplicates(filledSquares, pencilSquares);
   setPencilSquares(pencilSquares);
 };
