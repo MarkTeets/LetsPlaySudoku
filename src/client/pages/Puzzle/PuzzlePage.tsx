@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 // Types
@@ -10,7 +10,9 @@ import {
   ClickedSquare,
   SetUser,
   UserContextValue,
-  PuzzleCollectionContextValue
+  PuzzleCollectionContextValue,
+  OnPuzzleKeyDown,
+  PuzzleVal
 } from '../../frontendTypes';
 import { User, PuzzleCollection } from '../../../types';
 
@@ -30,7 +32,9 @@ import {
   isPuzzleFinished,
   createProgressString,
   createPencilProgressString,
-  autofillPencilSquares
+  autofillPencilSquares,
+  onNumberChange,
+  onNumberDelete
 } from '../../utils/squares';
 const savePuzzle = savePuzzleAtLeastOnce();
 
@@ -42,6 +46,7 @@ const PuzzlePage = () => {
   const { puzzleCollection } = useContext<PuzzleCollectionContextValue>(puzzleCollectionContext);
   const [pencilMode, setPencilMode] = useState<boolean>(false);
   const [clickedSquare, setClickedSquare] = useState<ClickedSquare>(null);
+  const keepSquareFocus = useRef<boolean>(false);
 
   // This implementation will calculate the initialState the first time the page loads, and then each
   // time reset is pressed it will skip recaluclating and just use the initialFilledSquares value
@@ -97,15 +102,27 @@ const PuzzlePage = () => {
   //   renderCount.current += 1;
   // });
 
-  const pencilModeSwitch = () => {
+  const setSquareFocusTrue = (): void => {
+    keepSquareFocus.current = true;
+  };
+
+  const onPuzzleContainerBlur = (): void => {
+    if (!keepSquareFocus.current) setClickedSquare(null);
+  };
+
+  const setSquareFocusFalse = (): void => {
+    keepSquareFocus.current = false;
+  };
+
+  const pencilModeSwitch = (): void => {
     setPencilMode(!pencilMode);
   };
 
-  const onAutofillPencilClick = () => {
-    autofillPencilSquares(filledSquares, setFilledSquares, setPencilSquares);
+  const onAutofillPencilClick = (): void => {
+    autofillPencilSquares(filledSquares, setPencilSquares);
   };
 
-  const onSaveClick = () => {
+  const onSaveClick = (): void => {
     savePuzzle(puzzleNumber, filledSquares, pencilSquares, user, setUser);
   };
 
@@ -140,28 +157,57 @@ const PuzzlePage = () => {
 
   return (
     <squareContext.Provider value={SquareContextValue}>
-      <div id='puzzle-page-container'>
-        <PuzzleContainer key='PuzzleContainer' />
-        <NumberSelectBar key='NumberSelectBar' {...numberSelectBarProps} />
-        <div className='button-container puzzle-button-container'>
-          <button onClick={pencilModeSwitch} className={pencilClasses}>
-            Pencil Mode
-          </button>
-          <button onClick={onAutofillPencilClick} className={puzzleButtonClass}>
-            Auto-fill Pencil
-          </button>
-          <button onClick={onSaveClick} className={puzzleButtonClass}>
-            Save
-          </button>
-          <button onClick={resetPuzzle} className={puzzleButtonClass}>
-            Reset
-          </button>
-          <button
-            onClick={() => alert('Game Data feature is currently being built')}
-            className={puzzleButtonClass}
-          >
-            Game Data
-          </button>
+      {/* puzzle-page div is here to reduce the size of the puzzle-page-container for the onBlur event*/}
+      <div id='puzzle-page'>
+        <div
+          id='puzzle-page-container'
+          tabIndex={0}
+          // onPuzzleContainerBlur will remove the current clicked square if the user clicks elsewhere on the screen.
+          // The onMouseDown and onClick events are used to track whether or not the blur event was caused by a click
+          // on a button within "puzzle-page-container", and if so to avoid setting clickedSquare to null.
+          // For example, if the user clicks a square (setting clickedSquare to its squareId) and then they click a number button:
+          // 1. onMouseDown will fire setting keepSquareFocus.current to true
+          // 2. onBlur event for the puzzle-page-container will fire as focus is shifting to the specific number button, but
+          //    onPuzzleContainerBlur will not set clickedSquare to null as keepSquareFocus.current is true
+          // 3. onClick event for the puzzle-page-container sets keepSquareFocus.current to false so if the
+          //    next click isn't in puzzle-page-container, onPuzzleContainerBlur can set clickedSquare to null
+          onMouseDown={setSquareFocusTrue}
+          onBlur={onPuzzleContainerBlur}
+          onClick={setSquareFocusFalse}
+          onKeyDown={(event) =>
+            onPuzzleKeyDown(
+              event,
+              pencilMode,
+              clickedSquare,
+              filledSquares,
+              setFilledSquares,
+              pencilSquares,
+              setPencilSquares
+            )
+          }
+        >
+          <PuzzleContainer key='PuzzleContainer' />
+          <NumberSelectBar key='NumberSelectBar' {...numberSelectBarProps} />
+          <div className='button-container puzzle-button-container'>
+            <button onClick={pencilModeSwitch} className={pencilClasses}>
+              Pencil Mode
+            </button>
+            <button onClick={onAutofillPencilClick} className={puzzleButtonClass}>
+              Auto-fill Pencil
+            </button>
+            <button onClick={onSaveClick} className={puzzleButtonClass}>
+              Save
+            </button>
+            <button onClick={resetPuzzle} className={puzzleButtonClass}>
+              Reset
+            </button>
+            <button
+              onClick={() => alert('Game Data feature is currently being built')}
+              className={puzzleButtonClass}
+            >
+              Game Data
+            </button>
+          </div>
         </div>
       </div>
     </squareContext.Provider>
@@ -295,3 +341,53 @@ function savePuzzleAtLeastOnce() {
     // console.log('No puzzle differences from last save, no save necessary');
   };
 }
+
+const numbers = new Set(['1', '2', '3', '4', '5', '6', '7', '8', '9']);
+
+export const onPuzzleKeyDown: OnPuzzleKeyDown = (
+  event,
+  pencilMode,
+  clickedSquare,
+  filledSquares,
+  setFilledSquares,
+  pencilSquares,
+  setPencilSquares
+) => {
+  if (event.key !== 'Backspace' && event.key !== 'Delete' && !numbers.has(event.key)) {
+    return;
+  }
+
+  if (numbers.has(event.key)) {
+    if (clickedSquare === null) {
+      alert('Please click on a square before selecting a number');
+      return;
+    }
+
+    // const buttonVal = event.currentTarget.innerText as PuzzleVal;
+    const buttonVal = event.key as PuzzleVal;
+
+    onNumberChange(
+      buttonVal,
+      pencilMode,
+      clickedSquare,
+      filledSquares,
+      setFilledSquares,
+      pencilSquares,
+      setPencilSquares
+    );
+  } else {
+    if (clickedSquare === null) {
+      alert('Please click on a square to remove a number');
+      return;
+    }
+
+    onNumberDelete(
+      pencilMode,
+      clickedSquare,
+      filledSquares,
+      setFilledSquares,
+      pencilSquares,
+      setPencilSquares
+    );
+  }
+};

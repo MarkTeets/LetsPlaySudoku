@@ -104,6 +104,15 @@ p {
   border-radius: 7px;
 }
 
+#puzzle-page {
+  width: max-content;
+  margin: 0 auto;
+  
+  :focus{
+    outline: none;
+  }
+}
+
 button {
   margin: 6px 10px;
   background-color: $buttonBackground;
