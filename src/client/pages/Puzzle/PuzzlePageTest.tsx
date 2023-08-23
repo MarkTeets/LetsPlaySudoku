@@ -167,8 +167,10 @@ const PuzzlePageTest = () => {
           // 1. onMouseDown will fire setting keepSquareFocus.current to true
           // 2. onBlur event for the puzzle-page-container will fire as focus is shifting to the specific number button, but
           //    onPuzzleContainerBlur will not set clickedSquare to null as keepSquareFocus.current is true
-          // 3. onClick event for the puzzle-page-container sets keepSquareFocus.current to false so if the
-          //    next click isn't in puzzle-page-container, onPuzzleContainerBlur can set clickedSquare to null
+          // 3. Unrelated click event fires for number button
+          // 4. onClick event for the puzzle-page-container fires as number button is within puzzle-page-container,
+          //    function sets keepSquareFocus.current to false so if the next click isn't in puzzle-page-container,
+          //    onPuzzleContainerBlur can set clickedSquare to null
           onMouseDown={setSquareFocusTrue}
           onBlur={onPuzzleContainerBlur}
           onClick={setSquareFocusFalse}
