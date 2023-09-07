@@ -563,14 +563,24 @@ export const onNumberChange: OnNumberChange = (
       newPencilSquares = deepCopyPencilSquares(pencilSquares);
     }
 
-    // Adding a value to a filled square will remove all conflicting peer pencilSquare values automatically
+    // Adding a value to a filled square will remove all conflicting peer pencilSquare values automatically,
+    // unless the new number is a duplicate number in a filledSquare peer.
     // To avoid unecessary duplication of pencilSquares, we first check to see if there are conflicting pencil squares
-    let haveToDeleteSomePencilSquares = false;
+    let isDuplicate = false;
     allPeers[squareId].forEach((peerId) => {
-      if (pencilSquares[peerId]?.[buttonVal]) {
-        haveToDeleteSomePencilSquares = true;
+      if (filledSquares[peerId]?.puzzleVal === buttonVal) {
+        isDuplicate = true;
       }
     });
+
+    let haveToDeleteSomePencilSquares = false;
+    if (!isDuplicate) {
+      allPeers[squareId].forEach((peerId) => {
+        if (pencilSquares[peerId]?.[buttonVal]) {
+          haveToDeleteSomePencilSquares = true;
+        }
+      });
+    }
 
     // Make a deep clone if necessary and one hasn't already been made
     if (!newPencilSquares && haveToDeleteSomePencilSquares) {
