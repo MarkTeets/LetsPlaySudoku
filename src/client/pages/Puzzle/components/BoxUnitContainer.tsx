@@ -16,14 +16,11 @@ export default BoxUnitContainer;
 // Helper Functions
 function generateSquares(boxUnit: Set<SquareId>): React.JSX.Element[] {
   const squares = [] as React.JSX.Element[];
-  let position = 1;
   boxUnit.forEach((squareId) => {
     const squareContainerProps: SquareContainerProps = {
-      squareId,
-      squareClasses: `square-display square-${position}`
+      squareId
     };
     squares.push(<SquareContainer key={`Square-${squareId}`} {...squareContainerProps} />);
-    position += 1;
   });
   return squares;
 }

@@ -1,0 +1,30 @@
+.user-navbar {
+  position: absolute;
+  border-radius: 5px;
+  background-color: $buttonBackground;
+  transition: all 0.5s ease-in-out;
+  width: 160px;
+  max-height: 400px;
+  overflow: hidden;
+  // border: $innerBorderColor solid 2px;
+}
+
+.user-navbar.inactive {
+  max-height: 0px;
+  // border: none;
+}
+
+.user-nav {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-nav .nav-link {
+  color: $numberColor;
+  padding: 5px;
+}
+
+.user-nav .active {
+  background-color: $offBlack;
+  // border-radius: 7px;
+}

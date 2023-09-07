@@ -21,8 +21,7 @@ import { squareContext } from '../../../context';
 import { allPeers } from '../../../utils/squares';
 
 // Main Component
-const SquareContainer = (props: SquareContainerProps) => {
-  const { squareId, squareClasses } = props;
+const SquareContainer = ({ squareId }: SquareContainerProps) => {
   const { clickedSquare, setClickedSquare, filledSquares, pencilSquares } =
     useContext<SquareContextValue>(squareContext);
 
@@ -31,19 +30,19 @@ const SquareContainer = (props: SquareContainerProps) => {
     // console.log('clickedSquare:', event.currentTarget.dataset.square);
   };
 
-  let classes = squareClasses;
+  let squareClasses = 'square-container';
   if (clickedSquare) {
     if (squareId === clickedSquare) {
-      classes += ' current-square';
+      squareClasses += ' current-square';
     }
     if (allPeers[squareId].has(clickedSquare)) {
-      classes += ' current-peer';
+      squareClasses += ' current-peer';
     }
   }
 
   const squareProps: SquareProps = {
     squareId,
-    squareClasses: classes,
+    squareClasses,
     onSquareClick
   };
 

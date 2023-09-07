@@ -1,0 +1,161 @@
+$bigBorderColor: #08153e;
+$innerBorderColor: #0d2367;
+$squareBackground: #F7F8F8;
+$numberColor: #1840b9;
+$fixedVal: $bigBorderColor;
+$duplicateNumber: rgb(204, 69, 69);
+// $pencilNum: $numberColor;
+$pencilNum: #4f18ce;
+$peerSquareBackground: #d9e1fa;
+// $clickedSquareBackground: #cbd6f8;
+// $clickedSquareBackground: #eef1fd;
+$clickedSquareBackground: #c0cef7;;
+$clickedSquareBorder: yellow;
+
+// $puzzleButtonBackground: #3D67E6;
+// $puzzleButtonBackground: #305de4;
+$puzzleButtonBackground: #3964e4;
+$puzzleButtonShadow: rgb(168, 40, 210);
+$puzzleButtonText: #b4c4f5;
+$puzzleButtonShadow: #8a5fed;
+$visitedLink: rgb(128, 179, 171);
+
+#puzzle-page-centerer {
+  width: max-content;
+  margin: 0 auto;
+
+  :focus {
+    outline: none;
+  }
+}
+
+#puzzle-container {
+  display: grid;
+  grid-template-rows: repeat(3, 1fr);
+  grid-template-columns: repeat(3, 1fr);
+  border: $bigBorderColor solid 2px;
+  background-color: $bigBorderColor;
+  width: max-content;
+  height: max-content;
+  border-radius: 2px;
+  gap: 2px;
+  margin-bottom: 15px;
+  font-family: "Roboto Mono", monospace;
+}
+
+.box-unit-container {
+  display: grid;
+  grid-template-rows: repeat(3, 1fr);
+  grid-template-columns: repeat(3, 1fr);
+  background-color: $innerBorderColor;
+  gap: 1px;
+}
+
+.square-container {
+  background-color: $squareBackground;
+  // border: $innerBorderColor solid 1px;
+  height: 61px;
+  width: 57px;
+  padding: 2px;
+  // box-sizing: content-box;
+}
+
+.filled-square {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 35px;
+  font-weight: 300;
+  color: $numberColor;
+}
+
+.fixed-val {
+  color: $fixedVal;
+}
+
+.pencil-square {
+  display: grid;
+  grid-template-rows: repeat(3, 1fr);
+  grid-template-columns: repeat(3, 1fr);
+  align-items: center;
+}
+
+.pencil-val-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 200;
+  color: $pencilNum;
+}
+
+.duplicate-number {
+  color: $duplicateNumber;
+}
+
+.fixed-val.duplicate-number {
+  color: darken($duplicateNumber, 15%)
+}
+
+.current-peer {
+  background-color: $peerSquareBackground;
+}
+
+.current-square {
+  background-color: $clickedSquareBackground;
+  padding: 0;
+  border: $clickedSquareBorder solid 2px;
+}
+
+// Styles for buttons below puzzle
+#number-select-bar {
+  display: flex;
+  justify-content: space-evenly;
+  margin-bottom: 12px;
+}
+
+.number-button {
+  height: 42px;
+  width: 38px;
+  margin: 0;
+  border-color: rgba(118, 118, 118, 0.3);
+  color: $puzzleButtonText;
+  background-color: $puzzleButtonBackground;
+}
+
+.puzzle-button-container {
+  width: max-content;
+  margin: 0 auto 12px;
+}
+
+.puzzle-button {
+  margin: 0 6px;
+  color: $puzzleButtonText;
+  background-color: $puzzleButtonBackground;
+}
+
+.highlight-number-button {
+  background-color: darken($puzzleButtonBackground, 8%);
+  color: darken($puzzleButtonText, 4%);
+  box-shadow: 3px 4px 3px $puzzleButtonShadow;
+}
+
+.number-button:disabled {
+  background-color: lighten($puzzleButtonBackground, 6%);
+  color: lighten($puzzleButtonText, 4%);
+}
+
+.number-button.highlight-number-button:disabled {
+  background-color: lighten($puzzleButtonBackground, 2%);
+  color: lighten($puzzleButtonText, 1%);
+}
+
+.fill-mode {
+  font-size: 24px;
+  font-weight: 300;
+}
+
+.pencil-mode {
+  font-size: 18px;
+  font-weight: 300;
+}

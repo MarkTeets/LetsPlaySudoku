@@ -22,7 +22,7 @@ const NumberSelectBar = (props: NumberSelectBarProps) => {
     setPencilSquares
   } = props;
   return (
-    <div className='button-container'>
+    <div id='number-select-bar'>
       {makeButtons(
         pencilMode,
         clickedSquare,
