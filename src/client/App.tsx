@@ -66,7 +66,7 @@ const router = createBrowserRouter(
           element={<PuzzlePageTest key='PuzzlePageTest' />}
           loader={puzzleTestLoader}
         /> */}
-        <Route path='play/:puzzleNumber' element={<PuzzlePage key='PuzzlePage' />} />
+        <Route path='puzzle/:puzzleNumber' element={<PuzzlePage key='PuzzlePage' />} />
       </Route>
 
       <Route path='*' element={<NotFound />} />
