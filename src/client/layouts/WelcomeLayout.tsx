@@ -21,7 +21,7 @@ const WelcomeLayout = () => {
   };
 
   return (
-    <div className='welcome-layout root-layout'>
+    <div id='welcome-layout'>
       <header>
         <nav id='main-nav'>
           <h1 id='lets-play'>{"Let's Play Sudoku!"}</h1>
