@@ -116,6 +116,10 @@ export type PageContextValue = {
   pageInfo: PageInfo;
 };
 
+export type UserNavBarProps = {
+  collapseNavBar: () => void;
+};
+
 export type ClickedSquare = SquareId | null;
 
 type SetClickedSquare = Dispatch<SetStateAction<ClickedSquare>>;
@@ -146,7 +150,6 @@ export type BoxUnitContainerProps = {
 
 export type SquareContainerProps = {
   squareId: SquareId;
-  squareClasses: string;
 };
 
 export type SquareProps = {
