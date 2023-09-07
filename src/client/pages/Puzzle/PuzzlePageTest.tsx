@@ -39,7 +39,6 @@ const PuzzlePageTest = () => {
   const puzzleData = useLoaderData() as { puzzle: string };
   const [pencilMode, setPencilMode] = useState<boolean>(false);
   const [clickedSquare, setClickedSquare] = useState<ClickedSquare>(null);
-  const keepSquareFocus = useRef<boolean>(false);
 
   // This implementation will calculate the initialState the first time the page loads, and then each
   // time reset is pressed it will skip recaluclating and just use the initialFilledSquares value
@@ -77,18 +76,6 @@ const PuzzlePageTest = () => {
   //   console.log('Puzzle Page render number:', renderCount.current);
   //   renderCount.current += 1;
   // });
-
-  const setSquareFocusTrue = (): void => {
-    keepSquareFocus.current = true;
-  };
-
-  const onPuzzleContainerBlur = (): void => {
-    if (!keepSquareFocus.current) setClickedSquare(null);
-  };
-
-  const setSquareFocusFalse = (): void => {
-    keepSquareFocus.current = false;
-  };
 
   const pencilModeSwitch = () => {
     setPencilMode(!pencilMode);
@@ -153,6 +140,12 @@ const PuzzlePageTest = () => {
   //   }
   // };
 
+  const removeClickedSquareOnPuzzlePageBlur = (e: React.FocusEvent): void => {
+    if (!(e.currentTarget === e.relatedTarget || e.currentTarget.contains(e.relatedTarget))) {
+      setClickedSquare(null);
+    }
+  };
+
   return (
     <squareContext.Provider value={SquareContextValue}>
       {/* puzzle-page div is here to reduce the size of the puzzle-page-container for the onBlur event*/}
@@ -160,20 +153,7 @@ const PuzzlePageTest = () => {
         <div
           id='puzzle-page-container'
           tabIndex={0}
-          // onPuzzleContainerBlur will remove the current clicked square if the user clicks elsewhere on the screen.
-          // The onMouseDown and onClick events are used to track whether or not the blur event was caused by a click
-          // on a button within "puzzle-page-container", and if so to avoid setting clickedSquare to null.
-          // For example, if the user clicks a square (setting clickedSquare to its squareId) and then they click a number button:
-          // 1. onMouseDown will fire setting keepSquareFocus.current to true
-          // 2. onBlur event for the puzzle-page-container will fire as focus is shifting to the specific number button, but
-          //    onPuzzleContainerBlur will not set clickedSquare to null as keepSquareFocus.current is true
-          // 3. Unrelated click event fires for number button
-          // 4. onClick event for the puzzle-page-container fires as number button is within puzzle-page-container,
-          //    function sets keepSquareFocus.current to false so if the next click isn't in puzzle-page-container,
-          //    onPuzzleContainerBlur can set clickedSquare to null
-          onMouseDown={setSquareFocusTrue}
-          onBlur={onPuzzleContainerBlur}
-          onClick={setSquareFocusFalse}
+          onBlur={removeClickedSquareOnPuzzlePageBlur}
           onKeyDown={(event) =>
             onPuzzleKeyDown(
               event,

@@ -12,7 +12,8 @@ import {
   UserContextValue,
   PuzzleCollectionContextValue,
   OnPuzzleKeyDown,
-  PuzzleVal
+  PuzzleVal,
+  PageContextValue
 } from '../../frontendTypes';
 import { User, PuzzleCollection } from '../../../types';
 
@@ -21,7 +22,7 @@ import PuzzleContainer from './components/PuzzleContainer';
 import NumberSelectBar from './components/NumberSelectBar';
 
 // Context
-import { userContext, puzzleCollectionContext, squareContext } from '../../context';
+import { userContext, puzzleCollectionContext, squareContext, pageContext } from '../../context';
 
 // Utilities
 import {
@@ -44,9 +45,10 @@ const PuzzlePage = () => {
   const puzzleNumber = Number(useParams().puzzleNumber);
   const { user, setUser } = useContext<UserContextValue>(userContext);
   const { puzzleCollection } = useContext<PuzzleCollectionContextValue>(puzzleCollectionContext);
+  const { pageInfo } = useContext<PageContextValue>(pageContext);
   const [pencilMode, setPencilMode] = useState<boolean>(false);
   const [clickedSquare, setClickedSquare] = useState<ClickedSquare>(null);
-  const keepSquareFocus = useRef<boolean>(false);
+  const [showTools, setShowTools] = useState<boolean>(false);
 
   // This implementation will calculate the initialState the first time the page loads, and then each
   // time reset is pressed it will skip recaluclating and just use the initialFilledSquares value
@@ -66,9 +68,6 @@ const PuzzlePage = () => {
     firstFilledSquares(initialFilledSquares, pencilSquares, puzzleNumber, user, puzzleCollection)
   );
 
-  // For tracking renders:
-  // const renderCount = useRef(1);
-
   useEffect(() => {
     // On page refresh, user state is lost. For now, we'll avoid complications by sending a user back to the home page
     if (!user) {
@@ -82,8 +81,11 @@ const PuzzlePage = () => {
           lastPuzzle: puzzleNumber
         });
       }
+      // Update current page for UserNavBar
+      pageInfo.current = 'PuzzlePage';
+      // Update the pencilSquares duplicates in case loading user's filledSquares would cause duplicates
+      handleFirstPencilSquaresDuplicates(filledSquares, pencilSquares, setPencilSquares);
     }
-    handleFirstPencilSquaresDuplicates(filledSquares, pencilSquares, setPencilSquares);
   }, []);
 
   // Checks to see if user has solved puzzle on each allSquares update
@@ -97,25 +99,36 @@ const PuzzlePage = () => {
     }
   }, [filledSquares]);
 
+  // For tracking renders:
+  // const renderCount = useRef(1);
   // useEffect(() => {
   //   console.log('Puzzle Page render number:', renderCount.current);
   //   renderCount.current += 1;
   // });
 
-  const setSquareFocusTrue = (): void => {
-    keepSquareFocus.current = true;
-  };
+  const removeClickedSquareOnPuzzlePageBlur = (e: React.FocusEvent): void => {
+    // The following logic will make sure clickedSquare is set to null only if the user clicks outside of the puzzle-page-container
+    // Clicking outside of the puzzle-page-container, clicking on the puzzle-page-container and then a button within it,
+    // clicking from a button back to the puzzle-page-container, or clicking from button to buttons within puzzle-page-container
+    // all trigger the onBlur event as focus is changing.
 
-  const onPuzzleContainerBlur = (): void => {
-    if (!keepSquareFocus.current) setClickedSquare(null);
-  };
+    // e.currentTarget is the element with the listener attached to it, in this case puzzle-page-container
+    // For a focus/blur event, e.relatedTarget will be the element that triggered the blur event,
+    // aka the element clicked on.
+    // e.currentTarget.contains(e.relatedTarget) will be true changing focus within the puzzle-page-container
+    // e.currentTarget === e.relatedTarget will be true if transitioning from focusing on a button to the puzzle-page-container
 
-  const setSquareFocusFalse = (): void => {
-    keepSquareFocus.current = false;
+    if (!(e.currentTarget === e.relatedTarget || e.currentTarget.contains(e.relatedTarget))) {
+      setClickedSquare(null);
+    }
   };
 
   const pencilModeSwitch = (): void => {
     setPencilMode(!pencilMode);
+  };
+
+  const showToolsSwitch = (): void => {
+    setShowTools(!showTools);
   };
 
   const onAutofillPencilClick = (): void => {
@@ -155,27 +168,19 @@ const PuzzlePage = () => {
     pencilClasses += ' highlight-number-button';
   }
 
+  let toolButtonClasses = puzzleButtonClass;
+  if (showTools) {
+    toolButtonClasses += ' highlight-number-button';
+  }
+
   return (
     <squareContext.Provider value={SquareContextValue}>
       {/* puzzle-page div is here to reduce the size of the puzzle-page-container for the onBlur event*/}
-      <div id='puzzle-page'>
+      <div id='puzzle-page-centerer'>
         <div
           id='puzzle-page-container'
           tabIndex={0}
-          // onPuzzleContainerBlur will remove the current clicked square if the user clicks elsewhere on the screen.
-          // The onMouseDown and onClick events are used to track whether or not the blur event was caused by a click
-          // on a button within "puzzle-page-container", and if so to avoid setting clickedSquare to null.
-          // For example, if the user clicks a square (setting clickedSquare to its squareId) and then they click a number button:
-          // 1. onMouseDown will fire setting keepSquareFocus.current to true
-          // 2. onBlur event for the puzzle-page-container will fire as focus is shifting to the specific number button, but
-          //    onPuzzleContainerBlur will not set clickedSquare to null as keepSquareFocus.current is true
-          // 3. Unrelated click event fires for number button
-          // 4. onClick event for the puzzle-page-container fires as number button is within puzzle-page-container,
-          //    function sets keepSquareFocus.current to false so if the next click isn't in puzzle-page-container,
-          //    onPuzzleContainerBlur can set clickedSquare to null
-          onMouseDown={setSquareFocusTrue}
-          onBlur={onPuzzleContainerBlur}
-          onClick={setSquareFocusFalse}
+          onBlur={removeClickedSquareOnPuzzlePageBlur}
           onKeyDown={(event) =>
             onPuzzleKeyDown(
               event,
@@ -190,7 +195,7 @@ const PuzzlePage = () => {
         >
           <PuzzleContainer key='PuzzleContainer' />
           <NumberSelectBar key='NumberSelectBar' {...numberSelectBarProps} />
-          <div className='button-container puzzle-button-container'>
+          <div className='puzzle-button-container'>
             <button onClick={pencilModeSwitch} className={pencilClasses}>
               Pencil Mode
             </button>
@@ -200,16 +205,23 @@ const PuzzlePage = () => {
             <button onClick={onSaveClick} className={puzzleButtonClass}>
               Save
             </button>
-            <button onClick={resetPuzzle} className={puzzleButtonClass}>
-              Reset
-            </button>
-            <button
-              onClick={() => alert('Game Data feature is currently being built')}
-              className={puzzleButtonClass}
-            >
-              Game Data
+            <button onClick={showToolsSwitch} className={toolButtonClasses}>
+              Tools
             </button>
           </div>
+          {showTools && (
+            <div className='puzzle-button-container'>
+              <button onClick={resetPuzzle} className={puzzleButtonClass}>
+                Reset
+              </button>
+              <button
+                onClick={() => alert('Game Data feature is currently being built')}
+                className={puzzleButtonClass}
+              >
+                Game Data
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </squareContext.Provider>
