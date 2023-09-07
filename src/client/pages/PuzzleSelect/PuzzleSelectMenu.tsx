@@ -6,12 +6,13 @@ import {
   SetUser,
   SetPuzzleCollection,
   UserContextValue,
-  PuzzleCollectionContextValue
+  PuzzleCollectionContextValue,
+  PageContextValue
 } from '../../frontendTypes';
 import { User, Puzzle, PuzzleCollection, QueryStatus, PuzzleResponse } from '../../../types';
 
 // Context
-import { userContext, puzzleCollectionContext } from '../../context';
+import { userContext, puzzleCollectionContext, pageContext } from '../../context';
 
 // Utilities
 import totalPuzzles from '../../../globalUtils/totalPuzzles';
@@ -22,6 +23,7 @@ const PuzzleSelectMenu = () => {
   const { user, setUser } = useContext<UserContextValue>(userContext);
   const { puzzleCollection, setPuzzleCollection } =
     useContext<PuzzleCollectionContextValue>(puzzleCollectionContext);
+  const { pageInfo } = useContext<PageContextValue>(pageContext);
   const [puzzleNumString, setPuzzleNumString] = useState('');
   const [puzzleSelected, setPuzzleSelected] = useState<boolean>(false);
 
@@ -29,13 +31,15 @@ const PuzzleSelectMenu = () => {
     if (!user) {
       // console.log('Navigated from PuzzleSelectMenu back to home page due to lack of user');
       navigate('/');
+    } else {
+      pageInfo.current = 'PuzzleSelectMenu';
     }
   }, []);
 
   useEffect(() => {
     if (user && puzzleSelected) {
       // console.log('user.lastPuzzle from PuzzleSelectMenu useEffect for navigation', user.lastPuzzle);
-      navigate(`/${encodeURIComponent(user.username)}/play/${user.lastPuzzle}`);
+      navigate(`/${encodeURIComponent(user.username)}/puzzle/${user.lastPuzzle}`);
     }
   }, [puzzleSelected]);
 

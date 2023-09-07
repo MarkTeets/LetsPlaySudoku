@@ -30,7 +30,7 @@ const PuzzleSelectViaFilters = () => {
   }, []);
 
   const testClick = () => {
-    navigate(`/${user.username}/play/2`);
+    navigate(`/${user.username}/puzzle/2`);
     /* This works using the loaders as they're set-up
 
       To make the switch from this shortcut to the second puzzle to what I'm looking for I'll have to:

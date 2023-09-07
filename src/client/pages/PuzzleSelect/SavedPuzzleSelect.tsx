@@ -1,22 +1,25 @@
 import React, { useContext, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
-// Contexts
-import { userContext } from '../../context';
-
 // Types
-import { UserContextValue } from '../../frontendTypes';
+import { UserContextValue, PageContextValue } from '../../frontendTypes';
 import { User } from '../../../types';
+
+// Contexts
+import { userContext, pageContext } from '../../context';
 
 // Main Component
 const SavedPuzzleSelect = () => {
   const navigate = useNavigate();
   const { user } = useContext<UserContextValue>(userContext);
+  const { pageInfo } = useContext<PageContextValue>(pageContext);
 
   useEffect(() => {
     if (!user) {
       // console.log('Navigated from SavedPuzzleSelect back to home page due to lack of user');
       navigate('/');
+    } else {
+      pageInfo.current = 'SavedPuzzleSelect';
     }
   }, []);
 
@@ -44,7 +47,7 @@ const createPuzzleLinks = (user: User) => {
     return (
       <div className='saved-puzzle-link-div' key={`saved-puzzle-${puzzleNumber}-link-div`}>
         <Link
-          to={`/${encodeURIComponent(user.username)}/play/${puzzleNumber}`}
+          to={`/${encodeURIComponent(user.username)}/puzzle/${puzzleNumber}`}
           key={`saved-puzzle-${puzzleNumber}-link`}
         >
           {puzzleNumber}
