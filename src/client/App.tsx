@@ -17,12 +17,13 @@ import UserLayout from './layouts/UserLayout';
 // Pages, Loaders
 import Home from './pages/Welcome/Home';
 import SignUp, { signUpAction } from './pages/Welcome/SignUp';
-import Login, { loginAction, sessionLoader } from './pages/Welcome/Login';
+import Login, { loginAction } from './pages/Welcome/Login';
 import PuzzleSelectMenu from './pages/PuzzleSelect/PuzzleSelectMenu';
 import SavedPuzzleSelect from './pages/PuzzleSelect/SavedPuzzleSelect';
 // import PuzzleSelectViaFilters from './pages/PuzzleSelect/PuzzleSelectViaFilters';
 import PuzzlePage from './pages/Puzzle/PuzzlePage';
 // import PuzzlePageTest, { puzzleTestLoader } from './pages/Puzzle/PuzzlePageTest';
+import About from './pages/User/About';
 import NotFound from './pages/NotFound';
 import ErrorPage from './pages/ErrorPage';
 
@@ -34,15 +35,14 @@ import { User, PuzzleCollection } from '../types';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path='/' element={<RootLayout />} errorElement={<ErrorPage />}>
+    <Route path='/' element={<RootLayout key='RootLayout' />} errorElement={<ErrorPage />}>
       {/* Welcome layout */}
-      <Route path='/' element={<WelcomeLayout />}>
-        <Route index element={<Home />} />
+      <Route path='/' element={<WelcomeLayout key='WelcomeLayout' />}>
+        <Route index element={<Home key='HomePage' />} />
         <Route
           path='login'
           element={<Login key='LoginPage' />}
           action={loginAction}
-          loader={sessionLoader}
           errorElement={<ErrorPage />}
         />
         <Route
@@ -67,6 +67,7 @@ const router = createBrowserRouter(
           loader={puzzleTestLoader}
         /> */}
         <Route path='puzzle/:puzzleNumber' element={<PuzzlePage key='PuzzlePage' />} />
+        <Route path='about' element={<About key='AboutPage' />} />
       </Route>
 
       <Route path='*' element={<NotFound />} />

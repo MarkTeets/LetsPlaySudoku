@@ -1,46 +1,31 @@
 import React, { useContext, useEffect } from 'react';
 import { useNavigate, Form, useActionData, useLoaderData } from 'react-router-dom';
-import { userContext, puzzleCollectionContext, pageContext } from '../../context';
 
 // Types
 import {
-  SetUser,
-  SetPuzzleCollection,
   UserContextValue,
   PuzzleCollectionContextValue,
-  PageInfo,
   PageContextValue
 } from '../../frontendTypes';
-import { User, PuzzleCollection, SignInData, SignInResponse } from '../../../types';
+import { SignInData, SignInResponse } from '../../../types';
+
+// Context
+import { userContext, puzzleCollectionContext, pageContext } from '../../context';
+
+// Utils
+import populateUserAndPuzzleContext from '../../utils/populateUserAndPuzzleContext';
 
 // Main Component
 const Login = () => {
   const navigate = useNavigate();
   const { user, setUser } = useContext<UserContextValue>(userContext);
-  const { puzzleCollection, setPuzzleCollection } =
-    useContext<PuzzleCollectionContextValue>(puzzleCollectionContext);
+  const { setPuzzleCollection } = useContext<PuzzleCollectionContextValue>(puzzleCollectionContext);
   const { pageInfo } = useContext<PageContextValue>(pageContext);
-  const sessionData = useLoaderData() as SignInResponse;
   const newLoginData = useActionData() as SignInData;
 
   // Set pageInfo to variable that will prevent automatic page jump if page has just loaded
   useEffect(() => {
     pageInfo.current = 'JustLoadedLogin';
-
-    if (
-      sessionData &&
-      sessionData.status === 'valid' &&
-      sessionData.user &&
-      sessionData.puzzleCollection
-    ) {
-      populateContext(
-        sessionData.user,
-        setUser,
-        sessionData.puzzleCollection,
-        setPuzzleCollection,
-        pageInfo
-      );
-    }
   }, []);
 
   useEffect(() => {
@@ -53,13 +38,13 @@ const Login = () => {
 
   useEffect(() => {
     if (newLoginData?.user !== undefined && newLoginData.user && newLoginData.puzzleCollection) {
-      populateContext(
+      populateUserAndPuzzleContext(
         newLoginData.user,
         setUser,
         newLoginData.puzzleCollection,
-        setPuzzleCollection,
-        pageInfo
+        setPuzzleCollection
       );
+      pageInfo.current = 'login';
     }
   }, [newLoginData]);
 
@@ -117,7 +102,7 @@ export const loginAction = async ({ request }: { request: Request }): Promise<Si
     return { error: 'Submission failed, please try again' };
   }
 
-  // The request repsonse has status 200, convert the response back to JS from JSON and proceed
+  // The request response has status 200, convert the response back to JS from JSON and proceed
   const response = (await res.json()) as SignInResponse;
 
   if (response.status === 'valid') {
@@ -138,22 +123,3 @@ export const loginAction = async ({ request }: { request: Request }): Promise<Si
     error: `The status "${response.status}" sent in the response doesn't match the valid cases`
   };
 };
-
-// Session loader function
-export const sessionLoader = async (): Promise<SignInResponse> => {
-  const res: Response = await fetch('/api/user/resume-session');
-  return (await res.json()) as SignInResponse;
-};
-
-function populateContext(
-  newUser: User,
-  setUser: SetUser,
-  newPuzzleCollection: PuzzleCollection,
-  setPuzzleCollection: SetPuzzleCollection,
-  pageInfo: PageInfo
-) {
-  setUser(newUser);
-  setPuzzleCollection(newPuzzleCollection);
-  // Update pageInfo to this page on successful submission so that we can navigate away
-  pageInfo.current = 'login';
-}

@@ -24,7 +24,6 @@ const WelcomeLayout = () => {
     <div id='welcome-layout'>
       <header>
         <nav id='main-nav'>
-          <h1 id='lets-play'>{"Let's Play Sudoku!"}</h1>
           <NavLink to='/' className='nav-link'>
             Home
           </NavLink>

@@ -82,7 +82,7 @@ export const signUpAction = async ({ request }: { request: Request }): Promise<S
     return { error: 'Submission failed, please try again' };
   }
 
-  // This will acount for either displayName being an empty string or null
+  // This will account for either displayName being an empty string or null
   if (!body.displayName) {
     body.displayName = body.username;
   }
@@ -98,7 +98,7 @@ export const signUpAction = async ({ request }: { request: Request }): Promise<S
     return { error: 'Submission failed, please try again' };
   }
 
-  // The request repsonse has status 200, convert the response back to JS from JSON and proceed
+  // The request response has status 200, convert the response back to JS from JSON and proceed
   const response = (await res.json()) as SignInResponse;
 
   if (response.status === 'valid') {
