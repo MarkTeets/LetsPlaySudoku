@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 // Types
 import { UserContextValue, PageContextValue } from '../../frontendTypes';
@@ -10,26 +10,26 @@ import { userContext, pageContext } from '../../context';
 
 // Main Component
 const SavedPuzzleSelect = () => {
-  const navigate = useNavigate();
   const { user } = useContext<UserContextValue>(userContext);
   const { pageInfo } = useContext<PageContextValue>(pageContext);
 
   useEffect(() => {
-    if (!user) {
-      // console.log('Navigated from SavedPuzzleSelect back to home page due to lack of user');
-      navigate('/');
-    } else {
-      pageInfo.current = 'SavedPuzzleSelect';
-    }
+    pageInfo.current = 'SavedPuzzleSelect';
   }, []);
 
   return (
     <>
-      {user && <h2>{user?.displayName}&apos;s Saved Games</h2>}
-      <div className='centered-div'>
-        <h3>Choose a saved puzzle</h3>
-        {createPuzzleLinks(user)}
-      </div>
+      {!user ? (
+        <h1>Loading</h1>
+      ) : (
+        <>
+          {<h2>{user?.displayName}&apos;s Saved Games</h2>}
+          <div className='centered-div'>
+            <h3>Choose a saved puzzle</h3>
+            {createPuzzleLinks(user)}
+          </div>
+        </>
+      )}
     </>
   );
 };

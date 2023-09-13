@@ -14,7 +14,7 @@ const UserNavBar = ({ collapseNavBar }: UserNavBarProps) => {
   const [puzzleSelectMenuURL, setPuzzleSelectMenuURL] = useState<string>(
     user === null ? '/' : `/${encodeURIComponent(user.username)}`
   );
-  const [lastPuzzleURL, setlastPuzzleURL] = useState<string>(
+  const [lastPuzzleURL, setLastPuzzleURL] = useState<string>(
     user === null ? '/' : `/${encodeURIComponent(user.username)}/puzzle/${user.lastPuzzle}`
   );
 
@@ -24,32 +24,29 @@ const UserNavBar = ({ collapseNavBar }: UserNavBarProps) => {
         setPuzzleSelectMenuURL(`/${encodeURIComponent(user.username)}`);
       }
       if (lastPuzzleURL !== `/${encodeURIComponent(user.username)}/puzzle/${user.lastPuzzle}`) {
-        setlastPuzzleURL(`/${encodeURIComponent(user.username)}/puzzle/${user.lastPuzzle}`);
+        setLastPuzzleURL(`/${encodeURIComponent(user.username)}/puzzle/${user.lastPuzzle}`);
       }
     } else {
       setPuzzleSelectMenuURL('/');
-      setlastPuzzleURL('/');
+      setLastPuzzleURL('/');
     }
   }, [user]);
 
-  const logoutUser = async () => {
+  const logOut = async () => {
     if (!user) return;
 
-    const res = await fetch('/api/user/delete-session', {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        username: user.username
-      })
-    });
-    if (res.ok) {
-      // console.log('Successfully deleted session');
+    if (user.username !== 'guest') {
+      const res = await fetch('/api/user/log-out', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: user.username
+        })
+      });
+      if (res.ok) {
+        // console.log('Successfully deleted session');
+      }
     }
-    setUser(null);
-    collapseNavBar();
-  };
-
-  const logoutGuest = () => {
     setUser(null);
     collapseNavBar();
   };
@@ -76,12 +73,15 @@ const UserNavBar = ({ collapseNavBar }: UserNavBarProps) => {
           Saved Puzzles
         </NavLink>
       )}
+      <NavLink to={'about'} className='nav-link' onClick={collapseNavBar} end>
+        About
+      </NavLink>
       {user?.username !== 'guest' ? (
-        <NavLink to='/' className='nav-link' onClick={logoutUser}>
+        <NavLink to='/' className='nav-link' onClick={logOut}>
           Log out
         </NavLink>
       ) : (
-        <NavLink to='/' className='nav-link' onClick={logoutGuest}>
+        <NavLink to='/' className='nav-link' onClick={logOut}>
           Return home
         </NavLink>
       )}

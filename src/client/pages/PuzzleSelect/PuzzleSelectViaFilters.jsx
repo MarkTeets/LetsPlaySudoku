@@ -1,10 +1,16 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { userContext } from '../../context';
+
+// Types
+import { PageContextValue } from '../../frontendTypes';
+
+// Context
+import { userContext, pageContext } from '../../context';
 
 const PuzzleSelectViaFilters = () => {
   const navigate = useNavigate();
   const { user, setUser } = useContext(userContext);
+  const { pageInfo } = useContext<PageContextValue>(pageContext);
   const [difficultyScore, setDifficultyScore] = useState(1);
   const [uniqueSolution, setUniqueSolution] = useState(false);
   const [singleCandidate, setSingleCandidate] = useState(false);
@@ -23,10 +29,7 @@ const PuzzleSelectViaFilters = () => {
   const [swordfish, setSwordfish] = useState(false);
 
   useEffect(() => {
-    if (!user) {
-      // console.log('Navigated from NewPuzzleSelect back to home page due to lack of user');
-      navigate('/');
-    }
+    pageInfo.current = 'PuzzleSelectMenu';
   }, []);
 
   const testClick = () => {

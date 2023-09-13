@@ -1,15 +1,36 @@
-import React, { useEffect, useRef, useState, useContext } from 'react';
-import { Outlet } from 'react-router-dom';
+import React, { useEffect, useState, useContext } from 'react';
+import { Outlet, useNavigate } from 'react-router-dom';
 
 // Types
-import { UserNavBarProps } from '../frontendTypes';
+import {
+  UserNavBarProps,
+  UserContextValue,
+  PuzzleCollectionContextValue,
+  PageContextValue
+} from '../frontendTypes';
 
 // Components
 import UserNavBar from './components/UserNavBar';
 
+// Context
+import { userContext, puzzleCollectionContext, pageContext } from '../context';
+
+// Utils
+import signInWithSession from '../utils/signInWithSession';
+
 // Main Component
 const UserLayout = () => {
+  // const navigate = useNavigate();
   const [isNavBarExpanded, setIsNavBarExpanded] = useState(false);
+  const { user, setUser } = useContext<UserContextValue>(userContext);
+  const { setPuzzleCollection } = useContext<PuzzleCollectionContextValue>(puzzleCollectionContext);
+  const { pageInfo } = useContext<PageContextValue>(pageContext);
+
+  useEffect(() => {
+    if (!user) {
+      signInWithSession(setUser, setPuzzleCollection, pageInfo);
+    }
+  }, [user]);
 
   const switchNavBarExpanded = () => {
     setIsNavBarExpanded(!isNavBarExpanded);
@@ -19,7 +40,7 @@ const UserLayout = () => {
   // Each navlink also collapses the navbar, but the click has to register before the navbar
   // collapses. It's done this way instead of just collapsing on any blur as the onBlur event
   // is triggered before the navlink click, which prevented the navlink click from processing
-  const nonNavlinkBlurCollapseNavBar = (e: React.FocusEvent) => {
+  const nonNavLinkBlurCollapseNavBar = (e: React.FocusEvent) => {
     if (!e.currentTarget.contains(e.relatedTarget)) {
       setIsNavBarExpanded(false);
     }
@@ -36,7 +57,7 @@ const UserLayout = () => {
       <div
         className='user-navbar-container'
         tabIndex={0}
-        onBlur={(e) => nonNavlinkBlurCollapseNavBar(e)}
+        onBlur={(e) => nonNavLinkBlurCollapseNavBar(e)}
       >
         <button onClick={switchNavBarExpanded}>NavBar</button>
         <div className={`user-navbar ${isNavBarExpanded ? '' : 'inactive'}`}>
