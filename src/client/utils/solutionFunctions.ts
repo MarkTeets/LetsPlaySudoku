@@ -1,20 +1,14 @@
 // Types
-import { ESLint } from 'eslint';
 import { Puzzle } from '../../types';
 import { PuzzleVal, FilledSquares, PencilSquares } from '../frontendTypes';
 
 // Utilities
-import {
-  rows,
-  cols,
-  boxes,
-  allSquareIds,
-  allPeers,
-  isPuzzleFinished,
-  newFilledSquare,
-  filledSquaresFromString,
-  updateFilledSquaresDuplicates
-} from './squares';
+import { allSquareIds } from './puzzle-functions/allSquareIdsAndPuzzleVals';
+import { rows, cols, boxes, allPeers } from './puzzle-functions/makeAllPeers';
+import { isPuzzleFinished } from './puzzle-functions/isPuzzleFinished';
+import { newFilledSquare } from './puzzle-functions/newFilledSquare';
+import { filledSquaresFromString } from './puzzle-functions/squaresFromPuzzleStrings';
+import { updateFilledSquaresDuplicates } from './puzzle-functions/updateSquaresDuplicates';
 
 /**
  * Includes all of the names of the solution techniques used to solve the puzzle
@@ -57,7 +51,7 @@ const techniqueStrings: TechniqueString[] = [
 ];
 
 /**
- * Used to track how many times a particulat solution technique is used
+ * Used to track how many times a particular solution technique is used
  * to solve a puzzle
  */
 type SolutionCache = {
@@ -104,7 +98,7 @@ export type SolutionProcedure = SolveOrder[];
 
 /**
  * This is an array of solution procedures, allowing us to pass a collection of solution
- * procedures to puzzleDocumentPopulater so that many different procedures might be tried
+ * procedures to puzzleDocumentPopulator so that many different procedures might be tried
  */
 type SolutionProcedureSet = SolutionProcedure[];
 
@@ -269,7 +263,7 @@ export const singleCandidateSolver: SolveTechnique = (
 
 const defaultSolutionProcedure: SolutionProcedure = [[singleCandidateSolver, 81]];
 
-/** soltutionExecuter
+/** solutionExecuter
  *
  * Takes a solve order as an array and executes the given callback at the 0th index a number of times
  * at the 1st index. Returns a true if changes were made to the allSquares argument, false if no changes
@@ -282,7 +276,7 @@ const defaultSolutionProcedure: SolutionProcedure = [[singleCandidateSolver, 81]
  * @param solutionCache object which tracks how many times a particular solution technique is used
  * @returns A boolean, true if a change was made to the allSquares argument
  */
-export const soltutionExecuter = (
+export const solutionExecuter = (
   filledSquares: FilledSquares,
   solveSquares: SolveSquares = newSolveSquares(),
   solveOrder: SolveOrder = defaultSolutionProcedure[0],
@@ -302,7 +296,7 @@ export const soltutionExecuter = (
 };
 
 // Testing
-// soltutionExecuter(sampleFilledSquares);
+// solutionExecuter(sampleFilledSquares);
 
 const conversionCache: ConversionCache = {
   singleCandidate: [10, 10],
@@ -323,7 +317,7 @@ const conversionCache: ConversionCache = {
 
 /** convertSolutionCacheToDifficultyScore
  *
- * Takes a solutionCache and converts it to a number represting how hard the puzzle is.
+ * Takes a solutionCache and converts it to a number representing how hard the puzzle is.
  * Different solution techniques are given different weights based on how hard they are,
  * with harder techniques given higher numbers.
  *
@@ -366,7 +360,7 @@ export const puzzleSolver = (
     changedLastIteration = false;
     for (const solveOrder of solutionProcedure) {
       // console.log('solveOrder:', solveOrder);
-      if (soltutionExecuter(filledSquares, solveSquares, solveOrder, solutionCache)) {
+      if (solutionExecuter(filledSquares, solveSquares, solveOrder, solutionCache)) {
         changedLastIteration = true;
         changeMade = true;
       }
@@ -374,7 +368,7 @@ export const puzzleSolver = (
   } while (changedLastIteration);
 
   if (changeMade) {
-    // To see if the puzzle is finished correctly in puzzleDocumentPopulater
+    // To see if the puzzle is finished correctly in puzzleDocumentPopulator
     updateFilledSquaresDuplicates(filledSquares, {} as PencilSquares);
   }
   // printFilledSquaresKeys(filledSquares);
@@ -420,7 +414,7 @@ const defaultPuzzleDocument = (puzzleNumber: number, puzzle: string, solution: s
   return puzzleDoc;
 };
 
-/** puzzleDocumentPopulater
+/** puzzleDocumentPopulator
  *
  * Takes a puzzle string and generates a Puzzle object based on it. This
  * object can be used as a rubric to store a puzzle document in the puzzle
@@ -430,7 +424,7 @@ const defaultPuzzleDocument = (puzzleNumber: number, puzzle: string, solution: s
  * @param puzzle string representing original puzzle
  * @param solution string representing the solution to said puzzle
  */
-export const puzzleDocumentPopulater = (
+export const puzzleDocumentPopulator = (
   puzzleNumber: number,
   puzzle: string,
   solution: string,
@@ -476,6 +470,6 @@ export const puzzleDocumentPopulater = (
 };
 
 // Testing
-// console.log(puzzleDocumentPopulater(1, samplePuzzle1, sampleSolution1));
+// console.log(puzzleDocumentPopulator(1, samplePuzzle1, sampleSolution1));
 
 // const hasUniqueSolution = (allSquares? puzzle?): boolean => {}

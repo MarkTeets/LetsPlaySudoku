@@ -1,15 +1,10 @@
 import React from 'react';
 
 // Types
-import {
-  PuzzleVal,
-  OnNumberClick,
-  NumberSelectBarProps,
-  MakeButtons
-} from '../../../frontendTypes';
+import { PuzzleVal, NumberSelectBarProps, MakeButtons } from '../../../frontendTypes';
 
 //Utilities
-import { onNumberChange } from '../../../utils/squares';
+import { onNumberClick } from '../../../utils/puzzle-functions/puzzleValueChange';
 
 // Main Component
 const NumberSelectBar = (props: NumberSelectBarProps) => {
@@ -38,32 +33,6 @@ const NumberSelectBar = (props: NumberSelectBarProps) => {
 export default NumberSelectBar;
 
 // Helper Functions
-const onNumberClick: OnNumberClick = (
-  event,
-  pencilMode,
-  clickedSquare,
-  filledSquares,
-  setFilledSquares,
-  pencilSquares,
-  setPencilSquares
-) => {
-  if (clickedSquare === null) {
-    alert('Please select a square before clicking a number button');
-    return;
-  }
-  const buttonVal = event.currentTarget.innerText as PuzzleVal;
-
-  onNumberChange(
-    buttonVal,
-    pencilMode,
-    clickedSquare,
-    filledSquares,
-    setFilledSquares,
-    pencilSquares,
-    setPencilSquares
-  );
-};
-
 const makeButtons: MakeButtons = (
   pencilMode,
   clickedSquare,

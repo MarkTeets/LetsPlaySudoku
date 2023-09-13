@@ -116,6 +116,27 @@ export type PageContextValue = {
   pageInfo: PageInfo;
 };
 
+export type SquaresStateInitializerCache = {
+  puzzleNumber: number;
+  initialFilledSquares: FilledSquares;
+  filledSquares: FilledSquares;
+  pencilSquares: PencilSquares;
+};
+
+export type SignInWithSession = (
+  setUser: SetUser,
+  setPuzzleCollection: SetPuzzleCollection,
+  pageInfo: PageInfo
+) => void;
+
+export type ResetStateOnRefresh = (
+  puzzleNumber: number,
+  user: User,
+  puzzleCollection: PuzzleCollection,
+  setFilledSquares: SetFilledSquares,
+  setPencilSquares: SetPencilSquares
+) => void;
+
 export type UserNavBarProps = {
   collapseNavBar: () => void;
 };

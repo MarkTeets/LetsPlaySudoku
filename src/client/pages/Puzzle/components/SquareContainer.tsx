@@ -18,7 +18,7 @@ import EmptySquareDisplay from './EmptySquareDisplay';
 import { squareContext } from '../../../context';
 
 // Utilities
-import { allPeers } from '../../../utils/squares';
+import { allPeers } from '../../../utils/puzzle-functions/makeAllPeers';
 
 // Main Component
 const SquareContainer = ({ squareId }: SquareContainerProps) => {

@@ -4,7 +4,7 @@ import React from 'react';
 import BoxUnitContainer from './BoxUnitContainer';
 
 // Utilities
-import { boxes as unitBoxes } from '../../../utils/squares';
+import { boxes as unitBoxes } from '../../../utils/puzzle-functions/makeAllPeers';
 
 // Main Component
 const PuzzleContainer = () => {
