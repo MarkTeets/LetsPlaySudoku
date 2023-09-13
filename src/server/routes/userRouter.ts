@@ -30,7 +30,7 @@ userRouter.post('/login',
 );
 
 userRouter.get('/resume-session',
-  sessionController.isLoggedIn,
+  sessionController.findSession,
   userController.getUser,
   userController.cleanUser,
   puzzleController.getUserPuzzles,
@@ -46,11 +46,11 @@ userRouter.get('/no-session',
   }
 );
 
-userRouter.delete('/delete-session',
+userRouter.delete('/log-out',
   userController.getUser,
-  sessionController.logOut,
+  sessionController.deleteSession,
+  cookieController.deleteSSIDCookie,
   (req: Request, res: Response) => {
-    res.clearCookie('ssid');
     res.status(200).json(res.locals.frontendData);
   }
 );

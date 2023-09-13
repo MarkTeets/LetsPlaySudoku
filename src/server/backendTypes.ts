@@ -19,12 +19,13 @@ export type PuzzleController = {
 
 export type CookieController = {
   setSSIDCookie: RequestHandler;
+  deleteSSIDCookie: RequestHandler;
 };
 
 export type SessionController = {
   startSession: RequestHandler;
-  isLoggedIn: RequestHandler;
-  logOut: RequestHandler;
+  findSession: RequestHandler;
+  deleteSession: RequestHandler;
 };
 
 export type UserDocument = {

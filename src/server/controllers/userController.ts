@@ -38,7 +38,7 @@ const getUser: RequestHandler = async (req, res, next) => {
     );
   }
 
-  // retreive associated data from database
+  // retrieve associated data from database
   try {
     // add whatever is found to res.locals. If nothing is found, null will be returned
     res.locals.userDocument = await models.UserModel.findOne({
@@ -214,7 +214,7 @@ const savePuzzle: RequestHandler = async (req, res, next) => {
     return next(
       createErr({
         method: 'savePuzzle',
-        overview: 'problem extractinging puzzle info from req.body',
+        overview: 'problem extracting puzzle info from req.body',
         status: 500,
         err: 'puzzleNumber and/or progress was undefined'
       })
@@ -254,7 +254,7 @@ const savePuzzle: RequestHandler = async (req, res, next) => {
     // I don't need to check and see if the returned value is null. An error will be thrown if the save is unsuccessful
     await res.locals.userDocument.save();
 
-    // I'm not going to send back the whole user, I'll only send whether or not it was succesful.
+    // I'm not going to send back the whole user, I'll only send whether or not it was successful.
     // As the user object gets bigger via more and more puzzles, this will be more efficient
     res.locals.frontendData = { status: 'valid' } as SignInResponse;
 

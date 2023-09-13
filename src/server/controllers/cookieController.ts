@@ -40,6 +40,13 @@ const setSSIDCookie: RequestHandler = async (req, res, next) => {
   }
 };
 
-const cookieController: CookieController = { setSSIDCookie };
+//---DELETE SSID COOKIE ------------------------------------------------------------------------------------------------------
+
+const deleteSSIDCookie: RequestHandler = async (req, res, next) => {
+  res.clearCookie('ssid');
+  return next();
+};
+
+const cookieController: CookieController = { setSSIDCookie, deleteSSIDCookie };
 
 export default cookieController;
