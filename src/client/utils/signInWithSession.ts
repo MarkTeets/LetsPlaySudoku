@@ -5,7 +5,7 @@ import { SignInResponse } from '../../types';
 // Utils
 import populateUserAndPuzzleContext from './populateUserAndPuzzleContext';
 
-const signInWithSession: SignInWithSession = async (setUser, setPuzzleCollection, pageInfo) => {
+const signInWithSession: SignInWithSession = async (setUser, setPuzzleCollection) => {
   const res: Response = await fetch('/api/user/resume-session');
   if (!res.ok) return;
 

@@ -1,34 +1,27 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 
 // Types
-import {
-  UserNavBarProps,
-  UserContextValue,
-  PuzzleCollectionContextValue,
-  PageContextValue
-} from '../frontendTypes';
+import { UserNavBarProps, UserContextValue, PuzzleCollectionContextValue } from '../frontendTypes';
 
 // Components
 import UserNavBar from './components/UserNavBar';
 
 // Context
-import { userContext, puzzleCollectionContext, pageContext } from '../context';
+import { userContext, puzzleCollectionContext } from '../context';
 
 // Utils
 import signInWithSession from '../utils/signInWithSession';
 
 // Main Component
 const UserLayout = () => {
-  // const navigate = useNavigate();
   const [isNavBarExpanded, setIsNavBarExpanded] = useState(false);
   const { user, setUser } = useContext<UserContextValue>(userContext);
   const { setPuzzleCollection } = useContext<PuzzleCollectionContextValue>(puzzleCollectionContext);
-  const { pageInfo } = useContext<PageContextValue>(pageContext);
 
   useEffect(() => {
     if (!user) {
-      signInWithSession(setUser, setPuzzleCollection, pageInfo);
+      signInWithSession(setUser, setPuzzleCollection);
     }
   }, [user]);
 

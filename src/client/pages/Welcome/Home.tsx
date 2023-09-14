@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { useNavigate, useLoaderData } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 // import house from '../../assets/house.png';
 
 // Types
@@ -8,7 +8,6 @@ import {
   PuzzleCollectionContextValue,
   PageContextValue
 } from '../../frontendTypes';
-import { SignInResponse } from '../../../types';
 
 // Components
 import SiteInfo from '../shared-components/SiteInfo';
@@ -29,7 +28,7 @@ const Home = () => {
     // The first time the page renders, pageInfo will be index. In this case,
     // we can check for session data and update the user and puzzle collection if it exists
     if (pageInfo.current === 'index') {
-      signInWithSession(setUser, setPuzzleCollection, pageInfo);
+      signInWithSession(setUser, setPuzzleCollection);
       pageInfo.current = 'login';
     }
   }, []);
