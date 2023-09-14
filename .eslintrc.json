@@ -23,6 +23,7 @@
     "sourceType": "module"
   },
   "rules": {
+    "max-len": ["warn", {"code": 120, "comments": 100 }],
     "no-unused-vars": ["off", { "vars": "local" }],
     "prefer-const": "warn",
     "no-console": "warn",
