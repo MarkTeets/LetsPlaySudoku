@@ -2,15 +2,14 @@ import React, { useContext, useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 
 // Types
-import { UserContextValue, PageContextValue, UserNavBarProps } from '../../frontendTypes';
+import { UserContextValue, UserNavBarProps } from '../../frontendTypes';
 
 // Context
-import { userContext, pageContext } from '../../context';
+import { userContext } from '../../context';
 
 // Main Component
 const UserNavBar = ({ collapseNavBar }: UserNavBarProps) => {
   const { user, setUser } = useContext<UserContextValue>(userContext);
-  const { pageInfo } = useContext<PageContextValue>(pageContext);
   const [puzzleSelectMenuURL, setPuzzleSelectMenuURL] = useState<string>(
     user === null ? '/' : `/${encodeURIComponent(user.username)}`
   );
@@ -53,15 +52,11 @@ const UserNavBar = ({ collapseNavBar }: UserNavBarProps) => {
 
   return (
     <nav className='user-nav'>
-      {!(user && user.lastPuzzle > 0) ? null : pageInfo.current === 'PuzzlePage' ? (
+      {user && user.lastPuzzle > 0 ? (
         <NavLink to={lastPuzzleURL} className='nav-link' onClick={collapseNavBar}>
           Puzzle #{user.lastPuzzle}
         </NavLink>
-      ) : (
-        <NavLink to={lastPuzzleURL} className='nav-link' onClick={collapseNavBar}>
-          Resume Puzzle #{user.lastPuzzle}
-        </NavLink>
-      )}
+      ) : null}
       <NavLink to={puzzleSelectMenuURL} className='nav-link' onClick={collapseNavBar} end>
         Puzzle Select Menu
       </NavLink>
