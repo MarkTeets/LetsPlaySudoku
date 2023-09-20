@@ -11,12 +11,14 @@ import {
   UserContextValue,
   PuzzleCollectionContextValue,
   PageContextValue,
-  NumberSelectBarProps
+  NumberSelectBarProps,
+  ToolBarProps
 } from '../../frontendTypes';
 
 // Components
 import PuzzleContainer from './components/PuzzleContainer';
 import NumberSelectBar from './components/NumberSelectBar';
+import ToolBar from './components/ToolBar';
 
 // Context
 import { userContext, puzzleCollectionContext, squareContext, pageContext } from '../../context';
@@ -26,12 +28,8 @@ import {
   initializeSquares,
   resetStateOnRefresh
 } from '../../utils/puzzle-functions/initialSquareStatePopulation';
-import { pencilSquaresFromString } from '../../utils/puzzle-functions/squaresFromPuzzleStrings';
 import { isPuzzleFinished } from '../../utils/puzzle-functions/isPuzzleFinished';
 import { onPuzzleKeyDown } from '../../utils/puzzle-functions/puzzleValueChange';
-import { autofillPencilSquares } from '../../utils/puzzle-functions/autofillPencilSquares';
-import { savePuzzleAtLeastOnce } from '../../utils/savePuzzleAtLeastOnce';
-const savePuzzle = savePuzzleAtLeastOnce();
 
 // Main Component
 const PuzzlePage = () => {
@@ -41,7 +39,6 @@ const PuzzlePage = () => {
   const { pageInfo } = useContext<PageContextValue>(pageContext);
   const [pencilMode, setPencilMode] = useState<boolean>(false);
   const [clickedSquare, setClickedSquare] = useState<ClickedSquare>(null);
-  const [showTools, setShowTools] = useState<boolean>(false);
 
   // initialSquares acts as a cache so that all square objects can be simultaneously calculated
   // with their duplicates accounted for before the first render without repeating calculations
@@ -79,7 +76,7 @@ const PuzzlePage = () => {
         setPencilSquares
       );
     }
-  }, [user]);
+  }, [user, puzzleCollection, filledSquares, puzzleNumber]);
 
   // Checks to see if user has solved puzzle on each allSquares update
   useEffect(() => {
@@ -119,29 +116,6 @@ const PuzzlePage = () => {
     }
   };
 
-  const pencilModeSwitch = (): void => {
-    setPencilMode(!pencilMode);
-  };
-
-  const showToolsSwitch = (): void => {
-    setShowTools(!showTools);
-  };
-
-  const onAutofillPencilClick = (): void => {
-    autofillPencilSquares(filledSquares, setPencilSquares);
-  };
-
-  const onSaveClick = (): void => {
-    savePuzzle(puzzleNumber, filledSquares, pencilSquares, user, setUser);
-  };
-
-  const resetPuzzle = (): void => {
-    setFilledSquares(initialSquares.originalPuzzleFilledSquares);
-    setPencilSquares(pencilSquaresFromString());
-    setClickedSquare(null);
-    setPencilMode(false);
-  };
-
   const SquareContextValue: SquareContextValue = {
     clickedSquare,
     setClickedSquare,
@@ -158,16 +132,17 @@ const PuzzlePage = () => {
     setPencilSquares
   };
 
-  const puzzleButtonClass = 'puzzle-button';
-  let pencilClasses = puzzleButtonClass;
-  if (pencilMode) {
-    pencilClasses += ' highlight-number-button';
-  }
-
-  let toolButtonClasses = puzzleButtonClass;
-  if (showTools) {
-    toolButtonClasses += ' highlight-number-button';
-  }
+  const toolBarProps: ToolBarProps = {
+    puzzleNumber,
+    initialSquares,
+    filledSquares,
+    setFilledSquares,
+    pencilSquares,
+    setPencilSquares,
+    pencilMode,
+    setPencilMode,
+    setClickedSquare
+  };
 
   return (
     <>
@@ -194,33 +169,7 @@ const PuzzlePage = () => {
             >
               <PuzzleContainer key='PuzzleContainer' />
               <NumberSelectBar key='NumberSelectBar' {...numberSelectBarProps} />
-              <div className='puzzle-button-container'>
-                <button onClick={pencilModeSwitch} className={pencilClasses}>
-                  Pencil Mode
-                </button>
-                <button onClick={onAutofillPencilClick} className={puzzleButtonClass}>
-                  Auto-fill Pencil
-                </button>
-                <button onClick={onSaveClick} className={puzzleButtonClass}>
-                  Save
-                </button>
-                <button onClick={showToolsSwitch} className={toolButtonClasses}>
-                  Tools
-                </button>
-              </div>
-              {showTools && (
-                <div className='puzzle-button-container'>
-                  <button onClick={resetPuzzle} className={puzzleButtonClass}>
-                    Reset
-                  </button>
-                  <button
-                    onClick={() => alert('Game Data feature is currently being built')}
-                    className={puzzleButtonClass}
-                  >
-                    Game Data
-                  </button>
-                </div>
-              )}
+              <ToolBar key='ToolBar' {...toolBarProps} />
             </div>
           </div>
         </squareContext.Provider>
