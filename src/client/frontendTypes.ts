@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from 'react';
+import React, { Dispatch, SetStateAction, ReactNode, MutableRefObject } from 'react';
 
 // Types
 import { User, PuzzleCollection } from '../types';
@@ -173,6 +173,8 @@ type SetPencilSquares = Dispatch<SetStateAction<PencilSquares>>;
 
 type SetInitialSquares = Dispatch<SetStateAction<InitialSquares>>;
 
+type SetPencilMode = Dispatch<SetStateAction<boolean>>;
+
 //---- Context Types ----------------------------------------------------------------------------
 /** SetUser
  *
@@ -197,10 +199,8 @@ export type PuzzleCollectionContextValue = {
   setPuzzleCollection: SetPuzzleCollection;
 };
 
-export type PageInfo = { current: string };
-
 export type PageContextValue = {
-  pageInfo: PageInfo;
+  pageInfo: MutableRefObject<string>;
 };
 
 export type SquareContextValue = {
@@ -287,8 +287,14 @@ export type SignInWithSession = (
 ) => void;
 
 //---- Component Props ---------------------------------------------------------------------------
-export type UserNavBarProps = {
-  collapseNavBar: () => void;
+export type UserSideBarProps = {
+  collapseSideBar: () => void;
+};
+
+export type SideBarSectionContainerProps = {
+  children: ReactNode;
+  title: string;
+  defaultExpanded?: boolean;
 };
 
 export type NumberSelectBarProps = {
@@ -298,6 +304,18 @@ export type NumberSelectBarProps = {
   setFilledSquares: SetFilledSquares;
   pencilSquares: PencilSquares;
   setPencilSquares: SetPencilSquares;
+};
+
+export type ToolBarProps = {
+  puzzleNumber: number;
+  initialSquares: InitialSquares;
+  filledSquares: FilledSquares;
+  setFilledSquares: SetFilledSquares;
+  pencilSquares: PencilSquares;
+  setPencilSquares: SetPencilSquares;
+  pencilMode: boolean;
+  setPencilMode: SetPencilMode;
+  setClickedSquare: SetClickedSquare;
 };
 
 export type BoxUnitContainerProps = {
