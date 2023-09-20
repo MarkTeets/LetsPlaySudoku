@@ -1,4 +1,6 @@
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const path = require('path');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const HTMLWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
@@ -29,6 +31,10 @@ module.exports = {
 
     proxy: {
       '/api/**': {
+        target: 'http://localhost:3000/',
+        secure: false
+      },
+      '/assets/**': {
         target: 'http://localhost:3000/',
         secure: false
       }
