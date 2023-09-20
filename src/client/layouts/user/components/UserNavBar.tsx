@@ -2,13 +2,13 @@ import React, { useContext, useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 
 // Types
-import { UserContextValue, UserNavBarProps } from '../../frontendTypes';
+import { UserContextValue, UserSideBarProps } from '../../../frontendTypes';
 
 // Context
-import { userContext } from '../../context';
+import { userContext } from '../../../context';
 
 // Main Component
-const UserNavBar = ({ collapseNavBar }: UserNavBarProps) => {
+const UserNavBar = ({ collapseSideBar }: UserSideBarProps) => {
   const { user, setUser } = useContext<UserContextValue>(userContext);
   const [puzzleSelectMenuURL, setPuzzleSelectMenuURL] = useState<string>(
     user === null ? '/' : `/${encodeURIComponent(user.username)}`
@@ -29,7 +29,7 @@ const UserNavBar = ({ collapseNavBar }: UserNavBarProps) => {
       setPuzzleSelectMenuURL('/');
       setLastPuzzleURL('/');
     }
-  }, [user]);
+  }, [user, puzzleSelectMenuURL, lastPuzzleURL]);
 
   const logOut = async () => {
     if (!user) return;
@@ -47,28 +47,28 @@ const UserNavBar = ({ collapseNavBar }: UserNavBarProps) => {
       }
     }
     setUser(null);
-    collapseNavBar();
+    collapseSideBar();
   };
 
   return (
-    <nav className='user-nav'>
+    <nav className='side-bar-section-content'>
       {user && user.lastPuzzle > 0 ? (
-        <NavLink to={lastPuzzleURL} className='nav-link' onClick={collapseNavBar}>
+        <NavLink to={lastPuzzleURL} className='nav-link' onClick={collapseSideBar}>
           Puzzle #{user.lastPuzzle}
         </NavLink>
       ) : null}
-      <NavLink to={puzzleSelectMenuURL} className='nav-link' onClick={collapseNavBar} end>
+      <NavLink to={puzzleSelectMenuURL} className='nav-link' onClick={collapseSideBar} end>
         Puzzle Select Menu
       </NavLink>
-      {/* <NavLink to={} className='nav-link' onClick={collapseNavBar} end>
+      {/* <NavLink to={} className='nav-link' onClick={collapseSideBar} end>
           Next New Puzzle
         </NavLink> */}
       {user?.allPuzzles && Object.keys(user.allPuzzles).length > 0 && (
-        <NavLink to={'savedPuzzleSelect'} className='nav-link' onClick={collapseNavBar} end>
+        <NavLink to={'savedPuzzleSelect'} className='nav-link' onClick={collapseSideBar} end>
           Saved Puzzles
         </NavLink>
       )}
-      <NavLink to={'about'} className='nav-link' onClick={collapseNavBar} end>
+      <NavLink to={'about'} className='nav-link' onClick={collapseSideBar} end>
         About
       </NavLink>
       {user?.username !== 'guest' ? (

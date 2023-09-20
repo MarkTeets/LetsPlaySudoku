@@ -2,20 +2,24 @@ import React, { useEffect, useState, useContext } from 'react';
 import { Outlet } from 'react-router-dom';
 
 // Types
-import { UserNavBarProps, UserContextValue, PuzzleCollectionContextValue } from '../frontendTypes';
+import {
+  UserSideBarProps,
+  UserContextValue,
+  PuzzleCollectionContextValue
+} from '../../frontendTypes';
 
 // Components
-import UserNavBar from './components/UserNavBar';
+import UserSideBar from './components/UserSideBar';
 
 // Context
-import { userContext, puzzleCollectionContext } from '../context';
+import { userContext, puzzleCollectionContext } from '../../context';
 
 // Utils
-import signInWithSession from '../utils/signInWithSession';
+import signInWithSession from '../../utils/signInWithSession';
 
 // Main Component
 const UserLayout = () => {
-  const [isNavBarExpanded, setIsNavBarExpanded] = useState(false);
+  const [isSideBarExpanded, setIsSideBarExpanded] = useState(false);
   const { user, setUser } = useContext<UserContextValue>(userContext);
   const { setPuzzleCollection } = useContext<PuzzleCollectionContextValue>(puzzleCollectionContext);
 
@@ -23,38 +27,41 @@ const UserLayout = () => {
     if (!user) {
       signInWithSession(setUser, setPuzzleCollection);
     }
-  }, [user]);
+  }, [user, setUser, setPuzzleCollection]);
 
-  const switchNavBarExpanded = () => {
-    setIsNavBarExpanded(!isNavBarExpanded);
+  const switchSideBarExpanded = () => {
+    setIsSideBarExpanded(!isSideBarExpanded);
   };
 
   // If user clicks on something other than a navbar child link, collapse the nav bar
   // Each navlink also collapses the navbar, but the click has to register before the navbar
   // collapses. It's done this way instead of just collapsing on any blur as the onBlur event
   // is triggered before the navlink click, which prevented the navlink click from processing
-  const nonNavLinkBlurCollapseNavBar = (e: React.FocusEvent) => {
+  const exteriorBlurCollapseSideBar = (e: React.FocusEvent) => {
     if (!e.currentTarget.contains(e.relatedTarget)) {
-      setIsNavBarExpanded(false);
+      setIsSideBarExpanded(false);
     }
   };
 
-  const userNavBarProps: UserNavBarProps = {
-    collapseNavBar() {
-      setIsNavBarExpanded(false);
+  const userSideBarProps: UserSideBarProps = {
+    collapseSideBar() {
+      setIsSideBarExpanded(false);
     }
   };
 
   return (
     <div id='user-layout'>
       <div
-        className='user-navbar-container'
+        className='user-side-bar-container'
         tabIndex={0}
-        onBlur={(e) => nonNavLinkBlurCollapseNavBar(e)}
+        role='toolbar'
+        onBlur={(e) => exteriorBlurCollapseSideBar(e)}
       >
-        <button onClick={switchNavBarExpanded}>NavBar</button>
-        <div className={`user-navbar ${isNavBarExpanded ? '' : 'inactive'}`}>
-          <UserNavBar key='UserNavBar' {...userNavBarProps} />
+        <button id='side-bar-button' onClick={switchSideBarExpanded}>
+          <img src='/assets/list.svg' alt='list icon'></img>
+        </button>
+        <div className={`user-side-bar ${isSideBarExpanded ? '' : 'inactive'}`}>
+          <UserSideBar key='UserSideBar' {...userSideBarProps} />
         </div>
       </div>
       <main>
