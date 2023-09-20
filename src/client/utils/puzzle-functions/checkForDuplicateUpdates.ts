@@ -13,9 +13,10 @@ import { allPeers } from './makeAllPeers';
 
 /** isFilledSquaresDuplicateChange
  *
- * Iterates over a filledSquares object and returns true if any current duplicate property is inconsistent with what it should
- * be based on itself and a corresponding pencilSquares object. Returns false if no changes needs to be made. By doing this,
- * we can avoid deep cloning filledSquares if no changes need to be made
+ * Iterates over a filledSquares object and returns true if any current duplicate property is
+ * inconsistent with what it should be based on itself and a corresponding pencilSquares object.
+ * Returns false if no changes needs to be made. By doing this, we can avoid deep cloning
+ * filledSquares if no changes need to be made
  *
  * @param filledSquares - FilledSquares object
  * @param pencilSquares - PencilSquares object
@@ -46,9 +47,10 @@ export const isFilledSquaresDuplicateChange = (
 
 /** isPencilSquaresDuplicateChange
  *
- * Iterates over a pencilSquares object and returns true if any current duplicate property is inconsistent with what it should
- * be based on a corresponding filledSquares object. Returns false if no changes needs to be made. By doing this, we can avoid
- * deep cloning pencilSquares if no changes need to be made
+ * Iterates over a pencilSquares object and returns true if any current duplicate property is
+ * inconsistent with what it should be based on a corresponding filledSquares object. Returns false
+ * if no changes needs to be made. By doing this, we can avoid deep cloning pencilSquares if no
+ * changes need to be made
  *
  * @param filledSquares - FilledSquares object
  * @param pencilSquares - PencilSquares object

@@ -220,10 +220,10 @@ export const newSolutionCache = () => {
 
 /** singleCandidateSolver
  *
- * Sequentially checks every square. If a square has a possibleVal set with size 1, it takes the value
- * from the set and assigns it to the puzzleVal, then it removes it from the possibleVal set. If this
- * happens, the function returns true. If the function iterates over the entire allSquares object without
- * finding a possibleVal set of size 1, it returns false.
+ * Sequentially checks every square. If a square has a possibleVal set with size 1, it takes the
+ * value from the set and assigns it to the puzzleVal, then it removes it from the possibleVal set.
+ * If this happens, the function returns true. If the function iterates over the entire allSquares
+ * object without finding a possibleVal set of size 1, it returns false.
  *
  * @param filledSquares
  * @param solveSquares
@@ -265,14 +265,16 @@ const defaultSolutionProcedure: SolutionProcedure = [[singleCandidateSolver, 81]
 
 /** solutionExecuter
  *
- * Takes a solve order as an array and executes the given callback at the 0th index a number of times
- * at the 1st index. Returns a true if changes were made to the allSquares argument, false if no changes
- * were made. The default number of executions for any given solveTechnique is 81, which although it will
- * never actually perform 81 times, it's a good reminder that this is the total number of squares, therefore
- * using 81 will produce every possible entry a solution technique could provide
+ * Takes a solve order as an array and executes the given callback at the 0th index a number of
+ * times at the 1st index. Returns a true if changes were made to the allSquares argument, false if
+ * no changes were made. The default number of executions for any given solveTechnique is 81, which
+ * although it will never actually perform 81 times, it's a good reminder that this is the total
+ * number of squares, therefore using 81 will produce every possible entry a solution technique
+ * could provide
  *
  * @param allSquares the allSquares object to execute the solutions on
- * @param SolveOrder an array containing a solve technique callback at the 0th index and the number of times to call it at the 1st index
+ * @param SolveOrder an array containing a solve technique callback at the 0th index and the number
+ * of times to call it at the 1st index
  * @param solutionCache object which tracks how many times a particular solution technique is used
  * @returns A boolean, true if a change was made to the allSquares argument
  */

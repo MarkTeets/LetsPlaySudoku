@@ -6,7 +6,7 @@ import puzzleController from '../controllers/puzzleController';
 import cookieController from '../controllers/cookieController';
 import sessionController from '../controllers/sessionController';
 
-userRouter.post('/signup',
+userRouter.post('/sign-up',
   userController.getUser,
   userController.createUser,
   userController.cleanUser,

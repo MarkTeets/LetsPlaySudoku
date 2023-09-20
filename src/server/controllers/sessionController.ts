@@ -15,10 +15,10 @@ import {
 import controllerErrorMaker from '../utils/controllerErrorMaker';
 const createErr: CustomErrorGenerator = controllerErrorMaker('sessionController');
 
-//---START SESSION --------------------------------------------------------------------------------------------------------------------------
+//---START SESSION ---------------------------------------------------------------------------------
 
 const startSession: RequestHandler = async (req, res, next) => {
-  // Make sure login/signup was successful and userDocument exists
+  // Make sure login/sign-up was successful and userDocument exists
   if (res.locals.status !== 'validUser' || res.locals.userDocument === null) {
     return next();
   }
@@ -50,7 +50,7 @@ const startSession: RequestHandler = async (req, res, next) => {
   }
 };
 
-//---FIND SESSION --------------------------------------------------------------------------------------------------------------------------
+//---FIND SESSION ----------------------------------------------------------------------------------
 
 const findSession: RequestHandler = async (req, res, next) => {
   const cookieId = req.cookies.ssid;
@@ -84,7 +84,7 @@ const findSession: RequestHandler = async (req, res, next) => {
   }
 };
 
-//---DELETE SESSION --------------------------------------------------------------------------------------------------------------------------
+//---DELETE SESSION --------------------------------------------------------------------------------
 
 const deleteSession: RequestHandler = async (req, res, next) => {
   // Make sure getUser was successful and userDocument exists

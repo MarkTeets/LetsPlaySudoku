@@ -6,11 +6,11 @@ import { CookieController, CustomErrorGenerator, UserDocument } from '../backend
 import controllerErrorMaker from '../utils/controllerErrorMaker';
 const createErr: CustomErrorGenerator = controllerErrorMaker('cookieController');
 
-//---SET SSID COOKIE ------------------------------------------------------------------------------------------------------
+//---SET SSID COOKIE -------------------------------------------------------------------------------
 
 //ssid cookie value will be the logged in user's mongodb document id
 const setSSIDCookie: RequestHandler = async (req, res, next) => {
-  // Make sure login/signup was successful and userDocument exists
+  // Make sure login/sign-up was successful and userDocument exists
   if (res.locals.status !== 'validUser' || res.locals.userDocument === null) {
     return next();
   }
@@ -40,7 +40,7 @@ const setSSIDCookie: RequestHandler = async (req, res, next) => {
   }
 };
 
-//---DELETE SSID COOKIE ------------------------------------------------------------------------------------------------------
+//---DELETE SSID COOKIE ----------------------------------------------------------------------------
 
 const deleteSSIDCookie: RequestHandler = async (req, res, next) => {
   res.clearCookie('ssid');

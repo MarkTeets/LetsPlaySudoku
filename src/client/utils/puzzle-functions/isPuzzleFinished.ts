@@ -5,7 +5,8 @@ import { FilledSquares } from '../../frontendTypes';
 import { allSquareIds } from './allSquareIdsAndPuzzleVals';
 
 /** isPuzzleFinished
- *  Checks if a puzzle is complete by checking to see if there are no empty spaces and no duplicates in the puzzle
+ * Checks if a puzzle is complete by checking to see if there are no empty spaces and no duplicates
+ * in the puzzle
  *
  * @param filledSquares - FilledSquares object
  * @returns boolean

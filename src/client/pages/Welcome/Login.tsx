@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { useNavigate, Form, useActionData, useLoaderData } from 'react-router-dom';
+import { useNavigate, Form, useActionData } from 'react-router-dom';
 
 // Types
 import {
@@ -26,7 +26,7 @@ const Login = () => {
   // Set pageInfo to variable that will prevent automatic page jump if page has just loaded
   useEffect(() => {
     pageInfo.current = 'JustLoadedLogin';
-  }, []);
+  }, [pageInfo]);
 
   useEffect(() => {
     // Make sure the user has been set and they didn't just get to this page before
@@ -34,7 +34,7 @@ const Login = () => {
     if (user !== null && pageInfo.current === 'login') {
       return navigate(`/${encodeURIComponent(user.username)}`);
     }
-  }, [user]);
+  }, [user, pageInfo, navigate]);
 
   useEffect(() => {
     if (newLoginData?.user !== undefined && newLoginData.user && newLoginData.puzzleCollection) {
@@ -46,7 +46,7 @@ const Login = () => {
       );
       pageInfo.current = 'login';
     }
-  }, [newLoginData]);
+  }, [newLoginData, setUser, setPuzzleCollection, pageInfo]);
 
   return (
     <div className='login-page'>
@@ -80,7 +80,8 @@ export default Login;
 export const loginAction = async ({ request }: { request: Request }): Promise<SignInData> => {
   // Data from the form submission is available via the following function
   const loginInfo = await request.formData();
-  // On form submit, we need to send a post request to the backend with the proposed username and password
+  // On form submit, we need to send a post request to the backend with the proposed username
+  // and password
   const body = {
     username: loginInfo.get('username'),
     password: loginInfo.get('password')
@@ -113,12 +114,13 @@ export const loginAction = async ({ request }: { request: Request }): Promise<Si
     };
   }
 
-  // We don't want the user to see why it failed, but dev's should be able to distinguish which is which
+  // We don't want the user to see why it failed, but dev's should be able to distinguish
   if (response.status === 'incorrectPassword' || response.status === 'userNotFound') {
     return { error: 'Username password combination was not valid' };
   }
 
-  // Included for dev testing, only appears if response.status string in the frontend and backend are misaligned
+  // Included for dev testing, only appears if response.status string in the frontend and backend
+  // are misaligned
   return {
     error: `The status "${response.status}" sent in the response doesn't match the valid cases`
   };

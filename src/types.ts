@@ -1,19 +1,19 @@
-// Types
-import { Dispatch, SetStateAction } from 'react';
-
 /**
- * Using 'type' rather than 'interface' for objects as the definition of the type shows up clearer on hover over in VSCode
+ * Using 'type' rather than 'interface' for objects as the definition of the type shows up clearer
+ * on hover over in VSCode
  */
 
 /** UserPuzzleObj
  *
- * @type UserPuzzleObj - object to be stored in a user's allPuzzle object which holds information related to one puzzle
+ * @type UserPuzzleObj - object to be stored in a user's allPuzzle object which holds information
+ * related to one puzzle
  *
- * @member puzzleNumber - number - the number of the puzzle, which is consistent with the puzzleNumber stored
+ * @member puzzleNumber - number - the number of the puzzle, which is consistent with the
+ * puzzleNumber stored
  * in the mongoDB collection
  *
- * @member progress - string - an 81 character string representing a user's progress on a puzzle. Used to save
- * progress both in the frontend and in the database.
+ * @member progress - string - an 81 character string representing a user's progress on a puzzle.
+ * Used to save progress both in the frontend and in the database.
  */
 export type UserPuzzleObj = {
   puzzleNumber: number;
@@ -23,8 +23,9 @@ export type UserPuzzleObj = {
 
 /** AllPuzzles
  *
- * Object stored on a user object which holds every puzzle they've saved. The keys are puzzle numbers,
- * and the values are user puzzle objects having the shape: UserPuzzleObj = { puzzleNumber: number, progress: string };
+ * Object stored on a user object which holds every puzzle they've saved. The keys are puzzle
+ * numbers, and the values are user puzzle objects having the shape:
+ * UserPuzzleObj = { puzzleNumber: number, progress: string };
  */
 export type AllPuzzles = {
   [key: number]: UserPuzzleObj;
@@ -53,10 +54,12 @@ export type User = {
  * puzzle document schema for mongoDB
  *
  * @member puzzleNumber - number - number assigned to a particular puzzle
- * @member puzzle - string - 81 character string including chars '0' to '9', with '0's representing empty spaces
+ * @member puzzle - string - 81 character string including chars '0' to '9', with '0's representing
+ * empty spaces
  * @member solution - string - 81 character string including chars '1' to '9'
  * @member difficultyString - string - string representing how hard a puzzle is
- * @member difficultyScore - number - represents how hard a puzzle is, higher numbers mean the puzzle is harder
+ * @member difficultyScore - number - represents how hard a puzzle is, higher numbers mean the
+ * puzzle is harder
  * @member uniqueSolution - boolean - true if the puzzle has a unique solution
  * singleCandidate, singlePosition, candidateLines, doublePairs, multipleLines, nakedPair,
  * hiddenPair, nakedTriple, hiddenTriple, xWing, forcingChains, nakedQuad, hiddenQuad, and

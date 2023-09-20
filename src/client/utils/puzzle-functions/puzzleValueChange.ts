@@ -27,10 +27,10 @@ import {
 
 /** onNumberChange
  *
- * This function takes a button value and updates filledSquares and/or pencilSquares based on whether
- * or not the user is in pencilMode. This function will also check and update duplicates if necessary,
- * and utilize the setFilledSquares and setPencilSquares dispatch actions if a change is made. It's
- * optimized to avoid deep copying a filledSquares or pencilSquares object if possible.
+ * This function takes a button value and updates filledSquares and/or pencilSquares based on
+ * whether or not the user is in pencilMode. This function will also check and update duplicates if
+ * necessary, and utilize the setFilledSquares and setPencilSquares dispatch actions if a change is
+ * made. It's optimized to avoid deep copying a filledSquares or pencilSquares object if possible.
  *
  * @param buttonVal - string - value from '1' to '9'
  * @param pencilMode - boolean - represents whether or not pencil mode is active
@@ -86,9 +86,10 @@ export const onNumberChange: OnNumberChange = (
       newPencilSquares = deepCopyPencilSquares(pencilSquares);
     }
 
-    // Adding a value to a filled square will remove all conflicting peer pencilSquare values automatically,
-    // unless the new number is a duplicate number in a filledSquare peer.
-    // To avoid unnecessary duplication of pencilSquares, we first check to see if there are conflicting pencil squares
+    // Adding a value to a filled square will remove all conflicting peer pencilSquare values
+    // automatically, unless the new number is a duplicate number in a filledSquare peer. To avoid
+    // unnecessary duplication of pencilSquares, we first check to see if there are conflicting
+    // pencil squares
     let isDuplicate = false;
     allPeers[squareId].forEach((peerId) => {
       if (filledSquares[peerId]?.puzzleVal === buttonVal) {

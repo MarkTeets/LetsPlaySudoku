@@ -12,7 +12,7 @@ import './scss/styles.scss';
 // Layouts
 import RootLayout from './layouts/RootLayout';
 import WelcomeLayout from './layouts/WelcomeLayout';
-import UserLayout from './layouts/UserLayout';
+import UserLayout from './layouts/user/UserLayout';
 
 // Pages, Loaders
 import Home from './pages/Welcome/Home';
@@ -47,7 +47,7 @@ const router = createBrowserRouter(
         />
         <Route
           path='signUp'
-          element={<SignUp key='SignupPage' />}
+          element={<SignUp key='SignUpPage' />}
           action={signUpAction}
           errorElement={<ErrorPage />}
         />

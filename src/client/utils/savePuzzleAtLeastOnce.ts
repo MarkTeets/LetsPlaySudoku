@@ -10,10 +10,11 @@ import {
 
 /** savePuzzleAtLeastOnce
  *
- * Returns a function that allows a user to save their progress on a puzzle. The returned function also confirms that there's
- * a difference between the current puzzles state and a user's progress string before saving. However, the function utilizes
- * closure to make sure that the first save occurs regardless of said difference. This is important as a puzzle isn't saved
- * to a user in the database until saved at least once.
+ * Returns a function that allows a user to save their progress on a puzzle. The returned function
+ * also confirms that there's a difference between the current puzzles state and a user's progress
+ * string before saving. However, the function utilizes closure to make sure that the first save
+ * occurs regardless of said difference. This is important as a puzzle isn't saved to a user in the
+ * database until saved at least once.
  *
  * @returns function
  */
@@ -70,8 +71,8 @@ export const savePuzzleAtLeastOnce = () => {
         return;
       }
 
-      // If the save was successful, update the user's progress string so that if they navigate away from the
-      // page and then come back the saved version of the puzzle will be shown
+      // If the save was successful, update the user's progress string so that if they navigate away
+      // from the page and then come back the saved version of the puzzle will be shown
       const newUser = {
         ...user,
         allPuzzles: { ...user.allPuzzles }

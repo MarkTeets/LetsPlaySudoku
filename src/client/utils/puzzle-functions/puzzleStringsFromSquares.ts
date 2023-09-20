@@ -22,8 +22,9 @@ export const createProgressString = (filledSquares: FilledSquares): string => {
 /** createPencilProgressString
  *
  * Takes a pencilSquares object and returns a pencil string. Pencil strings are comprised of
- * squareIds followed by whatever numbers are present in for that square. For example, a pencil square
- * string representing pencilled in numbers 1 and 4 at square A1 and 5 and 8 at G6 is "A114G658".
+ * squareIds followed by whatever numbers are present in for that square. For example, a pencil
+ * square string representing pencilled in numbers 1 and 4 at square A1 and 5 and 8 at G6 is
+ * "A114G658".
  *
  * @param pencilSquares - PencilSquares object
  * @returns

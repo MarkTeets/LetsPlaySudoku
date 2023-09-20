@@ -3,19 +3,18 @@ import { useNavigate } from 'react-router-dom';
 
 // Types
 import {
-  SetUser,
-  SetPuzzleCollection,
   UserContextValue,
   PuzzleCollectionContextValue,
   PageContextValue
 } from '../../frontendTypes';
-import { User, Puzzle, PuzzleCollection, QueryStatus, PuzzleResponse } from '../../../types';
+import { QueryStatus, PuzzleResponse } from '../../../types';
 
 // Context
 import { userContext, puzzleCollectionContext, pageContext } from '../../context';
 
 // Utilities
 import totalPuzzles from '../../../globalUtils/totalPuzzles';
+import { addPuzzleToUserAndCollection } from '../../utils/addPuzzleToUserAndCollection';
 
 // Main Component
 const PuzzleSelectMenu = () => {
@@ -29,14 +28,13 @@ const PuzzleSelectMenu = () => {
 
   useEffect(() => {
     pageInfo.current = 'PuzzleSelectMenu';
-  }, []);
+  }, [pageInfo]);
 
   useEffect(() => {
     if (user && puzzleSelected) {
-      // console.log('user.lastPuzzle from PuzzleSelectMenu useEffect for navigation', user.lastPuzzle);
       navigate(`/${encodeURIComponent(user.username)}/puzzle/${user.lastPuzzle}`);
     }
-  }, [puzzleSelected]);
+  }, [user, puzzleSelected, navigate]);
 
   const onResumeLastPuzzleClick = () => {
     setPuzzleSelected(true);
@@ -53,7 +51,8 @@ const PuzzleSelectMenu = () => {
     const convertedPuzzleNumber = Number(puzzleNumString.trim());
     if (!user || !isValidPuzzleNumber(convertedPuzzleNumber)) return;
 
-    // If the selected puzzle isn't already in the user's allPuzzles, we'll add it there and to the puzzleCollection
+    // If the selected puzzle isn't already in the user's allPuzzles, we'll add it there and
+    // to the puzzleCollection
     if (!user.allPuzzles[convertedPuzzleNumber]) {
       const res = await fetch(`/api/puzzle/${convertedPuzzleNumber}`);
 
@@ -64,7 +63,8 @@ const PuzzleSelectMenu = () => {
 
       const { status, puzzleObj: fetchedPuzzleData }: PuzzleResponse = await res.json();
 
-      // if the status is anything other than valid, alert specific string and exit method without adding to user or puzzle collection
+      // if the status is anything other than valid, alert specific string and exit method without
+      // adding to user or puzzle collection
       if (!isValidStatus(status) || !fetchedPuzzleData) return;
 
       addPuzzleToUserAndCollection(
@@ -119,7 +119,8 @@ const PuzzleSelectMenu = () => {
 
     const { puzzleObj: fetchedPuzzleData, status } = await res.json();
 
-    // if the status is anything other than valid, alert specific string and exit method without adding to user or puzzle collection
+    // if the status is anything other than valid, alert specific string and exit method without
+    // adding to user or puzzle collection
     if (!isValidStatus(status)) return;
 
     addPuzzleToUserAndCollection(
@@ -193,7 +194,7 @@ const PuzzleSelectMenu = () => {
 
 export default PuzzleSelectMenu;
 
-//---- HELPER FUNCTIONS --------------------------------------------------------------------------------------------------------------
+//---- HELPER FUNCTIONS ----------------------------------------------------------------------------
 
 /** isValidStatus
  *
@@ -220,68 +221,17 @@ function isValidStatus(status: QueryStatus): boolean {
 
 /**isValidPuzzleNumber
  *
- * Checks to see if the given input is a valid puzzle number based on the total number of puzzles in the database
+ * Checks to see if the given input is a valid puzzle number based on the total number of puzzles in
+ * the database
  *
  * @param puzzleNumber - number entered by the user
  * @returns boolean
  */
-export function isValidPuzzleNumber(puzzleNumber: number): boolean {
+function isValidPuzzleNumber(puzzleNumber: number): boolean {
   if (!Number.isInteger(puzzleNumber) || puzzleNumber < 1 || puzzleNumber > totalPuzzles) {
     alert(`Please enter a number from 1 to ${totalPuzzles}.`);
     return false;
   }
 
   return true;
-}
-
-/**addPuzzleToUserAndCollection
- *
- * Takes a puzzle document from the database's puzzles collection and adds it to the user's allPuzzles object and to
- * the puzzleCollection without mutating existing state. This makes it available for use when rendering the PuzzlePage component.
- *
- * @param puzzleNumber
- * @param fetchedPuzzleData - puzzle document from the database's puzzles collection
- * @param user - Global context object, holds username, displayName, and allPuzzles object which holds a user's progress on each puzzle they've saved
- * @param setUser - Function for setting global user object
- * @param puzzleCollection - Global context object, holds information for each puzzle
- * @param setPuzzleCollection - Function for setting global puzzleCollection object
- */
-function addPuzzleToUserAndCollection(
-  puzzleNumber: number,
-  fetchedPuzzleData: Puzzle,
-  user: User,
-  setUser: SetUser,
-  puzzleCollection: PuzzleCollection,
-  setPuzzleCollection: SetPuzzleCollection
-) {
-  if (!user) return;
-
-  const newUser = {
-    ...user,
-    lastPuzzle: puzzleNumber,
-    allPuzzles: { ...user.allPuzzles }
-  };
-
-  newUser.allPuzzles[puzzleNumber] = {
-    puzzleNumber,
-    progress: fetchedPuzzleData.puzzle,
-    pencilProgress: ''
-  };
-
-  setUser(newUser);
-
-  // Every puzzle in a user's allPuzzles object will be added to the puzzleCollection object when the user logs in,
-  // therefore we only need to add the puzzle to the puzzle collection after confirming it's not already
-  // in allPuzzles
-
-  // Check to see if the puzzle is already in the puzzleCollection just in case they switched users and it's already there
-  // If it's not there, add it
-  if (!puzzleCollection[puzzleNumber]) {
-    const newPuzzleCollection = { ...puzzleCollection };
-    for (const [number, puzzleObject] of Object.entries(puzzleCollection)) {
-      newPuzzleCollection[Number(number)] = { ...puzzleObject };
-    }
-    newPuzzleCollection[puzzleNumber] = fetchedPuzzleData;
-    setPuzzleCollection(newPuzzleCollection);
-  }
 }

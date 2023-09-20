@@ -24,9 +24,10 @@ export const isValidPuzzleString = (puzzleString: string): boolean => {
 
 /** isValidPencilString
  *
- * Checks an incoming pencil string to make sure it's a valid string. Pencil strings are comprised of
- * squareIds followed by whatever numbers are present in for that square. For example, a pencil square
- * string representing pencilled in numbers 1 and 4 at square A1 and 5 and 8 at G6 is "A114G658".
+ * Checks an incoming pencil string to make sure it's a valid string. Pencil strings are comprised
+ * of squareIds followed by whatever numbers are present in for that square. For example, a pencil
+ * square string representing pencilled in numbers 1 and 4 at square A1 and 5 and 8 at G6 is
+ * "A114G658".
  * Returns true if the string matches the pattern, and false if not
  *
  * @param pencilString

@@ -16,14 +16,15 @@ const SignUp = () => {
   // Set pageInfo to variable that will prevent automatic page jump if page has just loaded
   useEffect(() => {
     pageInfo.current = 'JustLoadedSignUp';
-  }, []);
+  }, [pageInfo]);
 
   useEffect(() => {
-    // Make sure the user has been set and they didn't just get to this page before navigating to UserHomePage
+    // Make sure the user has been set and they didn't just get to this page before
+    // navigating to UserHomePage
     if (user !== null && pageInfo.current === 'signUp') {
       return navigate(`/${encodeURIComponent(user.username)}`);
     }
-  }, [user]);
+  }, [user, pageInfo, navigate]);
 
   // After a user submits info and a valid response from the backend has been received,
   // this useEffect will set the user accordingly
@@ -33,7 +34,7 @@ const SignUp = () => {
       // Update pageInfo to this page on successful submission
       pageInfo.current = 'signUp';
     }
-  }, [newSignUpData]);
+  }, [newSignUpData, pageInfo, setUser]);
 
   return (
     <div className='login-page'>
@@ -70,7 +71,8 @@ const SignUp = () => {
 export const signUpAction = async ({ request }: { request: Request }): Promise<SignInData> => {
   // Data from the form submission is available via the following function
   const submitData = await request.formData();
-  // On form submit, we need to send a post request to the backend with the proposed username and password
+  // On form submit, we need to send a post request to the backend with the proposed username
+  // and password
   const body = {
     username: submitData.get('username'),
     password: submitData.get('password'),
@@ -87,7 +89,7 @@ export const signUpAction = async ({ request }: { request: Request }): Promise<S
     body.displayName = body.username;
   }
 
-  const res: Response = await fetch('/api/user/signup', {
+  const res: Response = await fetch('/api/user/sign-up', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body)
@@ -102,17 +104,18 @@ export const signUpAction = async ({ request }: { request: Request }): Promise<S
   const response = (await res.json()) as SignInResponse;
 
   if (response.status === 'valid') {
-    // console.log('Signup was successful!');
+    // console.log('SignUp was successful!');
     return {
       user: response.user
     };
   }
 
-  // Alert user they need to choose a different username if the server flagged that it's already taken
+  // Alert user to choose a different username if the server flagged that it's already taken
   if (response.status === 'userNameExists') {
     return { error: 'This username is unavailable, please choose another' };
   }
-  // Included for dev testing, only appears if response.status string in the frontend and backend are misaligned
+  // Included for dev testing, only appears if response.status string in the frontend and backend
+  // are misaligned
   return {
     error: `The status "${response.status}" sent in the response doesn't match the valid cases.`
   };
