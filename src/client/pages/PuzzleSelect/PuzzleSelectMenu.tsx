@@ -195,7 +195,6 @@ const PuzzleSelectMenu = () => {
 export default PuzzleSelectMenu;
 
 //---- HELPER FUNCTIONS ----------------------------------------------------------------------------
-
 /** isValidStatus
  *
  * Takes a status string from the backend and generates appropriate alerts for invalid statuses.
@@ -227,11 +226,11 @@ function isValidStatus(status: QueryStatus): boolean {
  * @param puzzleNumber - number entered by the user
  * @returns boolean
  */
-function isValidPuzzleNumber(puzzleNumber: number): boolean {
+export const isValidPuzzleNumber = (puzzleNumber: number): boolean => {
   if (!Number.isInteger(puzzleNumber) || puzzleNumber < 1 || puzzleNumber > totalPuzzles) {
     alert(`Please enter a number from 1 to ${totalPuzzles}.`);
     return false;
   }
 
   return true;
-}
+};
