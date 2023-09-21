@@ -101,10 +101,14 @@ $visitedLink: rgb(128, 179, 171);
   background-color: $peerSquareBackground;
 }
 
-.current-square {
-  background-color: $clickedSquareBackground;
+.current-square-outline {
   padding: 0;
-  border: $clickedSquareBorder solid 2px;
+  border: $numberColor solid 2px;
+}
+
+.current-square-background {
+  border-color: $clickedSquareBorder;
+  background-color: $clickedSquareBackground;
 }
 
 // Styles for buttons below puzzle

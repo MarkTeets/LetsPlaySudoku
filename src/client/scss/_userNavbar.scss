@@ -65,7 +65,7 @@ $nav-link-background: #58c2c6;
   max-height: 0px;
 }
 
-.side-bar-section-content {
+.flex-column {
   display: flex;
   flex-direction: column;
 }
@@ -80,4 +80,8 @@ $nav-link-background: #58c2c6;
 .side-bar-section-content .active {
   background-color: $nav-link-background;
   // border-radius: 7px;
+}
+
+.side-bar-detail input {
+  vertical-align: middle;
 }
