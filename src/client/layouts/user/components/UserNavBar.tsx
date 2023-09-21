@@ -51,7 +51,7 @@ const UserNavBar = ({ collapseSideBar }: UserSideBarProps) => {
   };
 
   return (
-    <nav className='side-bar-section-content'>
+    <nav className='side-bar-section-content flex-column'>
       {user && user.lastPuzzle > 0 ? (
         <NavLink to={lastPuzzleURL} className='nav-link' onClick={collapseSideBar}>
           Puzzle #{user.lastPuzzle}
