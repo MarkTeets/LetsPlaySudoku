@@ -1,6 +1,7 @@
 import express, { NextFunction, Request, Response } from 'express';
 import cookieParser from 'cookie-parser';
 import mongoose, { Error } from 'mongoose';
+import path from 'path';
 import usersRouter from './routes/userRouter';
 import puzzleRouter from './routes/puzzleRouter';
 import { CustomErrorOutput } from './backendTypes';
@@ -26,6 +27,8 @@ mongoose
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+app.use('/assets', express.static(path.join(__dirname, '../client/assets')));
 
 app.use('/api/user', usersRouter);
 
