@@ -1,8 +1,9 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 
 // Types
 import {
   SquareId,
+  ClickedSquare,
   OnSquareClick,
   SquareContainerProps,
   SquareContextValue,
@@ -24,21 +25,15 @@ import { allPeers } from '../../../utils/puzzle-functions/makeAllPeers';
 const SquareContainer = ({ squareId }: SquareContainerProps) => {
   const { clickedSquare, setClickedSquare, filledSquares, pencilSquares } =
     useContext<SquareContextValue>(squareContext);
+  const squareClasses = useMemo(
+    () => generateSquareClasses(squareId, clickedSquare),
+    [squareId, clickedSquare]
+  );
 
   const onSquareClick: OnSquareClick = (event) => {
     setClickedSquare(event.currentTarget.dataset.square as SquareId);
     // console.log('clickedSquare:', event.currentTarget.dataset.square);
   };
-
-  let squareClasses = 'square-container';
-  if (clickedSquare) {
-    if (squareId === clickedSquare) {
-      squareClasses += ' current-square';
-    }
-    if (allPeers[squareId].has(clickedSquare)) {
-      squareClasses += ' current-peer';
-    }
-  }
 
   const squareProps: SquareProps = {
     squareId,
@@ -58,3 +53,17 @@ const SquareContainer = ({ squareId }: SquareContainerProps) => {
 };
 
 export default SquareContainer;
+
+// Helper function
+const generateSquareClasses = (squareId: SquareId, clickedSquare: ClickedSquare) => {
+  let squareClasses = 'square-container';
+  if (clickedSquare) {
+    if (squareId === clickedSquare) {
+      squareClasses += ' current-square';
+    }
+    if (allPeers[squareId].has(clickedSquare)) {
+      squareClasses += ' current-peer';
+    }
+  }
+  return squareClasses;
+};

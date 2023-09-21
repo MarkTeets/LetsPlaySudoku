@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 
 // Types
@@ -50,7 +50,7 @@ const PuzzlePage = () => {
 
   useEffect(() => {
     pageInfo.current = 'PuzzlePage';
-  }, []);
+  }, [pageInfo]);
 
   useEffect(() => {
     // Needs to run every time so lastPuzzle is updated on refresh. At the moment, user isn't saved

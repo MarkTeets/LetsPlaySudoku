@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 // Types
 import { SquareId, BoxUnitContainerProps, SquareContainerProps } from '../../../frontendTypes';
@@ -8,7 +8,8 @@ import SquareContainer from './SquareContainer';
 
 // Main Component
 const BoxUnitContainer = ({ boxUnit }: BoxUnitContainerProps) => {
-  return <div className='box-unit-container'>{generateSquares(boxUnit)}</div>;
+  const generatedSquares = useMemo(() => generateSquares(boxUnit), [boxUnit]);
+  return <div className='box-unit-container'>{generatedSquares}</div>;
 };
 
 export default BoxUnitContainer;

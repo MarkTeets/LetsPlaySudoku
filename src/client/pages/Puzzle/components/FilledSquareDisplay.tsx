@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 
 // Types
 import { FilledSquare, SquareContextValue, SquareProps } from '../../../frontendTypes';
@@ -10,12 +10,11 @@ import { squareContext } from '../../../context';
 const FilledSquareDisplay = (props: SquareProps) => {
   const { squareId, squareClasses, onSquareClick } = props;
   const { filledSquares } = useContext<SquareContextValue>(squareContext);
-  const square = filledSquares[squareId] as FilledSquare;
-  let classes = `${squareClasses} filled-square`;
-
-  if (square.fixedVal) classes += ' fixed-val';
-
-  if (square.duplicate) classes += ' duplicate-number';
+  const [square] = useState<FilledSquare>(filledSquares[squareId] as FilledSquare);
+  const classes = useMemo(
+    () => makeFilledSquareClasses(square, squareClasses),
+    [square, squareClasses]
+  );
 
   return (
     <div className={classes} data-square={squareId} onClick={(event) => onSquareClick(event)}>
@@ -25,3 +24,10 @@ const FilledSquareDisplay = (props: SquareProps) => {
 };
 
 export default FilledSquareDisplay;
+
+const makeFilledSquareClasses = (square: FilledSquare, squareClasses: string) => {
+  let classes = `${squareClasses} filled-square`;
+  if (square.fixedVal) classes += ' fixed-val';
+  if (square.duplicate) classes += ' duplicate-number';
+  return classes;
+};

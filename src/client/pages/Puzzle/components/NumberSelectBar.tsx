@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 // Types
 import { PuzzleVal, NumberSelectBarProps, MakeButtons } from '../../../frontendTypes';
@@ -16,18 +16,21 @@ const NumberSelectBar = (props: NumberSelectBarProps) => {
     pencilSquares,
     setPencilSquares
   } = props;
-  return (
-    <div id='number-select-bar'>
-      {makeButtons(
+
+  const numberButtons = useMemo(
+    () =>
+      makeButtons(
         pencilMode,
         clickedSquare,
         filledSquares,
         setFilledSquares,
         pencilSquares,
         setPencilSquares
-      )}
-    </div>
+      ),
+    [pencilMode, clickedSquare, filledSquares, setFilledSquares, pencilSquares, setPencilSquares]
   );
+
+  return <div id='number-select-bar'>{numberButtons}</div>;
 };
 
 export default NumberSelectBar;

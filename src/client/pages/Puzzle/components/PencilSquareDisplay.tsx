@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 
 // Types
 import {
@@ -18,14 +18,18 @@ import { squareContext } from '../../../context';
 const PencilSquareDisplay = (props: SquareProps) => {
   const { squareId, squareClasses, onSquareClick } = props;
   const { pencilSquares } = useContext<SquareContextValue>(squareContext);
+  const pencilSquareGrid = useMemo(
+    () => makePencilGrid(squareId, pencilSquares),
+    [squareId, pencilSquares]
+  );
 
   return (
     <div
-      className={`pencil-square ${squareClasses}`}
+      className={`${squareClasses} pencil-square`}
       data-square={squareId}
       onClick={(event) => onSquareClick(event)}
     >
-      {makePencilGrid(squareId, pencilSquares)}
+      {pencilSquareGrid}
     </div>
   );
 };
