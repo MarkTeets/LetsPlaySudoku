@@ -15,7 +15,7 @@ const SavedPuzzleSelect = () => {
 
   useEffect(() => {
     pageInfo.current = 'SavedPuzzleSelect';
-  }, []);
+  }, [pageInfo]);
 
   return (
     <>
