@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useMemo } from 'react';
 import {
   createBrowserRouter,
   createRoutesFromElements,
@@ -8,6 +8,14 @@ import {
 
 // Styles
 import './scss/styles.scss';
+
+// Types
+import { User, PuzzleCollection } from '../types';
+import {
+  GameSettingContextValue,
+  PuzzleCollectionContextValue,
+  UserContextValue
+} from './frontendTypes';
 
 // Layouts
 import RootLayout from './layouts/RootLayout';
@@ -28,10 +36,7 @@ import NotFound from './pages/NotFound';
 import ErrorPage from './pages/ErrorPage';
 
 // Context
-import { userContext, puzzleCollectionContext, pageContext } from './context';
-
-// Types
-import { User, PuzzleCollection } from '../types';
+import { userContext, puzzleCollectionContext, pageContext, gameSettingsContext } from './context';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -79,13 +84,50 @@ const App = (): JSX.Element => {
   const [user, setUser] = useState<User>(null);
   const [puzzleCollection, setPuzzleCollection] = useState<PuzzleCollection>({});
   const pageInfo = useRef<string>('index');
+  const [darkMode, setDarkMode] = useState<boolean>(false);
+  const [autoSave, setAutoSave] = useState(false);
+  const [highlightPeers, setHighlightPeers] = useState(true);
+  const [showDuplicates, setShowDuplicates] = useState(true);
+  const [trackMistakes, setTrackMistakes] = useState(false);
+  const [showMistakesOnPuzzlePage, setShowMistakesOnPuzzlePage] = useState(false);
+
+  const userContextValue: UserContextValue = useMemo<UserContextValue>(
+    () => ({ user, setUser }),
+    [user]
+  );
+
+  const puzzleCollectionContextValue: PuzzleCollectionContextValue =
+    useMemo<PuzzleCollectionContextValue>(
+      () => ({ puzzleCollection, setPuzzleCollection }),
+      [puzzleCollection]
+    );
+
+  const gameSettingsContextValue: GameSettingContextValue = useMemo<GameSettingContextValue>(
+    () => ({
+      darkMode,
+      setDarkMode,
+      autoSave,
+      setAutoSave,
+      highlightPeers,
+      setHighlightPeers,
+      showDuplicates,
+      setShowDuplicates,
+      trackMistakes,
+      setTrackMistakes,
+      showMistakesOnPuzzlePage,
+      setShowMistakesOnPuzzlePage
+    }),
+    [darkMode, autoSave, highlightPeers, showDuplicates, trackMistakes, showMistakesOnPuzzlePage]
+  );
 
   return (
-    <userContext.Provider value={{ user, setUser }}>
-      <puzzleCollectionContext.Provider value={{ puzzleCollection, setPuzzleCollection }}>
-        <pageContext.Provider value={{ pageInfo }}>
-          <RouterProvider router={router} />
-        </pageContext.Provider>
+    <userContext.Provider value={userContextValue}>
+      <puzzleCollectionContext.Provider value={puzzleCollectionContextValue}>
+        <gameSettingsContext.Provider value={gameSettingsContextValue}>
+          <pageContext.Provider value={{ pageInfo }}>
+            <RouterProvider router={router} />
+          </pageContext.Provider>
+        </gameSettingsContext.Provider>
       </puzzleCollectionContext.Provider>
     </userContext.Provider>
   );

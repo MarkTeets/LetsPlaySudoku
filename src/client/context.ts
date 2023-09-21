@@ -7,9 +7,11 @@ import {
   PageContextValue,
   SquareContextValue,
   FilledSquares,
-  PencilSquares
+  PencilSquares,
+  GameSettingContextValue
 } from './frontendTypes';
 
+// Context
 export const userContext = createContext<UserContextValue>({
   user: null,
   setUser: () => {}
@@ -29,4 +31,19 @@ export const squareContext = createContext<SquareContextValue>({
   setClickedSquare: () => {},
   filledSquares: {} as FilledSquares,
   pencilSquares: {} as PencilSquares
+});
+
+export const gameSettingsContext = createContext<GameSettingContextValue>({
+  darkMode: false,
+  setDarkMode: () => {},
+  autoSave: false,
+  setAutoSave: () => {},
+  highlightPeers: true,
+  setHighlightPeers: () => {},
+  showDuplicates: true,
+  setShowDuplicates: () => {},
+  trackMistakes: false,
+  setTrackMistakes: () => {},
+  showMistakesOnPuzzlePage: false,
+  setShowMistakesOnPuzzlePage: () => {}
 });

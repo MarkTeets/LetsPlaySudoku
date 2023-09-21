@@ -1,25 +1,57 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useMemo } from 'react';
+
+// Types
+import { SettingsToggleInputProps, GameSettingContextValue } from '../../../frontendTypes';
+
+// Context
+import { gameSettingsContext } from '../../../context';
+
+// Components
+import SettingsToggleInput from './SettingsToggleInput';
 
 const GameSettings = () => {
-  // There's a very good chance this is all going into context in App.tsx
-  // I'd prefer to put it in PuzzlePage, but I need to figure out how to make it fit in user layout
-  // I'm not sure it could without some fancy coding
-  // If it does go into App, I'm going to need to make use of useMemo and useCallback much more
+  const {
+    // darkMode,
+    // setDarkMode,
+    // autoSave,
+    // setAutoSave,
+    highlightPeers,
+    setHighlightPeers,
+    showDuplicates,
+    setShowDuplicates
+    // trackMistakes,
+    // setTrackMistakes,
+    // showMistakesOnPuzzlePage,
+    // setShowMistakesOnPuzzlePage
+  } = useContext<GameSettingContextValue>(gameSettingsContext);
 
-  const [lightMode, setLightMode] = useState(true); //Going to look into if useState is the best for this, also
-  // need to look into if there's an easy way to switch the theme of the browser
-  // so I can put all of this in media rules in Sass rather than inline styles
-  const [autoSave, setAutoSave] = useState(false); //Should default to true eventually but that code isn't written yet
-  const [highlightPeers, setHighlightPeers] = useState(true);
-  const [trackDuplicates, setTrackDuplicates] = useState(true); // Lots of code to be written for this one
-  const [trackMistakes, setTrackMistakes] = useState(false);
-  const [showMistakesOnPuzzlePage, setShowMistakesOnPuzzlePage] = useState(false);
+  const settingsDetails = useMemo<React.JSX.Element[]>(() => {
+    const settingsArray: SettingsToggleInputProps[] = [
+      // { label: 'Dark Mode', state: darkMode, setState: setDarkMode },
+      // { label: 'Auto-save', state: autoSave, setState: setAutoSave },
+      { label: 'Highlight Peers', state: highlightPeers, setState: setHighlightPeers },
+      { label: 'Show Duplicates', state: showDuplicates, setState: setShowDuplicates }
+      // { label: 'Track Mistakes', state: trackMistakes, setState: setTrackMistakes },
+      // {
+      //   label: 'Show Mistakes',
+      //   state: showMistakesOnPuzzlePage,
+      //   setState: setShowMistakesOnPuzzlePage
+      // }
+    ];
 
-  return (
-    <div className='side-bar-section-content'>
-      <div>Game Settings</div>
-    </div>
-  );
+    return generateSettingsDetails(settingsArray);
+  }, [highlightPeers, setHighlightPeers, showDuplicates, setShowDuplicates]);
+
+  return <div className='side-bar-section-content'>{settingsDetails}</div>;
 };
 
 export default GameSettings;
+
+// Helper Functions
+const generateSettingsDetails = (settingsArray: SettingsToggleInputProps[]) => {
+  const gameSettingsComponents: React.JSX.Element[] = [];
+  for (const props of settingsArray) {
+    gameSettingsComponents.push(<SettingsToggleInput key={`${props.label}-Setting`} {...props} />);
+  }
+  return gameSettingsComponents;
+};

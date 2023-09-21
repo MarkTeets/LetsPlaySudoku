@@ -165,27 +165,24 @@ export type InitialSquares = {
  */
 export type ClickedSquare = SquareId | null;
 
-type SetClickedSquare = Dispatch<SetStateAction<ClickedSquare>>;
+//---- Dispatch Types ----------------------------------------------------------------------------
+export type SetUser = Dispatch<SetStateAction<User>>;
+
+type SetInitialSquares = Dispatch<SetStateAction<InitialSquares>>;
 
 type SetFilledSquares = Dispatch<SetStateAction<FilledSquares>>;
 
 type SetPencilSquares = Dispatch<SetStateAction<PencilSquares>>;
 
-type SetInitialSquares = Dispatch<SetStateAction<InitialSquares>>;
+type SetClickedSquare = Dispatch<SetStateAction<ClickedSquare>>;
 
 type SetPencilMode = Dispatch<SetStateAction<boolean>>;
 
 //---- Context Types ----------------------------------------------------------------------------
-/** SetUser
- *
- * useState dispatch action used to set the state of a user
- */
-export type SetUser = Dispatch<SetStateAction<User>>;
-
 /**
- * @type UserContextValue
- * @property user - a User object to be stored in a component via useState
- * @property setUser - the dispatch function corresponding to the useState User object above
+ * These are collections of state that will be placed in context so they can be accessed by
+ * components via the useContext hook without needing to prop drill through every intermediate
+ * component
  */
 export type UserContextValue = {
   user: User;
@@ -208,6 +205,21 @@ export type SquareContextValue = {
   setClickedSquare: SetClickedSquare;
   filledSquares: FilledSquares;
   pencilSquares: PencilSquares;
+};
+
+export type GameSettingContextValue = {
+  darkMode: boolean;
+  setDarkMode: Dispatch<SetStateAction<boolean>>;
+  autoSave: boolean;
+  setAutoSave: Dispatch<SetStateAction<boolean>>;
+  highlightPeers: boolean;
+  setHighlightPeers: Dispatch<SetStateAction<boolean>>;
+  showDuplicates: boolean;
+  setShowDuplicates: Dispatch<SetStateAction<boolean>>;
+  trackMistakes: boolean;
+  setTrackMistakes: Dispatch<SetStateAction<boolean>>;
+  showMistakesOnPuzzlePage: boolean;
+  setShowMistakesOnPuzzlePage: Dispatch<SetStateAction<boolean>>;
 };
 
 //---- Component Functions -----------------------------------------------------------------------
@@ -295,6 +307,12 @@ export type SideBarSectionContainerProps = {
   children: ReactNode;
   title: string;
   defaultExpanded?: boolean;
+};
+
+export type SettingsToggleInputProps = {
+  label: string;
+  state: boolean;
+  setState: Dispatch<SetStateAction<boolean>>;
 };
 
 export type NumberSelectBarProps = {

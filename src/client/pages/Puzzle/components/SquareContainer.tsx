@@ -7,6 +7,7 @@ import {
   OnSquareClick,
   SquareContainerProps,
   SquareContextValue,
+  GameSettingContextValue,
   SquareProps
 } from '../../../frontendTypes';
 
@@ -16,7 +17,7 @@ import PencilSquareDisplay from './PencilSquareDisplay';
 import EmptySquareDisplay from './EmptySquareDisplay';
 
 // Context
-import { squareContext } from '../../../context';
+import { squareContext, gameSettingsContext } from '../../../context';
 
 // Utilities
 import { allPeers } from '../../../utils/puzzle-functions/makeAllPeers';
@@ -25,9 +26,10 @@ import { allPeers } from '../../../utils/puzzle-functions/makeAllPeers';
 const SquareContainer = ({ squareId }: SquareContainerProps) => {
   const { clickedSquare, setClickedSquare, filledSquares, pencilSquares } =
     useContext<SquareContextValue>(squareContext);
+  const { highlightPeers } = useContext<GameSettingContextValue>(gameSettingsContext);
   const squareClasses = useMemo(
-    () => generateSquareClasses(squareId, clickedSquare),
-    [squareId, clickedSquare]
+    () => generateSquareClasses(squareId, clickedSquare, highlightPeers),
+    [squareId, clickedSquare, highlightPeers]
   );
 
   const onSquareClick: OnSquareClick = (event) => {
@@ -54,14 +56,19 @@ const SquareContainer = ({ squareId }: SquareContainerProps) => {
 
 export default SquareContainer;
 
-// Helper function
-const generateSquareClasses = (squareId: SquareId, clickedSquare: ClickedSquare) => {
+// Helper Function
+const generateSquareClasses = (
+  squareId: SquareId,
+  clickedSquare: ClickedSquare,
+  highlightPeers: boolean
+) => {
   let squareClasses = 'square-container';
   if (clickedSquare) {
     if (squareId === clickedSquare) {
-      squareClasses += ' current-square';
+      squareClasses += ' current-square-outline';
+      if (highlightPeers) squareClasses += ' current-square-background';
     }
-    if (allPeers[squareId].has(clickedSquare)) {
+    if (highlightPeers && allPeers[squareId].has(clickedSquare)) {
       squareClasses += ' current-peer';
     }
   }

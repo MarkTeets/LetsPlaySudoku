@@ -1,33 +1,47 @@
 import React, { useContext, useMemo, useState } from 'react';
 
 // Types
-import { FilledSquare, SquareContextValue, SquareProps } from '../../../frontendTypes';
+import {
+  FilledSquare,
+  SquareContextValue,
+  SquareProps,
+  GameSettingContextValue
+} from '../../../frontendTypes';
 
 // Context
-import { squareContext } from '../../../context';
+import { squareContext, gameSettingsContext } from '../../../context';
 
 // Main Component
 const FilledSquareDisplay = (props: SquareProps) => {
   const { squareId, squareClasses, onSquareClick } = props;
   const { filledSquares } = useContext<SquareContextValue>(squareContext);
-  const [square] = useState<FilledSquare>(filledSquares[squareId] as FilledSquare);
+  const { showDuplicates } = useContext<GameSettingContextValue>(gameSettingsContext);
   const classes = useMemo(
-    () => makeFilledSquareClasses(square, squareClasses),
-    [square, squareClasses]
+    () =>
+      makeFilledSquareClasses(
+        filledSquares[squareId] as FilledSquare,
+        squareClasses,
+        showDuplicates
+      ),
+    [filledSquares, squareId, squareClasses, showDuplicates]
   );
 
   return (
     <div className={classes} data-square={squareId} onClick={(event) => onSquareClick(event)}>
-      <span>{square.puzzleVal}</span>
+      <span>{(filledSquares[squareId] as FilledSquare).puzzleVal}</span>
     </div>
   );
 };
 
 export default FilledSquareDisplay;
 
-const makeFilledSquareClasses = (square: FilledSquare, squareClasses: string) => {
+const makeFilledSquareClasses = (
+  square: FilledSquare,
+  squareClasses: string,
+  showDuplicates: boolean
+) => {
   let classes = `${squareClasses} filled-square`;
   if (square.fixedVal) classes += ' fixed-val';
-  if (square.duplicate) classes += ' duplicate-number';
+  if (showDuplicates && square.duplicate) classes += ' duplicate-number';
   return classes;
 };
