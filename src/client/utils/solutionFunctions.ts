@@ -390,7 +390,11 @@ export const puzzleSolver = (
  * @param solution string representing the solution to said puzzle
  * @returns Puzzle object
  */
-const defaultPuzzleDocument = (puzzleNumber: number, puzzle: string, solution: string): Puzzle => {
+export const defaultPuzzleDocument = (
+  puzzleNumber: number,
+  puzzle: string,
+  solution: string
+): Puzzle => {
   const puzzleDoc: Puzzle = {
     puzzleNumber,
     puzzle,
