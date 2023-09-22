@@ -96,3 +96,65 @@ export const savePuzzleAtLeastOnce = () => {
     // console.log('No puzzle differences from last save, no save necessary');
   };
 };
+
+export const saveToLocalUserOnly = (
+  puzzleNumber: number,
+  filledSquares: FilledSquares,
+  pencilSquares: PencilSquares,
+  user: User,
+  setUser: SetUser
+) => {
+  // Don't allow a guest to save
+  if (!user || user.username === 'guest') {
+    alert('Please sign up for a free account to save');
+    return;
+  }
+
+  // createProgressString generates a puzzle string that reflects the current state of allSquares
+  const currentProgress = createProgressString(filledSquares);
+  const currentPencilProgress = createPencilProgressString(pencilSquares);
+
+  // Check to see if there are differences between the current state and a user's progress string
+  const isPuzzleDifference = currentProgress !== user.allPuzzles[puzzleNumber].progress;
+  const isPencilSquaresDifference =
+    currentPencilProgress !== user.allPuzzles[puzzleNumber].pencilProgress;
+
+  if (isPuzzleDifference || isPencilSquaresDifference) {
+    const newUser = {
+      ...user,
+      allPuzzles: { ...user.allPuzzles }
+    };
+    newUser.allPuzzles[puzzleNumber].progress = currentProgress;
+    newUser.allPuzzles[puzzleNumber].pencilProgress = currentPencilProgress;
+    setUser(newUser);
+  }
+};
+
+export const saveUserToDatabase = async (puzzleNumber: number, user: User) => {
+  if (!user) return;
+
+  const res = await fetch('/api/user/save-puzzle', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      username: user.username,
+      puzzleNumber, // May just use user.lastPuzzle
+      progress: user.allPuzzles[puzzleNumber].progress,
+      pencilProgress: user.allPuzzles[puzzleNumber].pencilProgress
+    })
+  });
+
+  if (!res.ok) {
+    alert('Problem saving updated progress to user document in database, try again later');
+    return;
+  }
+
+  const { status } = await res.json();
+
+  if (status !== 'valid') {
+    alert(
+      'Problem saving updated progress to user document in database (bad status), try again later'
+    );
+    return;
+  }
+};

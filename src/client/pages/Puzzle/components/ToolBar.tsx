@@ -9,7 +9,7 @@ import { userContext } from '../../../context';
 // Utilities
 import { pencilSquaresFromString } from '../../../utils/puzzle-functions/squaresFromPuzzleStrings';
 import { autofillPencilSquares } from '../../../utils/puzzle-functions/autofillPencilSquares';
-import { savePuzzleAtLeastOnce } from '../../../utils/savePuzzleAtLeastOnce';
+import { savePuzzleAtLeastOnce } from '../../../utils/save';
 const savePuzzle = savePuzzleAtLeastOnce();
 
 // Main Component
