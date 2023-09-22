@@ -39,7 +39,9 @@ const UserNavBar = ({ collapseSideBar }: UserSideBarProps) => {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          username: user.username
+          username: user.username,
+          allPuzzles: user.allPuzzles,
+          lastPuzzle: user.lastPuzzle
         })
       });
       if (res.ok) {

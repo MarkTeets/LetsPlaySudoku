@@ -276,12 +276,69 @@ const savePuzzle: RequestHandler = async (req, res, next) => {
   }
 };
 
+//---SAVE USER -------------------------------------------------------------------------------------
+/**
+ * Takes only a user, saves entire user to database including converting allPuzzles to array
+ */
+const saveUser: RequestHandler = async (req, res, next) => {
+  // Make sure getUser found the user
+  if (res.locals.userDocument === null) {
+    res.locals.frontendData = { status: 'userNotFound' } as SignInResponse;
+    return next();
+  }
+
+  const frontendLastPuzzle: number = req.body.lastPuzzle;
+  const frontendAllPuzzles: AllPuzzles = req.body.allPuzzles;
+
+  if (!frontendAllPuzzles || !frontendLastPuzzle) {
+    return next(
+      createErr({
+        method: 'saveUser',
+        overview: 'problem extracting user info from req.body',
+        status: 500,
+        err: 'user was undefined'
+      })
+    );
+  }
+
+  const puzzleKeys = Object.keys(frontendAllPuzzles);
+  const backendAllPuzzles = [];
+  for (const key of puzzleKeys) {
+    backendAllPuzzles.push(frontendAllPuzzles[Number(key)]);
+  }
+
+  try {
+    res.locals.userDocument.allPuzzles = backendAllPuzzles;
+    res.locals.userDocument.lastPuzzle = frontendLastPuzzle;
+
+    // I don't need to check and see if the returned value is null.
+    // An error will be thrown if the save is unsuccessful
+    await res.locals.userDocument.save();
+
+    // I'm not going to send back the whole user, I'll only send whether or not it was successful.
+    // As the user object gets bigger via more and more puzzles, this will be more efficient
+    res.locals.frontendData = { status: 'valid' } as SignInResponse;
+
+    return next();
+  } catch (err) {
+    return next(
+      createErr({
+        method: 'saveUser',
+        overview: `problem saving progress to ${res.locals.userDocument.username}'s allPuzzles array`,
+        status: 500,
+        err
+      })
+    );
+  }
+};
+
 const userController: UserController = {
   getUser,
   cleanUser,
   createUser,
   verifyUser,
-  savePuzzle
+  savePuzzle,
+  saveUser
 };
 
 export default userController;

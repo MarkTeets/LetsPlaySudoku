@@ -9,6 +9,7 @@ export type UserController = {
   createUser: RequestHandler;
   verifyUser: RequestHandler;
   savePuzzle: RequestHandler;
+  saveUser: RequestHandler;
 };
 
 export type PuzzleController = {

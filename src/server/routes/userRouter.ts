@@ -48,6 +48,9 @@ userRouter.get('/no-session',
 
 userRouter.delete('/log-out',
   userController.getUser,
+  // Need to play with the statuses here,
+  // both saveUser and deleteSession set status to valid on res.locals.frontendData
+  userController.saveUser,
   sessionController.deleteSession,
   cookieController.deleteSSIDCookie,
   (req: Request, res: Response) => {
@@ -58,6 +61,14 @@ userRouter.delete('/log-out',
 userRouter.post('/save-puzzle',
   userController.getUser,
   userController.savePuzzle,
+  (req: Request, res: Response) => {
+    res.status(200).json(res.locals.frontendData);
+  }
+);
+
+userRouter.post('/save-user',
+  userController.getUser,
+  userController.saveUser,
   (req: Request, res: Response) => {
     res.status(200).json(res.locals.frontendData);
   }

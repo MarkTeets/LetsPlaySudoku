@@ -30,6 +30,7 @@ import {
 } from '../../utils/puzzle-functions/initialSquareStatePopulation';
 import { isPuzzleFinished } from '../../utils/puzzle-functions/isPuzzleFinished';
 import { onPuzzleKeyDown } from '../../utils/puzzle-functions/puzzleValueChange';
+import { saveToLocalUserOnly } from '../../utils/save';
 
 // Main Component
 const PuzzlePage = () => {
@@ -113,6 +114,7 @@ const PuzzlePage = () => {
      */
     if (!(e.currentTarget === e.relatedTarget || e.currentTarget.contains(e.relatedTarget))) {
       setClickedSquare(null);
+      saveToLocalUserOnly(puzzleNumber, filledSquares, pencilSquares, user, setUser);
     }
   };
 

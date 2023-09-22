@@ -130,31 +130,28 @@ export const saveToLocalUserOnly = (
   }
 };
 
-export const saveUserToDatabase = async (puzzleNumber: number, user: User) => {
+export const saveUserToDatabase = async (user: User) => {
   if (!user) return;
 
-  const res = await fetch('/api/user/save-puzzle', {
+  const res = await fetch('/api/user/save-user', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       username: user.username,
-      puzzleNumber, // May just use user.lastPuzzle
-      progress: user.allPuzzles[puzzleNumber].progress,
-      pencilProgress: user.allPuzzles[puzzleNumber].pencilProgress
+      lastPuzzle: user.lastPuzzle,
+      allPuzzles: user.allPuzzles
     })
   });
 
   if (!res.ok) {
-    alert('Problem saving updated progress to user document in database, try again later');
+    alert('Problem saving updated user to database, try again later');
     return;
   }
 
   const { status } = await res.json();
 
   if (status !== 'valid') {
-    alert(
-      'Problem saving updated progress to user document in database (bad status), try again later'
-    );
+    alert('Problem saving updated user to database (bad status), try again later');
     return;
   }
 };
