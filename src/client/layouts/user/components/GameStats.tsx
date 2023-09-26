@@ -19,29 +19,39 @@ const GameStats = () => {
     [user, puzzleCollection]
   );
   return (
-    <div className='side-bar-section-content'>
-      <div>Progress: {completePercent}%</div>
-      <div>Unique Solution: {puzzle.uniqueSolution ? 'Yes' : 'No'}</div>
-      <div>Difficulty Level: {capitalize(puzzle.difficultyString)}</div>
-      <div>Difficulty Score: {puzzle.difficultyScore}</div>
-      <div>Techniques Used to Solve:</div>
-      <ul>
-        {puzzle.singleCandidate && <li>Single Candidate</li>}
-        {puzzle.singlePosition && <li>Single Position</li>}
-        {puzzle.candidateLines && <li>Candidate Lines</li>}
-        {puzzle.doublePairs && <li>Double Pairs</li>}
-        {puzzle.multipleLines && <li>Multiple Lines</li>}
-        {puzzle.nakedPair && <li>Naked Pair</li>}
-        {puzzle.hiddenPair && <li>Hidden Pair</li>}
-        {puzzle.nakedTriple && <li>Naked Triple</li>}
-        {puzzle.hiddenTriple && <li>Hidden Triple</li>}
-        {puzzle.xWing && <li>X-Wing</li>}
-        {puzzle.forcingChains && <li>Forcing Chains</li>}
-        {puzzle.nakedQuad && <li>Naked Quad</li>}
-        {puzzle.hiddenQuad && <li>Hidden Quad</li>}
-        {puzzle.swordfish && <li>Swordfish</li>}
-      </ul>
-    </div>
+    <>
+      {completePercent === 0 ? (
+        <div className='side-bar-detail'>Start a puzzle to see its stats</div>
+      ) : (
+        <div className='side-bar-section-content'>
+          <div className='side-bar-detail'>Completion: {completePercent}%</div>
+          <div className='side-bar-detail'>
+            Unique Solution: {puzzle.uniqueSolution ? 'Yes' : 'No'}
+          </div>
+          <div className='side-bar-detail'>
+            Difficulty Level: {capitalize(puzzle.difficultyString)}
+          </div>
+          <div className='side-bar-detail'>Difficulty Score: {puzzle.difficultyScore}</div>
+          <div className='side-bar-detail'>Techniques Used to Solve:</div>
+          <ul>
+            {puzzle.singleCandidate && <li>Single Candidate</li>}
+            {puzzle.singlePosition && <li>Single Position</li>}
+            {puzzle.candidateLines && <li>Candidate Lines</li>}
+            {puzzle.doublePairs && <li>Double Pairs</li>}
+            {puzzle.multipleLines && <li>Multiple Lines</li>}
+            {puzzle.nakedPair && <li>Naked Pair</li>}
+            {puzzle.hiddenPair && <li>Hidden Pair</li>}
+            {puzzle.nakedTriple && <li>Naked Triple</li>}
+            {puzzle.hiddenTriple && <li>Hidden Triple</li>}
+            {puzzle.xWing && <li>X-Wing</li>}
+            {puzzle.forcingChains && <li>Forcing Chains</li>}
+            {puzzle.nakedQuad && <li>Naked Quad</li>}
+            {puzzle.hiddenQuad && <li>Hidden Quad</li>}
+            {puzzle.swordfish && <li>Swordfish</li>}
+          </ul>
+        </div>
+      )}
+    </>
   );
 };
 
@@ -51,7 +61,8 @@ export default GameStats;
 const calculatePercentage = (user: User): number => {
   if (!user) return 0;
 
-  const progress = user.allPuzzles[user.lastPuzzle].progress;
+  const progress = user.allPuzzles[user.lastPuzzle]?.progress;
+  if (!progress) return 0;
   let count = 0;
   for (let i = 0; i < progress.length; i++) {
     if (progress[i] === '0') count++;

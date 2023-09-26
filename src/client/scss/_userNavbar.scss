@@ -70,18 +70,38 @@ $nav-link-background: #58c2c6;
   flex-direction: column;
 }
 
-.side-bar-section-content .nav-link {
-  text-wrap: none;
+.side-bar-section-content {
+  margin-bottom: 2px;
+  margin-top: 2px;
+}
+
+.side-bar-section-content .nav-link, .side-bar-detail {
   width: 156px;
   color: $numberColor;
-  padding: 5px;
+  padding: 4px 5px;
+}
+
+.side-bar-section-content .nav-link{
+  padding-top: 5px;
+  padding-bottom: 5px;
 }
 
 .side-bar-section-content .active {
   background-color: $nav-link-background;
-  // border-radius: 7px;
+  border-radius: 5px;
 }
 
 .side-bar-detail input {
   vertical-align: middle;
+  margin: 0 0 0 7px;
+}
+
+.side-bar-section-content ul {
+  margin: 0;
+  padding: 0px 0px 0px 30px;
+}
+
+.side-bar-section-content li {
+  padding: 2px 0px;
+  color: $numberColor;
 }
