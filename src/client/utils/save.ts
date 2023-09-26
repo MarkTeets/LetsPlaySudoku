@@ -104,10 +104,8 @@ export const saveToLocalUserOnly = (
   user: User,
   setUser: SetUser
 ) => {
-  // Don't allow a guest to save
-  if (!user || user.username === 'guest') {
-    alert('Please sign up for a free account to save');
-    return;
+  if (!user) {
+    throw new Error('Somehow a local save to user has been attempted without a user');
   }
 
   // createProgressString generates a puzzle string that reflects the current state of allSquares
@@ -131,7 +129,7 @@ export const saveToLocalUserOnly = (
 };
 
 export const saveUserToDatabase = async (user: User) => {
-  if (!user) return;
+  if (!user || user.username === 'guest') return;
 
   const res = await fetch('/api/user/save-user', {
     method: 'POST',
