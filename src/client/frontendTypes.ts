@@ -315,6 +315,10 @@ export type SettingsToggleInputProps = {
   setState: Dispatch<SetStateAction<boolean>>;
 };
 
+export type PuzzleNumberProp = {
+  puzzleNumber?: number;
+};
+
 export type NumberSelectBarProps = {
   pencilMode: boolean;
   clickedSquare: ClickedSquare;

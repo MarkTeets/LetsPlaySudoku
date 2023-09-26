@@ -1,7 +1,7 @@
 import React from 'react';
 
 //Components
-import SiteInfo from '../shared-components/SiteInfo';
+import SiteInfo from '../../shared-components/SiteInfo';
 
 // Main Component
 const About = () => {

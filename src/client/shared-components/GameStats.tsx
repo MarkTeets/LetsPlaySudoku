@@ -1,23 +1,27 @@
 import React, { useContext, useMemo } from 'react';
 
 // Types
-import { User, PuzzleCollection, Puzzle } from '../../../../types';
-import { UserContextValue, PuzzleCollectionContextValue } from '../../../frontendTypes';
+import { User, PuzzleCollection, Puzzle } from '../../types';
+import { UserContextValue, PuzzleCollectionContextValue, PuzzleNumberProp } from '../frontendTypes';
 
 // Context
-import { userContext, puzzleCollectionContext } from '../../../context';
+import { userContext, puzzleCollectionContext } from '../context';
 
 // Utils
-import { defaultPuzzleDocument } from '../../../utils/solutionFunctions';
+import { defaultPuzzleDocument } from '../utils/solutionFunctions';
 
-const GameStats = () => {
+const GameStats = ({ puzzleNumber }: PuzzleNumberProp) => {
   const { user } = useContext<UserContextValue>(userContext);
   const { puzzleCollection } = useContext<PuzzleCollectionContextValue>(puzzleCollectionContext);
-  const completePercent = useMemo<number>(() => calculatePercentage(user), [user]);
-  const puzzle = useMemo<Puzzle>(
-    () => retrievePuzzle(user, puzzleCollection),
-    [user, puzzleCollection]
+  const completePercent = useMemo<number>(
+    () => calculatePercentage(user, puzzleNumber),
+    [user, puzzleNumber]
   );
+  const puzzle = useMemo<Puzzle>(
+    () => retrievePuzzle(user, puzzleCollection, puzzleNumber),
+    [user, puzzleCollection, puzzleNumber]
+  );
+
   return (
     <>
       {completePercent === 0 ? (
@@ -58,10 +62,14 @@ const GameStats = () => {
 export default GameStats;
 
 // Helper Functions
-const calculatePercentage = (user: User): number => {
+const calculatePercentage = (user: User, puzzleNumber?: number): number => {
   if (!user) return 0;
-
-  const progress = user.allPuzzles[user.lastPuzzle]?.progress;
+  let progress: string | undefined;
+  if (puzzleNumber) {
+    progress = user.allPuzzles[puzzleNumber]?.progress;
+  } else {
+    progress = user.allPuzzles[user.lastPuzzle]?.progress;
+  }
   if (!progress) return 0;
   let count = 0;
   for (let i = 0; i < progress.length; i++) {
@@ -70,9 +78,16 @@ const calculatePercentage = (user: User): number => {
   return Math.round((count / 81) * 100);
 };
 
-const retrievePuzzle = (user: User, puzzleCollection: PuzzleCollection): Puzzle => {
-  if (!user || !puzzleCollection || user.lastPuzzle < 1) {
+const retrievePuzzle = (
+  user: User,
+  puzzleCollection: PuzzleCollection,
+  puzzleNumber?: number
+): Puzzle => {
+  if (!user || !puzzleCollection || (!puzzleNumber && user.lastPuzzle < 1)) {
     return defaultPuzzleDocument(0, '', '');
+  }
+  if (puzzleNumber) {
+    return puzzleCollection[puzzleNumber];
   }
   return puzzleCollection[user.lastPuzzle];
 };

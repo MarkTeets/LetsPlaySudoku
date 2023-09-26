@@ -42,7 +42,7 @@ const PuzzleSelectMenu = () => {
 
   const onSeeSavedPuzzlesClick = () => {
     if (user) {
-      navigate(`/${encodeURIComponent(user.username)}/savedPuzzleSelect`);
+      navigate(`/${encodeURIComponent(user.username)}/savedPuzzleMenu`);
     }
   };
 

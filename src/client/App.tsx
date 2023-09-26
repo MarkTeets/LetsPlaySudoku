@@ -27,7 +27,7 @@ import Home from './pages/Welcome/Home';
 import SignUp, { signUpAction } from './pages/Welcome/SignUp';
 import Login, { loginAction } from './pages/Welcome/Login';
 import PuzzleSelectMenu from './pages/PuzzleSelect/PuzzleSelectMenu';
-import SavedPuzzleSelect from './pages/PuzzleSelect/SavedPuzzleSelect';
+import SavedPuzzleMenu from './pages/PuzzleSelect/SavedPuzzleMenu';
 // import PuzzleSelectViaFilters from './pages/PuzzleSelect/PuzzleSelectViaFilters';
 import PuzzlePage from './pages/Puzzle/PuzzlePage';
 // import PuzzlePageTest, { puzzleTestLoader } from './pages/Puzzle/PuzzlePageTest';
@@ -61,7 +61,7 @@ const router = createBrowserRouter(
       {/* User layout */}
       <Route path=':username' element={<UserLayout />}>
         <Route index element={<PuzzleSelectMenu key='PuzzleSelectMenu' />} />
-        <Route path='savedPuzzleSelect' element={<SavedPuzzleSelect key='SavedPuzzleSelect' />} />
+        <Route path='savedPuzzleMenu' element={<SavedPuzzleMenu key='SavedPuzzleMenu' />} />
         {/* <Route
           path='puzzleSelectViaFilters'
           element={<PuzzleSelectViaFilters key='PuzzleSelectViaFilters' />}

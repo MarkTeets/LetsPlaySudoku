@@ -66,7 +66,7 @@ const UserNavBar = ({ collapseSideBar }: UserSideBarProps) => {
           Next New Puzzle
         </NavLink> */}
       {user?.allPuzzles && Object.keys(user.allPuzzles).length > 0 && (
-        <NavLink to={'savedPuzzleSelect'} className='nav-link' onClick={collapseSideBar} end>
+        <NavLink to={'savedPuzzleMenu'} className='nav-link' onClick={collapseSideBar} end>
           Saved Puzzles
         </NavLink>
       )}

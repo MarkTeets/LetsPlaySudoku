@@ -7,7 +7,7 @@ import { UserSideBarProps } from '../../../frontendTypes';
 import SideBarSectionContainer from './SideBarSectionContainer';
 import UserNavBar from './UserNavBar';
 import GameSettings from './GameSettings';
-import GameStats from './GameStats';
+import GameStats from '../../../shared-components/GameStats';
 
 const UserSideBar = (props: UserSideBarProps) => {
   // const { collapseSideBar } = props;

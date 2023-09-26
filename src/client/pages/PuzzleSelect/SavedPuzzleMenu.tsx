@@ -9,12 +9,12 @@ import { User } from '../../../types';
 import { userContext, pageContext } from '../../context';
 
 // Main Component
-const SavedPuzzleSelect = () => {
+const SavedPuzzleMenu = () => {
   const { user } = useContext<UserContextValue>(userContext);
   const { pageInfo } = useContext<PageContextValue>(pageContext);
 
   useEffect(() => {
-    pageInfo.current = 'SavedPuzzleSelect';
+    pageInfo.current = 'SavedPuzzleMenu';
   }, [pageInfo]);
 
   return (
@@ -34,7 +34,7 @@ const SavedPuzzleSelect = () => {
   );
 };
 
-export default SavedPuzzleSelect;
+export default SavedPuzzleMenu;
 
 const createPuzzleLinks = (user: User) => {
   if (!user) return;

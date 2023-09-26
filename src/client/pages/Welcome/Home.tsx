@@ -10,7 +10,7 @@ import {
 } from '../../frontendTypes';
 
 // Components
-import SiteInfo from '../shared-components/SiteInfo';
+import SiteInfo from '../../shared-components/SiteInfo';
 
 // Context
 import { userContext, puzzleCollectionContext, pageContext } from '../../context';
