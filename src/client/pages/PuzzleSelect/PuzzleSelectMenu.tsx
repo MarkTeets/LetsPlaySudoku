@@ -16,6 +16,9 @@ import { userContext, puzzleCollectionContext, pageContext } from '../../context
 import totalPuzzles from '../../../globalUtils/totalPuzzles';
 import { addPuzzleToUserAndCollection } from '../../utils/addPuzzleToUserAndCollection';
 
+// Components
+import Loading from '../../shared-components/Loading';
+
 // Main Component
 const PuzzleSelectMenu = () => {
   const navigate = useNavigate();
@@ -139,7 +142,7 @@ const PuzzleSelectMenu = () => {
   return (
     <>
       {!user ? (
-        <h1>Loading</h1>
+        <Loading key='PuzzleSelectMenu-Loading' />
       ) : (
         <>
           <h2>Pick a puzzle!</h2>

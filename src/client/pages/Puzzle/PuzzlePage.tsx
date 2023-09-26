@@ -19,6 +19,7 @@ import {
 import PuzzleContainer from './components/PuzzleContainer';
 import NumberSelectBar from './components/NumberSelectBar';
 import ToolBar from './components/ToolBar';
+import Loading from '../../shared-components/Loading';
 
 // Context
 import { userContext, puzzleCollectionContext, squareContext, pageContext } from '../../context';
@@ -149,7 +150,7 @@ const PuzzlePage = () => {
   return (
     <>
       {!user ? (
-        <h1>Loading</h1>
+        <Loading key='PuzzlePage-Loading' />
       ) : (
         <squareContext.Provider value={SquareContextValue}>
           <div id='puzzle-page-centerer'>
