@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 
 // Types
 import {
@@ -19,15 +19,20 @@ import signInWithSession from '../../utils/signInWithSession';
 
 // Main Component
 const UserLayout = () => {
+  const navigate = useNavigate();
   const [isSideBarExpanded, setIsSideBarExpanded] = useState(false);
   const { user, setUser } = useContext<UserContextValue>(userContext);
   const { setPuzzleCollection } = useContext<PuzzleCollectionContextValue>(puzzleCollectionContext);
 
   useEffect(() => {
     if (!user) {
-      signInWithSession(setUser, setPuzzleCollection);
+      signInWithSession(setUser, setPuzzleCollection).then((successfulSignIn) => {
+        if (!successfulSignIn) {
+          navigate('/');
+        }
+      });
     }
-  }, [user, setUser, setPuzzleCollection]);
+  }, [user, setUser, setPuzzleCollection, navigate]);
 
   const switchSideBarExpanded = () => {
     setIsSideBarExpanded(!isSideBarExpanded);

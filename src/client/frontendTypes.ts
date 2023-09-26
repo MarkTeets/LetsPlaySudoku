@@ -296,7 +296,7 @@ export type AutofillPencilSquares = (
 export type SignInWithSession = (
   setUser: SetUser,
   setPuzzleCollection: SetPuzzleCollection
-) => void;
+) => Promise<boolean>;
 
 //---- Component Props ---------------------------------------------------------------------------
 export type UserSideBarProps = {
