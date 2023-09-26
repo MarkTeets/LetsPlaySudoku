@@ -93,7 +93,7 @@ const PuzzlePage = () => {
   // For tracking renders:
   // const renderCount = useRef(1);
   // useEffect(() => {
-  //   console.log('Puzzle Page render number:', renderCount.current);
+  //   console.log('PuzzlePage render:', renderCount.current);
   //   renderCount.current += 1;
   // });
 
