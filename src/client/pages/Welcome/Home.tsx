@@ -31,7 +31,7 @@ const Home = () => {
       signInWithSession(setUser, setPuzzleCollection);
       pageInfo.current = 'login';
     }
-  }, []);
+  }, [pageInfo, setUser, setPuzzleCollection]);
 
   useEffect(() => {
     // In the case that session data was found and user data stored in global context updated,
@@ -39,7 +39,7 @@ const Home = () => {
     if (user !== null && pageInfo.current === 'login') {
       return navigate(`/${encodeURIComponent(user.username)}`);
     }
-  }, [user]);
+  }, [user, pageInfo, navigate]);
 
   return (
     <div className='home-page'>
