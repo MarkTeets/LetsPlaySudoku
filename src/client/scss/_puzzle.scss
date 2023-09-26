@@ -1,6 +1,6 @@
 $bigBorderColor: #08153e;
 $innerBorderColor: #0d2367;
-$squareBackground: #F7F8F8;
+$squareBackground: #f7f8f8;
 $numberColor: #1840b9;
 $fixedVal: $bigBorderColor;
 $duplicateNumber: rgb(204, 69, 69);
@@ -9,7 +9,7 @@ $pencilNum: #4f18ce;
 $peerSquareBackground: #d9e1fa;
 // $clickedSquareBackground: #cbd6f8;
 // $clickedSquareBackground: #eef1fd;
-$clickedSquareBackground: #c0cef7;;
+$clickedSquareBackground: #c0cef7;
 $clickedSquareBorder: yellow;
 
 // $puzzleButtonBackground: #3D67E6;
@@ -94,7 +94,7 @@ $visitedLink: rgb(128, 179, 171);
 }
 
 .fixed-val.duplicate-number {
-  color: darken($duplicateNumber, 15%)
+  color: darken($duplicateNumber, 15%);
 }
 
 .current-peer {
@@ -162,4 +162,34 @@ $visitedLink: rgb(128, 179, 171);
 .pencil-mode {
   font-size: 18px;
   font-weight: 300;
+}
+
+.saved-puzzle-link-and-graphic-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.saved-puzzle-graphic {
+  display: grid;
+  grid-template-rows: repeat(9, 1fr);
+  grid-template-columns: repeat(9, 1fr);
+  width: max-content;
+  margin-left: 20px;
+}
+
+.saved-puzzle-graphic .light-square {
+  width: 4px;
+  height: 4px;
+  background-color: $squareBackground;
+}
+
+.saved-puzzle-graphic .dark-square {
+  width: 4px;
+  height: 4px;
+  background-color: $numberColor;
+}
+
+.saved-puzzle-game-stats-button {
+  width: 156px;
 }

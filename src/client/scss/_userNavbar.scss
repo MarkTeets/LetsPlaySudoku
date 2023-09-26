@@ -11,7 +11,7 @@ $nav-link-background: #58c2c6;
   border-radius: 5px;
   background-color: $buttonBackground;
   transition: all 0.5s ease-in-out;
-  width: 180px;
+  width: 162px;
   min-height: 100vh;
   text-wrap: none;
   overflow-x: hidden;
@@ -73,6 +73,10 @@ $nav-link-background: #58c2c6;
 .side-bar-section-content {
   margin-bottom: 2px;
   margin-top: 2px;
+}
+
+.side-bar-section-content .side-bar-detail {
+  align-items: flex-start;
 }
 
 .side-bar-section-content .nav-link, .side-bar-detail {

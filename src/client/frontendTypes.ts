@@ -319,6 +319,10 @@ export type PuzzleNumberProp = {
   puzzleNumber?: number;
 };
 
+export type SavedPuzzleGraphicProps = {
+  progress: string;
+};
+
 export type NumberSelectBarProps = {
   pencilMode: boolean;
   clickedSquare: ClickedSquare;

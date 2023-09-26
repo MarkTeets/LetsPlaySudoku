@@ -1,13 +1,23 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React from 'react';
 
 // Types
-import { PuzzleCollectionContextValue, PuzzleNumberProp } from '../../../frontendTypes';
+import { SavedPuzzleGraphicProps } from '../../../frontendTypes';
 
-// Context
-import { puzzleCollectionContext } from '../../../context';
-
-const SavedPuzzleGraphic = ({ puzzleNumber }: PuzzleNumberProp) => {
-  return <div></div>;
+// Main Component
+const SavedPuzzleGraphic = ({ progress }: SavedPuzzleGraphicProps) => {
+  return <div className='saved-puzzle-graphic'>{makeGraphic(progress)}</div>;
 };
 
 export default SavedPuzzleGraphic;
+
+const makeGraphic = (progress: string): React.JSX.Element[] => {
+  const graphicSquares: React.JSX.Element[] = [];
+  for (let i = 0; i < progress.length; i++) {
+    if (progress[i] === '0') {
+      graphicSquares.push(<div className='light-square'></div>);
+    } else {
+      graphicSquares.push(<div className='dark-square'></div>);
+    }
+  }
+  return graphicSquares;
+};

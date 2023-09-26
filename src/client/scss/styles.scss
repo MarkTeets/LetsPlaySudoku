@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@100;200;300;400&family=Roboto:ital,wght@0,100;0,300;0,400;1,300;1,400&family=Rubik:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&display=swap");
 
 // $bodyColor: #222da9;
-$bodyColor: #B59CF0;
+$bodyColor: #b59cf0;
 $bigBorderColor: #58c2c6;
 $buttonBackground: rgb(194, 202, 201);
 $offBlack: rgb(50, 42, 104);
@@ -10,7 +10,9 @@ $textColor: #4f18ce;
 $buttonText: rgb(57, 50, 50);
 $visitedLink: rgb(128, 179, 171);
 
-*, ::after, ::before  {
+*,
+::after,
+::before {
   box-sizing: border-box;
 }
 
@@ -77,7 +79,7 @@ h5 {
     margin: 8px 0;
   }
 
-  div {
+  .puzzle-select-div {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -109,7 +111,6 @@ p {
   border-radius: 4px;
 }
 
-
 button {
   margin: 6px 10px;
   background-color: $buttonBackground;
@@ -126,5 +127,5 @@ button {
   font-family: "Roboto", sans-serif;
 }
 
-@import './puzzle.scss';
-@import './userNavbar.scss';
+@import "./puzzle.scss";
+@import "./userNavbar.scss";
