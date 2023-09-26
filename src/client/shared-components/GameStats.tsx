@@ -73,7 +73,7 @@ const calculatePercentage = (user: User, puzzleNumber?: number): number => {
   if (!progress) return 0;
   let count = 0;
   for (let i = 0; i < progress.length; i++) {
-    if (progress[i] === '0') count++;
+    if (progress[i] !== '0') count++;
   }
   return Math.round((count / 81) * 100);
 };
