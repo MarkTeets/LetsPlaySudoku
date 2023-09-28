@@ -1,5 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@100;200;300;400&family=Roboto:ital,wght@0,100;0,300;0,400;1,300;1,400&family=Rubik:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&display=swap");
-
 // $bodyColor: #222da9;
 $bodyColor: #b59cf0;
 $bigBorderColor: #58c2c6;
@@ -15,6 +13,8 @@ $visitedLink: rgb(128, 179, 171);
 ::before {
   box-sizing: border-box;
 }
+
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@100;200;300;400&family=Roboto:ital,wght@0,100;0,300;0,400;1,300;1,400&family=Rubik:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&display=swap");
 
 body {
   min-height: 100vh;
@@ -57,7 +57,6 @@ h5 {
 }
 
 .centered-div {
-  box-sizing: border-box;
   width: max-content;
   padding: 10px 30px 15px;
   margin: 0 auto;
@@ -127,5 +126,5 @@ button {
   font-family: "Roboto", sans-serif;
 }
 
-@import "./puzzle.scss";
-@import "./userNavbar.scss";
+@import "./modules/puzzle.scss";
+@import "./modules/userNavbar.scss";
