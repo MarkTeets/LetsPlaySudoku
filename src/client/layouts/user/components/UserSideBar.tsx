@@ -1,7 +1,7 @@
 import React from 'react';
 
 // Types
-import { UserSideBarProps } from '../../../frontendTypes';
+import { SideBarProps } from '../../../frontendTypes';
 
 // Components
 import SideBarSectionContainer from './SideBarSectionContainer';
@@ -9,7 +9,7 @@ import UserNavBar from './UserNavBar';
 import GameSettings from './GameSettings';
 import GameStats from '../../../shared-components/GameStats';
 
-const UserSideBar = (props: UserSideBarProps) => {
+const UserSideBar = (props: SideBarProps) => {
   // const { collapseSideBar } = props;
   return (
     <>

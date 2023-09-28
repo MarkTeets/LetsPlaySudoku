@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, ReactNode, MutableRefObject } from 'react';
+import React, { Dispatch, SetStateAction, ReactNode, MutableRefObject, ComponentType } from 'react';
 
 // Types
 import { User, PuzzleCollection } from '../types';
@@ -299,8 +299,12 @@ export type SignInWithSession = (
 ) => Promise<boolean>;
 
 //---- Component Props ---------------------------------------------------------------------------
-export type UserSideBarProps = {
+export type SideBarProps = {
   collapseSideBar: () => void;
+};
+
+export type SideBarContainerProps = {
+  SideBar: ComponentType<SideBarProps>;
 };
 
 export type SideBarSectionContainerProps = {

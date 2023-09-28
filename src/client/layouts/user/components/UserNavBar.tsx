@@ -2,13 +2,13 @@ import React, { useContext, useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 
 // Types
-import { UserContextValue, UserSideBarProps } from '../../../frontendTypes';
+import { UserContextValue, SideBarProps } from '../../../frontendTypes';
 
 // Context
 import { userContext } from '../../../context';
 
 // Main Component
-const UserNavBar = ({ collapseSideBar }: UserSideBarProps) => {
+const UserNavBar = ({ collapseSideBar }: SideBarProps) => {
   const { user, setUser } = useContext<UserContextValue>(userContext);
   const [puzzleSelectMenuURL, setPuzzleSelectMenuURL] = useState<string>(
     user === null ? '/' : `/${encodeURIComponent(user.username)}`
