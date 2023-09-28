@@ -19,7 +19,7 @@ import {
 
 // Layouts
 import RootLayout from './layouts/RootLayout';
-import WelcomeLayout from './layouts/WelcomeLayout';
+import WelcomeLayout from './layouts/welcome/WelcomeLayout';
 import UserLayout from './layouts/user/UserLayout';
 
 // Pages, Loaders
