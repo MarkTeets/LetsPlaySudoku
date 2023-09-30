@@ -41,13 +41,7 @@ const Home = () => {
     }
   }, [user, pageInfo, navigate]);
 
-  return (
-    <div className='home-page'>
-      <h1 id='lets-play'>{"Let's Play Sudoku!"}</h1>
-      <h2>Welcome everyone!</h2>
-      <SiteInfo key='SiteInfo' />
-    </div>
-  );
+  return <SiteInfo key='SiteInfo' />;
 };
 
 export default Home;

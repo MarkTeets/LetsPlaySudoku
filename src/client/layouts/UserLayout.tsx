@@ -1,18 +1,18 @@
 import React, { useEffect, useContext } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 // Types
-import { UserContextValue, PuzzleCollectionContextValue } from '../../frontendTypes';
+import { UserContextValue, PuzzleCollectionContextValue } from '../frontendTypes';
 
 // Components
-import SideBarContainer from '../../shared-components/SideBarContainer';
-import UserSideBar from './components/UserSideBar';
+import TopBar from './TopBar';
+import UserSideBar from './side-bar/UserSideBar';
 
 // Context
-import { userContext, puzzleCollectionContext } from '../../context';
+import { userContext, puzzleCollectionContext } from '../context';
 
 // Utils
-import signInWithSession from '../../utils/signInWithSession';
+import signInWithSession from '../utils/signInWithSession';
 
 // Main Component
 const UserLayout = () => {
@@ -30,14 +30,7 @@ const UserLayout = () => {
     }
   }, [user, setUser, setPuzzleCollection, navigate]);
 
-  return (
-    <>
-      <SideBarContainer SideBar={UserSideBar} />
-      <main>
-        <Outlet />
-      </main>
-    </>
-  );
+  return <TopBar SideBar={UserSideBar} />;
 };
 
 export default UserLayout;

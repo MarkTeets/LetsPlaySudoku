@@ -7,7 +7,8 @@ import {
 } from 'react-router-dom';
 
 // Styles
-import './scss/styles.scss';
+// import './scss/styles.scss';
+import './scss/index.scss';
 
 // Types
 import { User, PuzzleCollection } from '../types';
@@ -19,8 +20,8 @@ import {
 
 // Layouts
 import RootLayout from './layouts/RootLayout';
-import WelcomeLayout from './layouts/welcome/WelcomeLayout';
-import UserLayout from './layouts/user/UserLayout';
+import WelcomeLayout from './layouts/WelcomeLayout';
+import UserLayout from './layouts/UserLayout';
 
 // Pages, Loaders
 import Home from './pages/Welcome/Home';
@@ -31,7 +32,7 @@ import SavedPuzzleMenu from './pages/PuzzleSelect/SavedPuzzleMenu';
 // import PuzzleSelectViaFilters from './pages/PuzzleSelect/PuzzleSelectViaFilters';
 import PuzzlePage from './pages/Puzzle/PuzzlePage';
 // import PuzzlePageTest, { puzzleTestLoader } from './pages/Puzzle/PuzzlePageTest';
-import About from './pages/User/About';
+import SiteInfo from './shared-components/SiteInfo';
 import NotFound from './pages/NotFound';
 import ErrorPage from './pages/ErrorPage';
 
@@ -72,7 +73,7 @@ const router = createBrowserRouter(
           loader={puzzleTestLoader}
         /> */}
         <Route path='puzzle/:puzzleNumber' element={<PuzzlePage key='PuzzlePage' />} />
-        <Route path='about' element={<About key='AboutPage' />} />
+        <Route path='about' element={<SiteInfo key='AboutPage' />} />
       </Route>
 
       <Route path='*' element={<NotFound />} />

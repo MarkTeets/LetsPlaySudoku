@@ -34,6 +34,10 @@ export const savePuzzleAtLeastOnce = () => {
       return;
     }
 
+    if (puzzleNumber === 0) {
+      alert('Please choose puzzle before saving');
+    }
+
     // createProgressString generates a puzzle string that reflects the current state of allSquares
     const currentProgress = createProgressString(filledSquares);
     const currentPencilProgress = createPencilProgressString(pencilSquares);
@@ -106,6 +110,10 @@ export const saveToLocalUserOnly = (
 ) => {
   if (!user) {
     throw new Error('Somehow a local save to user has been attempted without a user');
+  }
+
+  if (puzzleNumber === 0) {
+    alert('Please choose puzzle before saving');
   }
 
   // createProgressString generates a puzzle string that reflects the current state of allSquares

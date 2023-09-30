@@ -3,7 +3,7 @@ import React from 'react';
 const SiteInfo = () => {
   return (
     <>
-      <h2>Your one stop shop for playing Sudoku!</h2>
+      <h2>Welcome to your one stop shop for playing Sudoku!</h2>
       <p>
         Well hi there! Thank you so much for coming! This is a site dedicated to facilitating your
         Sudoku journey for free! What makes this site special is it&apos;s ad-free, and you can make

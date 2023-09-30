@@ -1,13 +1,13 @@
 import React, { useContext, useMemo } from 'react';
 
 // Types
-import { SettingsToggleInputProps, GameSettingContextValue } from '../../../frontendTypes';
+import { SettingsToggleProps, GameSettingContextValue } from '../../frontendTypes';
 
 // Context
-import { gameSettingsContext } from '../../../context';
+import { gameSettingsContext } from '../../context';
 
 // Components
-import SettingsToggleInput from './SettingsToggleInput';
+import SettingsToggle from './SettingsToggle';
 
 const GameSettings = () => {
   const {
@@ -26,7 +26,7 @@ const GameSettings = () => {
   } = useContext<GameSettingContextValue>(gameSettingsContext);
 
   const settingsDetails = useMemo<React.JSX.Element[]>(() => {
-    const settingsArray: SettingsToggleInputProps[] = [
+    const settingsArray: SettingsToggleProps[] = [
       // { label: 'Dark Mode', state: darkMode, setState: setDarkMode },
       // { label: 'Auto-save', state: autoSave, setState: setAutoSave },
       { label: 'Highlight Peers', state: highlightPeers, setState: setHighlightPeers },
@@ -42,16 +42,16 @@ const GameSettings = () => {
     return generateSettingsDetails(settingsArray);
   }, [highlightPeers, setHighlightPeers, showDuplicates, setShowDuplicates]);
 
-  return <div className='side-bar-section-content'>{settingsDetails}</div>;
+  return <div className='side-bar-section'>{settingsDetails}</div>;
 };
 
 export default GameSettings;
 
 // Helper Functions
-const generateSettingsDetails = (settingsArray: SettingsToggleInputProps[]) => {
+const generateSettingsDetails = (settingsArray: SettingsToggleProps[]) => {
   const gameSettingsComponents: React.JSX.Element[] = [];
   for (const props of settingsArray) {
-    gameSettingsComponents.push(<SettingsToggleInput key={`${props.label}-Setting`} {...props} />);
+    gameSettingsComponents.push(<SettingsToggle key={`${props.label}-Setting`} {...props} />);
   }
   return gameSettingsComponents;
 };

@@ -2,10 +2,10 @@ import React, { useContext, useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 
 // Types
-import { UserContextValue, SideBarProps } from '../../../frontendTypes';
+import { UserContextValue, SideBarProps } from '../../frontendTypes';
 
 // Context
-import { userContext } from '../../../context';
+import { userContext } from '../../context';
 
 // Main Component
 const UserNavBar = ({ collapseSideBar }: SideBarProps) => {
@@ -53,35 +53,46 @@ const UserNavBar = ({ collapseSideBar }: SideBarProps) => {
   };
 
   return (
-    <nav className='side-bar-section-content flex-column'>
+    <nav className='side-bar-section'>
       {user && user.lastPuzzle > 0 ? (
-        <NavLink to={lastPuzzleURL} className='nav-link' onClick={collapseSideBar}>
+        <NavLink
+          to={lastPuzzleURL}
+          className='side-bar-section__nav-link'
+          onClick={collapseSideBar}
+        >
           Puzzle #{user.lastPuzzle}
         </NavLink>
       ) : null}
-      <NavLink to={puzzleSelectMenuURL} className='nav-link' onClick={collapseSideBar} end>
+      <NavLink
+        to={puzzleSelectMenuURL}
+        className='side-bar-section__nav-link'
+        onClick={collapseSideBar}
+        end
+      >
         Puzzle Select Menu
       </NavLink>
       {/* <NavLink to={} className='nav-link' onClick={collapseSideBar} end>
           Next New Puzzle
         </NavLink> */}
+      {/* <NavLink to={'playTest'} className='side-bar-section__nav-link' onClick={collapseSideBar} end>
+        Puzzle Test Page
+      </NavLink> */}
       {user?.allPuzzles && Object.keys(user.allPuzzles).length > 0 && (
-        <NavLink to={'savedPuzzleMenu'} className='nav-link' onClick={collapseSideBar} end>
+        <NavLink
+          to={'savedPuzzleMenu'}
+          className='side-bar-section__nav-link'
+          onClick={collapseSideBar}
+          end
+        >
           Saved Puzzles
         </NavLink>
       )}
-      <NavLink to={'about'} className='nav-link' onClick={collapseSideBar} end>
+      <NavLink to={'about'} className='side-bar-section__nav-link' onClick={collapseSideBar} end>
         About
       </NavLink>
-      {user?.username !== 'guest' ? (
-        <NavLink to='/' className='nav-link' onClick={logOut}>
-          Log out
-        </NavLink>
-      ) : (
-        <NavLink to='/' className='nav-link' onClick={logOut}>
-          Return home
-        </NavLink>
-      )}
+      <NavLink to='/' className='side-bar-section__nav-link' onClick={logOut}>
+        {user?.username !== 'guest' ? 'Log out' : 'Return home'}
+      </NavLink>
     </nav>
   );
 };

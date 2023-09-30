@@ -313,7 +313,7 @@ export type SideBarSectionContainerProps = {
   defaultExpanded?: boolean;
 };
 
-export type SettingsToggleInputProps = {
+export type SettingsToggleProps = {
   label: string;
   state: boolean;
   setState: Dispatch<SetStateAction<boolean>>;

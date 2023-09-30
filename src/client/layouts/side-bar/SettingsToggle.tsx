@@ -1,13 +1,13 @@
 import React from 'react';
 
 // Types
-import { SettingsToggleInputProps } from '../../../frontendTypes';
+import { SettingsToggleProps } from '../../frontendTypes';
 
 // Main Component
-const SettingsToggleInput = (props: SettingsToggleInputProps) => {
+const SettingsToggle = (props: SettingsToggleProps) => {
   const { label, state, setState } = props;
   return (
-    <div className='side-bar-detail'>
+    <div className='side-bar-section__detail'>
       <label>
         {label}
         <input
@@ -20,4 +20,4 @@ const SettingsToggleInput = (props: SettingsToggleInputProps) => {
   );
 };
 
-export default SettingsToggleInput;
+export default SettingsToggle;

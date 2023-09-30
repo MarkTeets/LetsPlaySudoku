@@ -1,4 +1,73 @@
+#header {
+  background-color: aqua;
+  width: 100%;
+  padding: 4px;
+}
+
+.l-flex-row {
+  display: flex;
+}
+
 .l-flex-column {
   display: flex;
   flex-direction: column;
+}
+
+.l-flex-column-align-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.l-align-self-left {
+  align-self: flex-start;
+}
+
+.l-align-left {
+  align-items: flex-start;
+}
+
+$breakpoints: (
+  "xs": 0,
+  "sm": 480px,
+  "md": 720px,
+  "lg": 960px,
+  "xl": 1200px
+);
+
+@mixin xs {
+  @media (min-width: map-get($breakpoints, "xs")){
+    @content;
+  }
+}
+
+@mixin sm {
+  @media (min-width: map-get($breakpoints, "sm")){
+    @content;
+  }
+}
+
+@mixin md {
+  @media (min-width: map-get($breakpoints, "md")){
+    @content;
+  }
+}
+
+@mixin lg {
+  @media (min-width: map-get($breakpoints, "lg")){
+    @content;
+  }
+}
+
+@mixin xl {
+  @media (min-width: map-get($breakpoints, "xl")){
+    @content;
+  }
+}
+
+// Variable breakpoint with default of 0:
+@mixin breakpoint($bp: 0){
+  @media (min-width: $bp) {
+    @content
+  }
 }

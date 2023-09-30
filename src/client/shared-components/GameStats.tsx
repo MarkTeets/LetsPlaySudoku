@@ -23,20 +23,24 @@ const GameStats = ({ puzzleNumber }: PuzzleNumberProp) => {
   );
 
   return (
-    <>
+    <div className='side-bar-section'>
       {completePercent === 0 ? (
-        <div className='side-bar-detail'>Start a puzzle to see its stats</div>
+        <div className='side-bar-section__detail' style={{ width: '160px' }}>
+          Start a puzzle to see its stats
+        </div>
       ) : (
-        <div className='side-bar-section-content'>
-          <div className='side-bar-detail'>Completion: {completePercent}%</div>
-          <div className='side-bar-detail'>
+        <>
+          <div className='side-bar-section__detail'>Completion: {completePercent}%</div>
+          <div className='side-bar-section__detail'>
             Unique Solution: {puzzle.uniqueSolution ? 'Yes' : 'No'}
           </div>
-          <div className='side-bar-detail'>
+          <div className='side-bar-section__detail'>
             Difficulty Level: {capitalize(puzzle.difficultyString)}
           </div>
-          <div className='side-bar-detail'>Difficulty Score: {puzzle.difficultyScore}</div>
-          <div className='side-bar-detail'>Techniques Used to Solve:</div>
+          <div className='side-bar-section__detail'>Difficulty Score: {puzzle.difficultyScore}</div>
+          <div className='side-bar-section__detail' style={{ width: '160px' }}>
+            Techniques:
+          </div>
           <ul>
             {puzzle.singleCandidate && <li>Single Candidate</li>}
             {puzzle.singlePosition && <li>Single Position</li>}
@@ -53,9 +57,9 @@ const GameStats = ({ puzzleNumber }: PuzzleNumberProp) => {
             {puzzle.hiddenQuad && <li>Hidden Quad</li>}
             {puzzle.swordfish && <li>Swordfish</li>}
           </ul>
-        </div>
+        </>
       )}
-    </>
+    </div>
   );
 };
 

@@ -1,5 +1,6 @@
 // Types
 import { InitialSquares, InitializeSquares, ResetStateOnRefresh } from '../../frontendTypes';
+import { isValidPuzzleString } from './puzzleStringValidation';
 
 // Utilities
 import {
@@ -48,6 +49,22 @@ export const initializeSquares: InitializeSquares = (puzzleNumber, user, puzzleC
   );
   updateFilledSquaresDuplicates(initialSquares.filledSquares, initialSquares.pencilSquares);
   updatePencilSquaresDuplicates(initialSquares.filledSquares, initialSquares.pencilSquares);
+  return initialSquares;
+};
+
+export const initializeSquaresForTestPage = (puzzleString: string) => {
+  const initialSquares: InitialSquares = {
+    originalPuzzleFilledSquares: filledSquaresFromString(),
+    filledSquares: filledSquaresFromString(),
+    pencilSquares: pencilSquaresFromString()
+  };
+
+  if (isValidPuzzleString(puzzleString)) {
+    initialSquares.originalPuzzleFilledSquares = filledSquaresFromString(puzzleString);
+    initialSquares.filledSquares = initialSquares.originalPuzzleFilledSquares;
+    updateFilledSquaresDuplicates(initialSquares.filledSquares, initialSquares.pencilSquares);
+  }
+
   return initialSquares;
 };
 

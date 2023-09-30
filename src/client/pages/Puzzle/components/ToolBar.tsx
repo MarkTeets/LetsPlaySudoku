@@ -41,7 +41,9 @@ const ToolBar = (props: ToolBarProps) => {
   };
 
   const onSaveClick = (): void => {
-    savePuzzle(puzzleNumber, filledSquares, pencilSquares, user, setUser);
+    if (puzzleNumber > 0) {
+      savePuzzle(puzzleNumber, filledSquares, pencilSquares, user, setUser);
+    }
   };
 
   const resetPuzzle = (): void => {

@@ -1,19 +1,17 @@
 import React from 'react';
 
 // Types
-import { SideBarProps } from '../../../frontendTypes';
+import { SideBarProps } from '../../frontendTypes';
 
 // Components
 import SideBarSectionContainer from './SideBarSectionContainer';
 import UserNavBar from './UserNavBar';
 import GameSettings from './GameSettings';
-import GameStats from '../../../shared-components/GameStats';
+import GameStats from '../../shared-components/GameStats';
 
 const UserSideBar = (props: SideBarProps) => {
-  // const { collapseSideBar } = props;
   return (
     <>
-      {/* <button onClick={collapseSideBar}>X</button> */}
       <SideBarSectionContainer title='Navigation' defaultExpanded={true} key='Navigation Container'>
         <UserNavBar {...props} />
       </SideBarSectionContainer>

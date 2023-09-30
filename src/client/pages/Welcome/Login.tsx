@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { useNavigate, Form, useActionData } from 'react-router-dom';
+import { useNavigate, Form, useActionData, Link } from 'react-router-dom';
 
 // Types
 import {
@@ -68,6 +68,9 @@ const Login = () => {
             <button className='login-button'>Login</button>
           </div>
         </Form>
+        <div>
+          No account? <Link to='/signUp'>Sign up</Link>
+        </div>
       </div>
     </div>
   );
