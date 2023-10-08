@@ -2,18 +2,21 @@
   background-color: aqua;
   width: 100%;
   padding: 4px;
+  margin-bottom: 20px;
 }
 
-.l-flex-row {
+@mixin l-flex-row-justify-center {
   display: flex;
+  justify-content: center;
 }
 
-.l-flex-column {
+@mixin l-flex-column-align-center {
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
 
-.l-flex-column-align-right {
+@mixin l-flex-column-align-right {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -28,8 +31,8 @@
 }
 
 $breakpoints: (
-  "xs": 0,
-  "sm": 480px,
+  "xs": 320px,
+  "sm": 496px,
   "md": 720px,
   "lg": 960px,
   "xl": 1200px

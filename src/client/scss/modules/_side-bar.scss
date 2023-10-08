@@ -22,34 +22,17 @@
   margin-top: 4px;
   right: $sideSpaceMargin;
   max-height: max-content;
-  // max-height: 1000px;
-  // transition: all 0.75s ease-in-out;
   overflow: hidden;
   background-color: $buttonBackground;
   border-radius: 5px;
-  // text-wrap: none;
 }
 
-// .welcome-side-bar {
-//   @extend .side-bar;
-  
-// }
-
-// .user-side-bar {
-//   @extend .side-bar;
-//   @extend .welcome-side-bar;
-//   // top: 0px;
-//   // right: 0px;
-//   // width: 162px;
-//   // min-height: 100vh;
-// }
-
 .side-bar-section-container {
-  @extend .l-flex-column-align-right;
+  @include l-flex-column-align-right;
 }
 
 .side-bar-section {
-  @extend .l-flex-column-align-right;
+  @include l-flex-column-align-right;
   max-height: 400px;
   transition: all 0.75s ease-in-out;
   overflow: hidden;

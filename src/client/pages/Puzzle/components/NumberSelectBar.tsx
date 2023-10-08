@@ -30,7 +30,7 @@ const NumberSelectBar = (props: NumberSelectBarProps) => {
     [pencilMode, clickedSquare, filledSquares, setFilledSquares, pencilSquares, setPencilSquares]
   );
 
-  return <div id='number-select-bar'>{numberButtons}</div>;
+  return <div className='number-select-bar'>{numberButtons}</div>;
 };
 
 export default NumberSelectBar;
@@ -50,8 +50,7 @@ const makeButtons: MakeButtons = (
     let isDisabled = false;
     let classes = 'number-button';
 
-    if (!pencilMode) classes += ' fill-mode';
-    else classes += ' pencil-mode';
+    if (pencilMode) classes += ' pencil-mode';
 
     if (clickedSquare) {
       if (filledSquares[clickedSquare]?.fixedVal) {
@@ -65,7 +64,6 @@ const makeButtons: MakeButtons = (
     }
     buttons.push(
       <button
-        id={'number-select-button-' + buttonVal}
         key={'number-select-button-' + buttonVal}
         className={classes}
         disabled={isDisabled}

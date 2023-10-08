@@ -11,7 +11,7 @@ const PuzzleContainer = () => {
   const generatedBoxes = useMemo(generateBoxes, []);
 
   return (
-    <div key='puzzle-container' id='puzzle-container'>
+    <div key='puzzle-container' className='puzzle-container'>
       {generatedBoxes}
     </div>
   );

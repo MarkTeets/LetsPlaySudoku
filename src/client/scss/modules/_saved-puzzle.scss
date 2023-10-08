@@ -1,0 +1,29 @@
+.saved-puzzle-link-and-graphic-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.saved-puzzle-graphic {
+  display: grid;
+  grid-template-rows: repeat(9, 1fr);
+  grid-template-columns: repeat(9, 1fr);
+  width: max-content;
+  margin-left: 20px;
+}
+
+.saved-puzzle-graphic .light-square {
+  width: 4px;
+  height: 4px;
+  background-color: $squareBackground;
+}
+
+.saved-puzzle-graphic .dark-square {
+  width: 4px;
+  height: 4px;
+  background-color: $numberColor;
+}
+
+.saved-puzzle-game-stats-button {
+  width: 156px;
+}

@@ -153,9 +153,9 @@ const PuzzlePage = () => {
         <Loading key='PuzzlePage-Loading' />
       ) : (
         <squareContext.Provider value={SquareContextValue}>
-          <div id='puzzle-page-centerer'>
+          <div className='puzzle-page-centerer'>
             <div
-              id='puzzle-page-container'
+              className='puzzle-page-container'
               tabIndex={0}
               onBlur={removeClickedSquareOnPuzzlePageBlur}
               onKeyDown={(event) =>

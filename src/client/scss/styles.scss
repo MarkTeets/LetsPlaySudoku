@@ -18,7 +18,7 @@ $visitedLink: rgb(128, 179, 171);
 
 body {
   min-height: 100vh;
-  margin: 0 8px;
+  margin: 0;
   // background-color: $bodyColor;
   background-image: radial-gradient(ellipse at top left, $bodyColor, transparent 100%);
   font-family: "Roboto", sans-serif;

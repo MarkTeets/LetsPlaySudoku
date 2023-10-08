@@ -116,32 +116,30 @@ const PuzzlePageTest = () => {
   };
 
   return (
-    <>
-      <squareContext.Provider value={SquareContextValue}>
-        <div id='puzzle-page-centerer'>
-          <div
-            id='puzzle-page-container'
-            tabIndex={0}
-            onBlur={removeClickedSquareOnPuzzlePageBlur}
-            onKeyDown={(event) =>
-              onPuzzleKeyDown(
-                event,
-                pencilMode,
-                clickedSquare,
-                filledSquares,
-                setFilledSquares,
-                pencilSquares,
-                setPencilSquares
-              )
-            }
-          >
-            <PuzzleContainer key='PuzzleContainer' />
-            <NumberSelectBar key='NumberSelectBar' {...numberSelectBarProps} />
-            <ToolBar key='ToolBar' {...toolBarProps} />
-          </div>
+    <squareContext.Provider value={SquareContextValue}>
+      <div className='puzzle-page-centerer'>
+        <div
+          className='puzzle-page-container'
+          tabIndex={0}
+          onBlur={removeClickedSquareOnPuzzlePageBlur}
+          onKeyDown={(event) =>
+            onPuzzleKeyDown(
+              event,
+              pencilMode,
+              clickedSquare,
+              filledSquares,
+              setFilledSquares,
+              pencilSquares,
+              setPencilSquares
+            )
+          }
+        >
+          <PuzzleContainer key='PuzzleContainer' />
+          <NumberSelectBar key='NumberSelectBar' {...numberSelectBarProps} />
+          <ToolBar key='ToolBar' {...toolBarProps} />
         </div>
-      </squareContext.Provider>
-    </>
+      </div>
+    </squareContext.Provider>
   );
 };
 
@@ -158,7 +156,7 @@ const samplePuzzle1 =
 const emptyPuzzle = '0'.repeat(81);
 
 export const puzzleTestLoader = () => {
-  return { puzzle: emptyPuzzle };
+  return { puzzle: samplePuzzle1 };
 };
 
 // Old solver functions
