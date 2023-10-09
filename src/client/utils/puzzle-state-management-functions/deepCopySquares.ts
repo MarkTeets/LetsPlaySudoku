@@ -11,8 +11,8 @@ import {
 
 /** deepCopyFilledSquares
  *
- * Returns a deep copy of a filledSquares object so that said deep copy can be altered and used to replace the
- * state of filledSquares in PuzzlePage.tsx
+ * Returns a deep copy of a filledSquares object so that said deep copy can be altered and used to
+ * replace the state of filledSquares in PuzzlePage.tsx
  *
  * @param filledSquares - FilledSquares object
  * @returns FilledSquares object
@@ -28,8 +28,8 @@ export const deepCopyFilledSquares = (filledSquares: FilledSquares) => {
 
 /** deepCopyPencilSquares
  *
- * Returns a deep copy of a pencilSquares object so that said deep copy can be altered and used to replace the
- * state of pencilSquares in PuzzlePage.tsx
+ * Returns a deep copy of a pencilSquares object so that said deep copy can be altered and used to
+ * replace the state of pencilSquares in PuzzlePage.tsx
  *
  * @param pencilSquares - PencilSquares object
  * @returns PencilSquares object

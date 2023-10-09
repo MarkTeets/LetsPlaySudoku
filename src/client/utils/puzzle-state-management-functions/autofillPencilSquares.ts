@@ -1,10 +1,11 @@
 // Types
-import { PencilSquares, PencilSquare, AutofillPencilSquares } from '../../frontendTypes';
+import { AutofillPencilSquares } from '../../frontendTypes';
 
 // Utilities
-import { allSquareIds } from './allSquareIdsAndPuzzleVals';
-import { newSolveSquares, updateSolveSquares } from '../solutionFunctions';
+import { newSolveSquares } from '../../../globalUtils/puzzle-solution-functions/solutionFramework';
+import { updateSolveSquares } from '../../../globalUtils/puzzle-solution-functions/updateSolveSquares';
 import { updatePencilSquaresDuplicates } from './updateSquaresDuplicates';
+import { solveSquareToPencilSquares } from '../../../globalUtils/puzzle-solution-functions/solutionFramework';
 
 /** autofillPencilSquares
  *
@@ -16,24 +17,9 @@ import { updatePencilSquaresDuplicates } from './updateSquaresDuplicates';
  * @param setPencilSquares - dispatch action for setting pencilSquares in PuzzlePage.tsx
  */
 export const autofillPencilSquares: AutofillPencilSquares = (filledSquares, setPencilSquares) => {
-  const pencilSquares = {} as PencilSquares;
   const solveSquares = newSolveSquares();
   updateSolveSquares(filledSquares, solveSquares);
-
-  for (const squareId of allSquareIds) {
-    if (solveSquares[squareId].size > 0) {
-      pencilSquares[squareId] = { size: 0 };
-      const pencilSquare = pencilSquares[squareId] as PencilSquare;
-      solveSquares[squareId].forEach((puzzleVal) => {
-        pencilSquare[puzzleVal] = {
-          duplicate: false,
-          highlightNumber: false
-        };
-        pencilSquare.size += 1;
-      });
-    }
-  }
-
+  const pencilSquares = solveSquareToPencilSquares(solveSquares);
   updatePencilSquaresDuplicates(filledSquares, pencilSquares);
   setPencilSquares(pencilSquares);
 };
