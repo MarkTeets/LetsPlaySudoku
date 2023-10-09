@@ -20,7 +20,7 @@ import EmptySquareDisplay from './EmptySquareDisplay';
 import { squareContext, gameSettingsContext } from '../../../context';
 
 // Utilities
-import { allPeers } from '../../../utils/puzzle-functions/makeAllPeers';
+import { allPeers } from '../../../utils/puzzle-state-management-functions/makeAllPeers';
 
 // Main Component
 const SquareContainer = ({ squareId }: SquareContainerProps) => {

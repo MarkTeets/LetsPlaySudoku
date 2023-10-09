@@ -1,13 +1,16 @@
-import React, { useMemo } from 'react';
+import React, { useContext, useMemo } from 'react';
 
 // Types
-import { PuzzleVal, NumberSelectBarProps, MakeButtons } from '../../../frontendTypes';
+import { PuzzleVal, MakeButtons, SquareContextValue } from '../../../frontendTypes';
+
+// Context
+import { squareContext } from '../../../context';
 
 //Utilities
-import { onNumberClick } from '../../../utils/puzzle-functions/puzzleValueChange';
+import { onNumberClick } from '../../../utils/puzzle-state-management-functions/puzzleValueChange';
 
 // Main Component
-const NumberSelectBar = (props: NumberSelectBarProps) => {
+const NumberSelectBar = () => {
   const {
     pencilMode,
     clickedSquare,
@@ -15,7 +18,7 @@ const NumberSelectBar = (props: NumberSelectBarProps) => {
     setFilledSquares,
     pencilSquares,
     setPencilSquares
-  } = props;
+  } = useContext<SquareContextValue>(squareContext);
 
   const numberButtons = useMemo(
     () =>

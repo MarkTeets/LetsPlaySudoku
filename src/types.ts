@@ -2,6 +2,8 @@
  * Using 'type' rather than 'interface' for objects as the definition of the type shows up clearer
  * on hover over in VSCode
  */
+// Types
+import { FilledSquares, PuzzleVal } from './client/frontendTypes';
 
 /** UserPuzzleObj
  *
@@ -73,8 +75,8 @@ export type Puzzle = {
   difficultyString: string;
   difficultyScore: number;
   uniqueSolution: boolean;
-  singleCandidate: boolean;
   singlePosition: boolean;
+  singleCandidate: boolean;
   candidateLines: boolean;
   doublePairs: boolean;
   multipleLines: boolean;
@@ -115,4 +117,97 @@ export type SignInResponse = {
 export type PuzzleResponse = {
   status: QueryStatus;
   puzzleObj?: Puzzle;
+};
+
+// Puzzle Solver Types
+/**
+ * Includes all of the names of the solution techniques used to solve the puzzle
+ */
+export type TechniqueString =
+  | 'singlePosition'
+  | 'singleCandidate'
+  | 'candidateLines'
+  | 'doublePairs'
+  | 'multipleLines'
+  | 'nakedPair'
+  | 'hiddenPair'
+  | 'nakedTriple'
+  | 'hiddenTriple'
+  | 'xWing'
+  | 'forcingChains'
+  | 'nakedQuad'
+  | 'hiddenQuad'
+  | 'swordfish';
+
+/**
+ * Used to track how many times a particular solution technique is used to solve a puzzle
+ */
+export type SolutionCache = {
+  [key in TechniqueString]: number;
+};
+
+/**
+ * Used to convert a SolutionCache object to a difficulty score. Every technique is a property that
+ * stores a number array of length 2. The 0th index holds the value correlated with using the
+ * technique once, and the 1st index holds the value correlated to each subsequent use
+ */
+export type ConversionCache = {
+  [key in TechniqueString]: number[];
+};
+
+export type SolveSquares = {
+  [key: string]: Set<PuzzleVal>;
+};
+
+/**
+ * Every function used to either update the filledSquares or solveSquares object will follow this
+ * signature. It takes the objects to be manipulated, as well as a solutionCache so that the
+ * solutionCache can be updated if the solveTechnique is used
+ */
+export type SolveTechnique = (
+  filledSquares: FilledSquares,
+  solveSquares: SolveSquares,
+  solutionCache: SolutionCache
+) => boolean;
+
+/**
+ * A solve order is an array including a SolveTechnique function at the 0th index and a number
+ * correlated with how many times the SolveTechnique function should be called. This allows us to
+ * designate a SolveTechnique to be used only once, or as many times as possible
+ */
+export type SolveOrder = [SolveTechnique, number];
+
+/**
+ * A solution procedure is an array of SolveOrders, allowing us to make lists of what techniques to
+ * use in what order, and how many times to use each technique. This will allow us to generate many
+ * different orders of solving the problem, as any one given problem might be most efficiently
+ * solved with different solution procedures.
+ */
+export type SolutionProcedure = SolveOrder[];
+
+/**
+ * This is an array of solution procedures, allowing us to pass a collection of solution procedures
+ * to puzzleDocumentPopulator so that many different procedures might be tried
+ */
+export type SolutionProcedureSet = SolutionProcedure[];
+
+/**
+ * Puzzle results are arrays of a solution cache and its correlated converted difficulty number
+ */
+export type PuzzleResult = [SolutionCache, number];
+
+/**
+ * This array of puzzle results holds all of the solution caches and converted difficulty numbers
+ * from each of the solution procedures used to completely solve a given puzzle. Having them all in
+ * one place allows us to compare all the puzzle results to each other, so that a puzzle document
+ * for the mongoDB collection can be generated
+ */
+export type CompletedPuzzleResults = PuzzleResult[];
+
+export type SolutionFunctionDictionary = {
+  [key in TechniqueString]: SolveTechnique;
+};
+
+export type SolutionStringDictionary = {
+  [key in TechniqueString]: string;
 };

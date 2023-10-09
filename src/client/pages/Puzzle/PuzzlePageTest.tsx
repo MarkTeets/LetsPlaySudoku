@@ -8,9 +8,7 @@ import {
   PencilSquares,
   ClickedSquare,
   SquareContextValue,
-  PageContextValue,
-  NumberSelectBarProps,
-  ToolBarProps
+  PageContextValue
 } from '../../frontendTypes';
 
 // Components
@@ -23,10 +21,11 @@ import ToolBar from './components/ToolBar';
 import { squareContext, pageContext } from '../../context';
 
 // Utilities
-import { initializeSquaresForTestPage } from '../../utils/puzzle-functions/initialSquareStatePopulation';
-import { isPuzzleFinished } from '../../utils/puzzle-functions/isPuzzleFinished';
-import { onPuzzleKeyDown } from '../../utils/puzzle-functions/puzzleValueChange';
-// import { createProgressString } from '../../utils/puzzle-functions/puzzleStringsFromSquares';
+import { initializeSquaresForTestPage } from '../../utils/puzzle-state-management-functions/initialSquareStatePopulation';
+import { isPuzzleFinished } from '../../utils/puzzle-state-management-functions/isPuzzleFinished';
+import { onPuzzleKeyDown } from '../../utils/puzzle-state-management-functions/puzzleValueChange';
+// import { createProgressString } from
+// '../../utils/puzzle-state-management-functions/puzzleStringsFromSquares';
 // const lps = '100000000200111100300100100400111100511100111000101000000101110000000001000001110';
 // const lps2 = '100000000100111100100100100100111000111100111000101000000100110000000001000001110'
 
@@ -87,36 +86,21 @@ const PuzzlePageTest = () => {
     }
   };
 
-  const SquareContextValue: SquareContextValue = {
+  const squareContextValue: SquareContextValue = {
+    puzzleNumber: 0,
     clickedSquare,
     setClickedSquare,
-    filledSquares,
-    pencilSquares
-  };
-
-  const numberSelectBarProps: NumberSelectBarProps = {
+    initialSquares,
     pencilMode,
-    clickedSquare,
+    setPencilMode,
     filledSquares,
     setFilledSquares,
     pencilSquares,
     setPencilSquares
   };
 
-  const toolBarProps: ToolBarProps = {
-    puzzleNumber: 0,
-    initialSquares,
-    filledSquares,
-    setFilledSquares,
-    pencilSquares,
-    setPencilSquares,
-    pencilMode,
-    setPencilMode,
-    setClickedSquare
-  };
-
   return (
-    <squareContext.Provider value={SquareContextValue}>
+    <squareContext.Provider value={squareContextValue}>
       <div className='puzzle-page-centerer'>
         <div
           className='puzzle-page-container'
@@ -135,8 +119,8 @@ const PuzzlePageTest = () => {
           }
         >
           <PuzzleContainer key='PuzzleContainer' />
-          <NumberSelectBar key='NumberSelectBar' {...numberSelectBarProps} />
-          <ToolBar key='ToolBar' {...toolBarProps} />
+          <NumberSelectBar key='NumberSelectBar' />
+          <ToolBar key='ToolBar' />
         </div>
       </div>
     </squareContext.Provider>
@@ -158,40 +142,3 @@ const emptyPuzzle = '0'.repeat(81);
 export const puzzleTestLoader = () => {
   return { puzzle: samplePuzzle1 };
 };
-
-// Old solver functions
-
-// import {
-//   SolutionProcedure,
-//   puzzleSolver,
-//   singleCandidateSolver,
-//   solutionExecuter
-// } from '../../utils/solutionFunctions';
-
-// const solveOneSingleCandidate = () => {
-//   const singleCandidateOnce: SolutionProcedure = [[singleCandidateSolver, 1]];
-
-//   // console.log("allSquares['A7'].puzzleVal", allSquares['A7'].puzzleVal);
-//   const newAllSquares = deepCopyAllSquares(allSquares);
-//   // console.log('deep copy made');
-//   if (possibleValUpdateViaPuzzleValue(newAllSquares)) {
-//     // console.log('updated possible vals');
-//   }
-//   if (solutionExecuter(newAllSquares, singleCandidateOnce[0])) {
-//     // console.log('Change made by solution executer');
-//     findDuplicates(newAllSquares);
-//     setAllSquares(newAllSquares);
-//     // console.log('set new allSquares');
-//   }
-// };
-
-// const solveAsMuchAsPossible = () => {
-//   const newAllSquares = deepCopyAllSquares(allSquares);
-//   if (puzzleSolver(newAllSquares)) {
-//     setAllSquares(newAllSquares);
-//     // console.log('Changed made via puzzleSolver');
-//   }
-// };
-
-//<button onClick={solveOneSingleCandidate}>Solve one square via Single Candidate</button>
-//<button onClick={solveAsMuchAsPossible}>Solve as much as possible</button>

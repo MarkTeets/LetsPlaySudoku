@@ -6,7 +6,7 @@ import { User } from '../../types';
 import {
   createProgressString,
   createPencilProgressString
-} from './puzzle-functions/puzzleStringsFromSquares';
+} from './puzzle-state-management-functions/puzzleStringsFromSquares';
 
 /** savePuzzleAtLeastOnce
  *

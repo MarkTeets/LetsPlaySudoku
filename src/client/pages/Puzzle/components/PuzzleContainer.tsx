@@ -4,7 +4,7 @@ import React, { useMemo } from 'react';
 import BoxUnitContainer from './BoxUnitContainer';
 
 // Utilities
-import { boxes as unitBoxes } from '../../../utils/puzzle-functions/makeAllPeers';
+import { boxes as unitBoxes } from '../../../utils/puzzle-state-management-functions/makeAllPeers';
 
 // Main Component
 const PuzzleContainer = () => {

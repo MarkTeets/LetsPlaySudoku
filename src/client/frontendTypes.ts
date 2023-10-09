@@ -170,9 +170,9 @@ export type SetUser = Dispatch<SetStateAction<User>>;
 
 type SetInitialSquares = Dispatch<SetStateAction<InitialSquares>>;
 
-type SetFilledSquares = Dispatch<SetStateAction<FilledSquares>>;
+export type SetFilledSquares = Dispatch<SetStateAction<FilledSquares>>;
 
-type SetPencilSquares = Dispatch<SetStateAction<PencilSquares>>;
+export type SetPencilSquares = Dispatch<SetStateAction<PencilSquares>>;
 
 type SetClickedSquare = Dispatch<SetStateAction<ClickedSquare>>;
 
@@ -201,10 +201,16 @@ export type PageContextValue = {
 };
 
 export type SquareContextValue = {
+  puzzleNumber: number;
   clickedSquare: ClickedSquare;
   setClickedSquare: SetClickedSquare;
+  initialSquares: InitialSquares;
+  pencilMode: boolean;
+  setPencilMode: SetPencilMode;
   filledSquares: FilledSquares;
+  setFilledSquares: SetFilledSquares;
   pencilSquares: PencilSquares;
+  setPencilSquares: SetPencilSquares;
 };
 
 export type GameSettingContextValue = {
@@ -325,27 +331,6 @@ export type PuzzleNumberProp = {
 
 export type SavedPuzzleGraphicProps = {
   progress: string;
-};
-
-export type NumberSelectBarProps = {
-  pencilMode: boolean;
-  clickedSquare: ClickedSquare;
-  filledSquares: FilledSquares;
-  setFilledSquares: SetFilledSquares;
-  pencilSquares: PencilSquares;
-  setPencilSquares: SetPencilSquares;
-};
-
-export type ToolBarProps = {
-  puzzleNumber: number;
-  initialSquares: InitialSquares;
-  filledSquares: FilledSquares;
-  setFilledSquares: SetFilledSquares;
-  pencilSquares: PencilSquares;
-  setPencilSquares: SetPencilSquares;
-  pencilMode: boolean;
-  setPencilMode: SetPencilMode;
-  setClickedSquare: SetClickedSquare;
 };
 
 export type BoxUnitContainerProps = {

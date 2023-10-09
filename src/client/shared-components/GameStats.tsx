@@ -8,7 +8,7 @@ import { UserContextValue, PuzzleCollectionContextValue, PuzzleNumberProp } from
 import { userContext, puzzleCollectionContext } from '../context';
 
 // Utils
-import { defaultPuzzleDocument } from '../utils/solutionFunctions';
+import { defaultPuzzleDocument } from '../../globalUtils/puzzle-solution-functions/solutionFramework';
 
 const GameStats = ({ puzzleNumber }: PuzzleNumberProp) => {
   const { user } = useContext<UserContextValue>(userContext);

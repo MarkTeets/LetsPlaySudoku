@@ -10,9 +10,7 @@ import {
   SquareContextValue,
   UserContextValue,
   PuzzleCollectionContextValue,
-  PageContextValue,
-  NumberSelectBarProps,
-  ToolBarProps
+  PageContextValue
 } from '../../frontendTypes';
 
 // Components
@@ -28,9 +26,9 @@ import { userContext, puzzleCollectionContext, squareContext, pageContext } from
 import {
   initializeSquares,
   resetStateOnRefresh
-} from '../../utils/puzzle-functions/initialSquareStatePopulation';
-import { isPuzzleFinished } from '../../utils/puzzle-functions/isPuzzleFinished';
-import { onPuzzleKeyDown } from '../../utils/puzzle-functions/puzzleValueChange';
+} from '../../utils/puzzle-state-management-functions/initialSquareStatePopulation';
+import { isPuzzleFinished } from '../../utils/puzzle-state-management-functions/isPuzzleFinished';
+import { onPuzzleKeyDown } from '../../utils/puzzle-state-management-functions/puzzleValueChange';
 import { saveToLocalUserOnly } from '../../utils/save';
 
 // Main Component
@@ -119,32 +117,17 @@ const PuzzlePage = () => {
     }
   };
 
-  const SquareContextValue: SquareContextValue = {
+  const squareContextValue: SquareContextValue = {
+    puzzleNumber,
     clickedSquare,
     setClickedSquare,
-    filledSquares,
-    pencilSquares
-  };
-
-  const numberSelectBarProps: NumberSelectBarProps = {
+    initialSquares,
     pencilMode,
-    clickedSquare,
+    setPencilMode,
     filledSquares,
     setFilledSquares,
     pencilSquares,
     setPencilSquares
-  };
-
-  const toolBarProps: ToolBarProps = {
-    puzzleNumber,
-    initialSquares,
-    filledSquares,
-    setFilledSquares,
-    pencilSquares,
-    setPencilSquares,
-    pencilMode,
-    setPencilMode,
-    setClickedSquare
   };
 
   return (
@@ -152,7 +135,7 @@ const PuzzlePage = () => {
       {!user ? (
         <Loading key='PuzzlePage-Loading' />
       ) : (
-        <squareContext.Provider value={SquareContextValue}>
+        <squareContext.Provider value={squareContextValue}>
           <div className='puzzle-page-centerer'>
             <div
               className='puzzle-page-container'
@@ -171,8 +154,8 @@ const PuzzlePage = () => {
               }
             >
               <PuzzleContainer key='PuzzleContainer' />
-              <NumberSelectBar key='NumberSelectBar' {...numberSelectBarProps} />
-              <ToolBar key='ToolBar' {...toolBarProps} />
+              <NumberSelectBar key='NumberSelectBar' />
+              <ToolBar key='ToolBar' />
             </div>
           </div>
         </squareContext.Provider>

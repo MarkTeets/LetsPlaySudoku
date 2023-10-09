@@ -27,10 +27,20 @@ export const pageContext = createContext<PageContextValue>({
 });
 
 export const squareContext = createContext<SquareContextValue>({
+  puzzleNumber: 0,
   clickedSquare: null,
   setClickedSquare: () => {},
+  initialSquares: {
+    originalPuzzleFilledSquares: {} as FilledSquares,
+    filledSquares: {} as FilledSquares,
+    pencilSquares: {} as PencilSquares
+  },
+  pencilMode: false,
+  setPencilMode: () => {},
   filledSquares: {} as FilledSquares,
-  pencilSquares: {} as PencilSquares
+  setFilledSquares: () => {},
+  pencilSquares: {} as PencilSquares,
+  setPencilSquares: () => {}
 });
 
 export const gameSettingsContext = createContext<GameSettingContextValue>({

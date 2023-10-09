@@ -1,19 +1,23 @@
 import React, { useState, useContext } from 'react';
 
 // Types
-import { UserContextValue, ToolBarProps } from '../../../frontendTypes';
+import { UserContextValue, SquareContextValue } from '../../../frontendTypes';
 
 // Context
-import { userContext } from '../../../context';
+import { userContext, squareContext } from '../../../context';
+
+// Components
+import SolutionContainer from './SolutionContainer';
 
 // Utilities
-import { pencilSquaresFromString } from '../../../utils/puzzle-functions/squaresFromPuzzleStrings';
-import { autofillPencilSquares } from '../../../utils/puzzle-functions/autofillPencilSquares';
+import { pencilSquaresFromString } from '../../../utils/puzzle-state-management-functions/squaresFromPuzzleStrings';
+import { autofillPencilSquares } from '../../../utils/puzzle-state-management-functions/autofillPencilSquares';
 import { savePuzzleAtLeastOnce } from '../../../utils/save';
 const savePuzzle = savePuzzleAtLeastOnce();
 
 // Main Component
-const ToolBar = (props: ToolBarProps) => {
+const ToolBar = () => {
+  const { user, setUser } = useContext<UserContextValue>(userContext);
   const {
     puzzleNumber,
     initialSquares,
@@ -24,21 +28,9 @@ const ToolBar = (props: ToolBarProps) => {
     pencilMode,
     setPencilMode,
     setClickedSquare
-  } = props;
-  const { user, setUser } = useContext<UserContextValue>(userContext);
+  } = useContext<SquareContextValue>(squareContext);
   const [showMoreTools, setShowMoreTools] = useState<boolean>(false);
-
-  const pencilModeSwitch = (): void => {
-    setPencilMode(!pencilMode);
-  };
-
-  const showMoreToolsSwitch = (): void => {
-    setShowMoreTools(!showMoreTools);
-  };
-
-  const onAutofillPencilClick = (): void => {
-    autofillPencilSquares(filledSquares, setPencilSquares);
-  };
+  const [showSolveBar, setShowSolveBar] = useState<boolean>(false);
 
   const onSaveClick = (): void => {
     if (puzzleNumber > 0) {
@@ -64,19 +56,27 @@ const ToolBar = (props: ToolBarProps) => {
     toolButtonClasses += ' highlight-number-button';
   }
 
+  let solveBarButtonClasses = puzzleButtonClass;
+  if (showSolveBar) {
+    solveBarButtonClasses += ' highlight-number-button';
+  }
+
   return (
     <>
       <div className='puzzle-button-container'>
-        <button onClick={pencilModeSwitch} className={pencilClasses}>
+        <button onClick={() => setPencilMode(!pencilMode)} className={pencilClasses}>
           Pencil Mode
         </button>
-        <button onClick={onAutofillPencilClick} className={puzzleButtonClass}>
+        <button
+          onClick={() => autofillPencilSquares(filledSquares, setPencilSquares)}
+          className={puzzleButtonClass}
+        >
           Auto-fill Pencil
         </button>
         <button onClick={onSaveClick} className={puzzleButtonClass}>
           Save
         </button>
-        <button onClick={showMoreToolsSwitch} className={toolButtonClasses}>
+        <button onClick={() => setShowMoreTools(!showMoreTools)} className={toolButtonClasses}>
           Tools
         </button>
       </div>
@@ -85,14 +85,12 @@ const ToolBar = (props: ToolBarProps) => {
           <button onClick={resetPuzzle} className={puzzleButtonClass}>
             Reset
           </button>
-          <button
-            onClick={() => alert('Game Data feature is currently being built')}
-            className={puzzleButtonClass}
-          >
-            Game Data
+          <button onClick={() => setShowSolveBar(!showSolveBar)} className={solveBarButtonClasses}>
+            Solution Techniques
           </button>
         </div>
       )}
+      {showSolveBar && <SolutionContainer key='SolutionContainer' />}
     </>
   );
 };
