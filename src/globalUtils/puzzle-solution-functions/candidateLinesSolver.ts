@@ -42,6 +42,11 @@ const solveSquaresIntersection = (
 
 /** puzzleValInSquares
  *
+ * This function returns true if the puzzleVal argument is in either the solveSquares or
+ * filledSquares object for the squareIds in the checkAllSquareIds array, or if the puzzleVal
+ * argument is in the filledSquares object for the squareIds in the checkFilledSquareIds array.
+ * Returns false otherwise.
+ *
  * @param puzzleVal
  * @param checkAllSquareIds
  * @param checkFilledSquareIds
@@ -117,10 +122,22 @@ const neighboringColBoxes = (boxLabel: string) => {
 
 /** candidateLinesSolver
  *
+ * This technique iterates over each box (9x9 squares) of a sudoku grid, and for each box it sees
+ * if there's a row or column (of 3 squares) where at least two of the squares share a penciled in
+ * number, and none of the other squares in that box outside of that row or column have that
+ * penciled in number. If the penciled in numbers are correct, this will mean that said penciled in
+ * number must be within that row or column. Knowing that, if said number is penciled in squares in
+ * the same row or column in neighboring boxes, it can be removed from those squares.
+ *
+ * This function iterates over the grid until it finds this situation once, removes all values in
+ * the neighboring boxes for that row or column, and then returns true. If it doesn't find a single
+ * penciled in puzzleVal that could be removed via this technique, it returns false. It will also
+ * increment solutionCache.candidateLines if the function was successfully executed.
+ *
  * @param filledSquares
  * @param solveSquares
  * @param solutionCache
- * @returns
+ * @returns a boolean: true if solveSquares was changed by this function, false if not
  */
 export const candidateLinesSolver: SolveTechnique = (
   filledSquares,
@@ -140,25 +157,32 @@ export const candidateLinesSolver: SolveTechnique = (
       // that are in at least two of the squares
       const intersection = solveSquaresIntersection(solveSquares, boxRowsCols[boxLabel][rowLabel]);
 
-      // If the intersection resulted in any numbers, check the rest of the box and also the rows in
-      // neighboring boxes to see if the numbers are present in filledSquares or solveSquares.
-      // Keep looking for another match if so
+      // If the intersection resulted in any puzzleVals, check the rest of the box and also the rows
+      // in neighboring boxes to see if the puzzleVal is present in filledSquares or solveSquares.
+      // Proceed with a given number only if said puzzleVal is not present in other squares in the
+      // box, or in the filledSquares of the row
       if (intersection.size > 0) {
-        const sameBoxIds: SquareId[] = [];
-        const idsForRemoval: SquareId[] = [];
+        const sameBoxSquareIds: SquareId[] = [];
+        const neighborBoxSquareIds: SquareId[] = [];
 
         for (const otherRow of rowLabels) {
           if (otherRow === rowLabel) continue;
-          sameBoxIds.push(...boxRowsCols[boxLabel][otherRow]);
+          sameBoxSquareIds.push(...boxRowsCols[boxLabel][otherRow]);
         }
-        idsForRemoval.push(
+        neighborBoxSquareIds.push(
           ...boxRowsCols[secondBoxLabel][rowLabel],
           ...boxRowsCols[thirdBoxLabel][rowLabel]
         );
 
         intersection.forEach((puzzleVal) => {
           if (
-            !puzzleValInSquares(puzzleVal, sameBoxIds, idsForRemoval, filledSquares, solveSquares)
+            !puzzleValInSquares(
+              puzzleVal,
+              sameBoxSquareIds,
+              neighborBoxSquareIds,
+              filledSquares,
+              solveSquares
+            )
           ) {
             foundPuzzleVal = puzzleVal;
           }
@@ -171,16 +195,16 @@ export const candidateLinesSolver: SolveTechnique = (
           // If foundPuzzleVal was assigned a value, check to see that there are solveSquare values
           // to remove in the other squares of the same row in neighboring boxes. If so, remove
           // those numbers and log the change so the function can stop
-          for (const removeSquareId of idsForRemoval) {
+          for (const removeSquareId of neighborBoxSquareIds) {
             if (solveSquares[removeSquareId].has(foundPuzzleVal)) {
               // console.log(`Removing ${foundPuzzleVal} from ${removeSquareId}`);
               solveSquares[removeSquareId].delete(foundPuzzleVal);
               changeMade = true;
-              solutionCache.candidateLines += 1;
             }
           }
           // If a change was successfully made, break out of the for loop iterating over the rows
           if (changeMade) {
+            solutionCache.candidateLines += 1;
             break;
           } else {
             foundPuzzleVal = null;
@@ -198,36 +222,42 @@ export const candidateLinesSolver: SolveTechnique = (
       const intersection = solveSquaresIntersection(solveSquares, boxRowsCols[boxLabel][colLabel]);
 
       if (intersection.size > 0) {
-        const sameBoxIds: SquareId[] = [];
-        const idsForRemoval: SquareId[] = [];
+        const sameBoxSquareIds: SquareId[] = [];
+        const neighborBoxSquareIds: SquareId[] = [];
 
         for (const otherCol of colLabels) {
           if (otherCol === colLabel) continue;
-          sameBoxIds.push(...boxRowsCols[boxLabel][otherCol]);
+          sameBoxSquareIds.push(...boxRowsCols[boxLabel][otherCol]);
         }
-        idsForRemoval.push(
+        neighborBoxSquareIds.push(
           ...boxRowsCols[secondBoxLabel][colLabel],
           ...boxRowsCols[thirdBoxLabel][colLabel]
         );
 
         intersection.forEach((puzzleVal) => {
           if (
-            !puzzleValInSquares(puzzleVal, sameBoxIds, idsForRemoval, filledSquares, solveSquares)
+            !puzzleValInSquares(
+              puzzleVal,
+              sameBoxSquareIds,
+              neighborBoxSquareIds,
+              filledSquares,
+              solveSquares
+            )
           ) {
             foundPuzzleVal = puzzleVal;
           }
         });
 
         if (foundPuzzleVal) {
-          for (const removeSquareId of idsForRemoval) {
+          for (const removeSquareId of neighborBoxSquareIds) {
             if (solveSquares[removeSquareId].has(foundPuzzleVal)) {
               // console.log(`Removing ${foundPuzzleVal} from ${removeSquareId}`);
               solveSquares[removeSquareId].delete(foundPuzzleVal);
               changeMade = true;
-              solutionCache.candidateLines += 1;
             }
           }
           if (changeMade) {
+            solutionCache.candidateLines += 1;
             break;
           } else {
             foundPuzzleVal = null;
@@ -243,7 +273,8 @@ export const candidateLinesSolver: SolveTechnique = (
 /** Notes:
  * On my first go, I thought I needed the squareId at the end of the function. However, it's much
  * more efficient to check a whole row or col of a box at a time. Going by squareIds would've been
- * redundant, checking each row/col in a box three times.
+ * redundant, checking each row/col in a box three times. This is why I had a cache, but really it
+ * wasn't necessary
  */
 
 // type RowColIntersection = {
@@ -265,7 +296,7 @@ export const candidateLinesSolver: SolveTechnique = (
 //   // let foundSquareId: SquareId | null = null;
 //   let secondBoxLabel: string | null = null;
 //   let thirdBoxLabel: string | null = null;
-//   const idsForRemoval: SquareId[] = [];
+//   const neighborBoxSquareIds: SquareId[] = [];
 
 //   for (const squareId of allSquareIds) {
 //     if (filledSquares[squareId]) continue;
@@ -310,25 +341,25 @@ export const candidateLinesSolver: SolveTechnique = (
 //     }
 
 //     if (boxIntersectionCache[boxLabel][rowLabel].size > 0) {
-//       const sameBoxIds: SquareId[] = [];
+//       const sameBoxSquareIds: SquareId[] = [];
 //       for (const otherRow of rowLabels) {
 //         if (otherRow === rowLabel) continue;
-//         sameBoxIds.push(...boxRowsCols[boxLabel][otherRow]);
+//         sameBoxSquareIds.push(...boxRowsCols[boxLabel][otherRow]);
 //       }
-//       idsForRemoval.push(
+//       neighborBoxSquareIds.push(
 //         ...boxRowsCols[secondBoxLabel][rowLabel],
 //         ...boxRowsCols[thirdBoxLabel][rowLabel]
 //       );
-//       sameBoxIds.push(...idsForRemoval);
+//       sameBoxSquareIds.push(...neighborBoxSquareIds);
 
 //       boxIntersectionCache[boxLabel][rowLabel].forEach((puzzleVal) => {
-//         if (!puzzleValInSquares(puzzleVal, sameBoxIds, filledSquares, solveSquares)) {
+//         if (!puzzleValInSquares(puzzleVal, sameBoxSquareIds, filledSquares, solveSquares)) {
 //           foundPuzzleVal = puzzleVal;
 //         }
 //       });
 
 //       if (foundPuzzleVal) {
-//         for (const removeSquareId of idsForRemoval) {
+//         for (const removeSquareId of neighborBoxSquareIds) {
 //           if (solveSquares[removeSquareId].has(foundPuzzleVal)) {
 //             solveSquares[removeSquareId].delete(foundPuzzleVal);
 //             changeMade = true;
@@ -350,25 +381,25 @@ export const candidateLinesSolver: SolveTechnique = (
 //     }
 
 //     if (boxIntersectionCache[boxLabel][colLabel].size > 0) {
-//       const sameBoxIds: SquareId[] = [];
+//       const sameBoxSquareIds: SquareId[] = [];
 //       for (const otherCol of colLabels) {
 //         if (otherCol === colLabel) continue;
-//         sameBoxIds.push(...boxRowsCols[boxLabel][otherCol]);
+//         sameBoxSquareIds.push(...boxRowsCols[boxLabel][otherCol]);
 //       }
-//       idsForRemoval.push(
+//       neighborBoxSquareIds.push(
 //         ...boxRowsCols[secondBoxLabel][colLabel],
 //         ...boxRowsCols[thirdBoxLabel][colLabel]
 //       );
-//       sameBoxIds.push(...idsForRemoval);
+//       sameBoxSquareIds.push(...neighborBoxSquareIds);
 
 //       boxIntersectionCache[boxLabel][colLabel].forEach((puzzleVal) => {
-//         if (!puzzleValInSquares(puzzleVal, sameBoxIds, filledSquares, solveSquares)) {
+//         if (!puzzleValInSquares(puzzleVal, sameBoxSquareIds, filledSquares, solveSquares)) {
 //           foundPuzzleVal = puzzleVal;
 //         }
 //       });
 
 //       if (foundPuzzleVal) {
-//         for (const removeSquareId of idsForRemoval) {
+//         for (const removeSquareId of neighborBoxSquareIds) {
 //           if (solveSquares[removeSquareId].has(foundPuzzleVal)) {
 //             solveSquares[removeSquareId].delete(foundPuzzleVal);
 //             changeMade = true;
