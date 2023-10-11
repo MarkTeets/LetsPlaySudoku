@@ -29,6 +29,14 @@ export type SquareId =
  */
 export type PuzzleVal = '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9';
 
+type RowsCols = {
+  [key: string]: SquareId[];
+};
+
+export type BoxRowsCols = {
+  [key: string]: RowsCols;
+};
+
 /** AllPeers
  *
  * @type AllPeers: object - For any given first square, a peer is another square that can't
