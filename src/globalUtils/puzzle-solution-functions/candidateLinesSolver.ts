@@ -8,7 +8,7 @@ import {
   colLabels,
   boxLabels,
   boxRowsCols
-} from '../../client/utils/puzzle-state-management-functions/allSquareIdsAndPuzzleVals';
+} from '../../client/utils/puzzle-state-management-functions/squareIdsAndPuzzleVals';
 
 /** solveSquaresIntersection
  *

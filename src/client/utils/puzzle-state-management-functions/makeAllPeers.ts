@@ -1,8 +1,8 @@
 // Types
-import { SquareId, AllPeers } from '../../frontendTypes';
+import { AllPeers } from '../../frontendTypes';
 
 // Utils
-import { allSquareIds } from './allSquareIdsAndPuzzleVals';
+import { rows, cols, boxes, allSquareIds } from './squareIdsAndPuzzleVals';
 
 /** makeAllPeers
  *
@@ -19,41 +19,11 @@ import { allSquareIds } from './allSquareIdsAndPuzzleVals';
  * holds 9 sets of squareIds in each column.
  */
 
-const makeAllPeers = (): {
-  rows: Set<SquareId>[];
-  cols: Set<SquareId>[];
-  boxes: Set<SquareId>[];
-  allPeers: AllPeers;
-} => {
-  const rows: Set<SquareId>[] = [];
-  const cols: Set<SquareId>[] = [];
-  const boxes: Set<SquareId>[] = [];
+const makeAllPeers = (): AllPeers => {
   const allPeers: AllPeers = {};
 
-  for (let i = 0; i < 9; i++) {
-    rows.push(new Set());
-    cols.push(new Set());
-    boxes.push(new Set());
-  }
-
+  // Create a set for every SquareId on the allPeers object
   for (let i = 0; i < 81; i++) {
-    // Each row from rows[0] to rows[8] is a set of SquareIds corresponding to grid rows A-I
-    // e.g. rows[0] = { 'A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8', 'A9' }
-    rows[Math.floor(i / 9)].add(allSquareIds[i]);
-
-    // Each column from cols[0] to cols[8] is a set of SquareIds corresponding to grid columns 1-9
-    // e.g. cols[0] = { 'A1', 'B1', 'C1', 'D1', 'E1', 'F1', 'G1', 'H1', 'I1' }
-    cols[i % 9].add(allSquareIds[i]);
-
-    // Boxes (big box of 9 squares) are more complicated:
-    // e.g. boxes[0] = { 'A1', 'A2', 'A3', 'B1', 'B2', 'B3', 'C1', 'C2', 'C3' }
-    // Each index divided by 3 and then modulo 3 is the same for each unit box
-    const howFarFromDivisionByThree = Math.floor(i / 3) % 3;
-    // Each of the 81 SquareIds are grouped in one of three sections three sections
-    // (aka 9 square row), 0, 1, and 2
-    const section = Math.floor(i / 27);
-    boxes[section * 3 + howFarFromDivisionByThree].add(allSquareIds[i]);
-
     allPeers[allSquareIds[i]] = new Set();
   }
 
@@ -73,13 +43,75 @@ const makeAllPeers = (): {
     //remove this key from my peers set
     allPeers[squareId].delete(squareId);
   }
-
-  return {
-    rows,
-    cols,
-    boxes,
-    allPeers
-  };
+  return allPeers;
 };
 
-export const { rows, cols, boxes, allPeers } = makeAllPeers();
+export const allPeers = makeAllPeers();
+
+/**
+ * Old way of creating rows, cols, and boxes before copying and pasting its results to permanent
+ */
+// const makeAllPeers = (): {
+//   rows: Set<SquareId>[];
+//   cols: Set<SquareId>[];
+//   boxes: Set<SquareId>[];
+//   allPeers: AllPeers;
+// } => {
+//   const rows: Set<SquareId>[] = [];
+//   const cols: Set<SquareId>[] = [];
+//   const boxes: Set<SquareId>[] = [];
+//   const allPeers: AllPeers = {};
+
+//   for (let i = 0; i < 9; i++) {
+//     rows.push(new Set());
+//     cols.push(new Set());
+//     boxes.push(new Set());
+//   }
+
+//   for (let i = 0; i < 81; i++) {
+//     // Each row from rows[0] to rows[8] is a set of SquareIds corresponding to grid rows A-I
+//     // e.g. rows[0] = { 'A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8', 'A9' }
+//     rows[Math.floor(i / 9)].add(allSquareIds[i]);
+
+//    // Each column from cols[0] to cols[8] is a set of SquareIds corresponding to grid columns 1-9
+//     // e.g. cols[0] = { 'A1', 'B1', 'C1', 'D1', 'E1', 'F1', 'G1', 'H1', 'I1' }
+//     cols[i % 9].add(allSquareIds[i]);
+
+//     // Boxes (big box of 9 squares) are more complicated:
+//     // e.g. boxes[0] = { 'A1', 'A2', 'A3', 'B1', 'B2', 'B3', 'C1', 'C2', 'C3' }
+//     // Each index divided by 3 and then modulo 3 is the same for each unit box
+//     const howFarFromDivisionByThree = Math.floor(i / 3) % 3;
+//     // Each of the 81 SquareIds are grouped in one of three sections three sections
+//     // (aka 9 square row), 0, 1, and 2
+//     const section = Math.floor(i / 27);
+//     boxes[section * 3 + howFarFromDivisionByThree].add(allSquareIds[i]);
+
+//     allPeers[allSquareIds[i]] = new Set();
+//   }
+
+//   // Add every grouping of related squareId's to an array
+//   const allUnits = rows.concat(cols).concat(boxes);
+
+//   // For every squareId, find every grouping it's a part of and add every other squareId (peer)
+//   // in that grouping to the set in the allPeers object at that squareId's key
+//   for (const squareId of allSquareIds) {
+//     for (const peerUnit of allUnits) {
+//       if (peerUnit.has(squareId)) {
+//         peerUnit.forEach((peer) => {
+//           allPeers[squareId].add(peer);
+//         });
+//       }
+//     }
+//     //remove this key from my peers set
+//     allPeers[squareId].delete(squareId);
+//   }
+
+//   return {
+//     rows,
+//     cols,
+//     boxes,
+//     allPeers
+//   };
+// };
+
+// export const { rows, cols, boxes, allPeers } = makeAllPeers();

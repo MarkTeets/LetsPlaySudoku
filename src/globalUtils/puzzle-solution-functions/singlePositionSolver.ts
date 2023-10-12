@@ -3,8 +3,10 @@ import { SolveTechnique } from '../../types';
 import { PuzzleVal } from '../../client/frontendTypes';
 
 // Utilities
-import { allSquareIds } from '../../client/utils/puzzle-state-management-functions/allSquareIdsAndPuzzleVals';
-import { boxes } from '../../client/utils/puzzle-state-management-functions/makeAllPeers';
+import {
+  boxes,
+  allSquareIds
+} from '../../client/utils/puzzle-state-management-functions/squareIdsAndPuzzleVals';
 import { newFilledSquare } from '../../client/utils/puzzle-state-management-functions/newFilledSquare';
 import { updateSolveSquares } from './updateSolveSquares';
 import { newSolveSquares } from './solutionFramework';

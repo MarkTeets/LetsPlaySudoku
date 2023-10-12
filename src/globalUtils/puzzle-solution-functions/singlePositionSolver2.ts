@@ -8,12 +8,12 @@ import { SolutionCache, SolveTechnique } from '../../types';
 import { SquareId, PuzzleVal, FilledSquares, FilledSquare } from '../../client/frontendTypes';
 
 // Utilities
-import { allSquareIds } from '../../client/utils/puzzle-state-management-functions/allSquareIdsAndPuzzleVals';
 import {
   rows,
   cols,
-  boxes
-} from '../../client/utils/puzzle-state-management-functions/makeAllPeers';
+  boxes,
+  allSquareIds
+} from '../../client/utils/puzzle-state-management-functions/squareIdsAndPuzzleVals';
 import { newFilledSquare } from '../../client/utils/puzzle-state-management-functions/newFilledSquare';
 import { updateSolveSquares } from './updateSolveSquares';
 import { allPeers } from '../../client/utils/puzzle-state-management-functions/makeAllPeers';

@@ -10,7 +10,7 @@ import {
 import { User, PuzzleCollection } from '../../../types';
 
 // Utils
-import { allSquareIds } from './allSquareIdsAndPuzzleVals';
+import { allSquareIds } from './squareIdsAndPuzzleVals';
 import { isValidPuzzleString, isValidPencilString } from './puzzleStringValidation';
 import { newFilledSquare } from './newFilledSquare';
 import { deepCopyFilledSquares } from './deepCopySquares';

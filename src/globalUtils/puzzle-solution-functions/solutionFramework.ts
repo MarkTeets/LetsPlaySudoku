@@ -20,7 +20,7 @@ import {
 } from '../../client/frontendTypes';
 
 // Utilities
-import { allSquareIds } from '../../client/utils/puzzle-state-management-functions/allSquareIdsAndPuzzleVals';
+import { allSquareIds } from '../../client/utils/puzzle-state-management-functions/squareIdsAndPuzzleVals';
 import { isPuzzleFinished } from '../../client/utils/puzzle-state-management-functions/isPuzzleFinished';
 import { filledSquaresFromString } from '../../client/utils/puzzle-state-management-functions/squaresFromPuzzleStrings';
 import {

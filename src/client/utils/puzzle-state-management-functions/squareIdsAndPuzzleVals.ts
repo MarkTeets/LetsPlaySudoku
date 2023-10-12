@@ -18,7 +18,7 @@ export const allSquareIds: SquareId[] = [
   'I1', 'I2', 'I3', 'I4', 'I5', 'I6', 'I7', 'I8', 'I9'
 ];
 
-const rows: Set<SquareId>[] = [
+export const rows: Set<SquareId>[] = [
   new Set<SquareId>(['A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8', 'A9']),
   new Set<SquareId>(['B1', 'B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B9']),
   new Set<SquareId>(['C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9']),
@@ -30,7 +30,7 @@ const rows: Set<SquareId>[] = [
   new Set<SquareId>(['I1', 'I2', 'I3', 'I4', 'I5', 'I6', 'I7', 'I8', 'I9'])
 ];
 
-const cols: Set<SquareId>[] = [
+export const cols: Set<SquareId>[] = [
   new Set<SquareId>(['A1', 'B1', 'C1', 'D1', 'E1', 'F1', 'G1', 'H1', 'I1']),
   new Set<SquareId>(['A2', 'B2', 'C2', 'D2', 'E2', 'F2', 'G2', 'H2', 'I2']),
   new Set<SquareId>(['A3', 'B3', 'C3', 'D3', 'E3', 'F3', 'G3', 'H3', 'I3']),
@@ -42,7 +42,7 @@ const cols: Set<SquareId>[] = [
   new Set<SquareId>(['A9', 'B9', 'C9', 'D9', 'E9', 'F9', 'G9', 'H9', 'I9'])
 ];
 
-const boxes: Set<SquareId>[] = [
+export const boxes: Set<SquareId>[] = [
   new Set<SquareId>(['A1', 'A2', 'A3', 'B1', 'B2', 'B3', 'C1', 'C2', 'C3']),
   new Set<SquareId>(['A4', 'A5', 'A6', 'B4', 'B5', 'B6', 'C4', 'C5', 'C6']),
   new Set<SquareId>(['A7', 'A8', 'A9', 'B7', 'B8', 'B9', 'C7', 'C8', 'C9']),

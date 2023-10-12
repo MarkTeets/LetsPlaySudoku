@@ -1,6 +1,6 @@
 // Types
 import { FilledSquares, PencilSquares } from '../../frontendTypes';
-import { allSquareIds, puzzleVals } from './allSquareIdsAndPuzzleVals';
+import { allSquareIds, puzzleVals } from './squareIdsAndPuzzleVals';
 
 /** createProgressString
  * Takes an filledSquares object and creates a string representing the current state of the puzzle

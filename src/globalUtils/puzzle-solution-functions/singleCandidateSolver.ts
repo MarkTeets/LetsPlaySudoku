@@ -3,7 +3,7 @@ import { SolveTechnique } from '../../types';
 import { PuzzleVal } from '../../client/frontendTypes';
 
 // Utilities
-import { allSquareIds } from '../../client/utils/puzzle-state-management-functions/allSquareIdsAndPuzzleVals';
+import { allSquareIds } from '../../client/utils/puzzle-state-management-functions/squareIdsAndPuzzleVals';
 import { updateSolveSquares } from './updateSolveSquares';
 import { newFilledSquare } from '../../client/utils/puzzle-state-management-functions/newFilledSquare';
 

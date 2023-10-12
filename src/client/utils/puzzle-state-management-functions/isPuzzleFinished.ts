@@ -2,7 +2,7 @@
 import { FilledSquares } from '../../frontendTypes';
 
 // Utils
-import { allSquareIds } from './allSquareIdsAndPuzzleVals';
+import { allSquareIds } from './squareIdsAndPuzzleVals';
 
 /** isPuzzleFinished
  * Checks if a puzzle is complete by checking to see if there are no empty spaces and no duplicates
