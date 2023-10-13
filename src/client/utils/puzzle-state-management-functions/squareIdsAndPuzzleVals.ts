@@ -1,5 +1,10 @@
 // Types
-import { SquareId, PuzzleVal, BoxRowsCols } from '../../frontendTypes';
+import {
+  SquareId,
+  PuzzleVal,
+  BoxSquareIdsByRowsCols,
+  BoxSquareIdsByPosition
+} from '../../frontendTypes';
 
 /**
  * Array of every SquareId from 'A1' to 'I9', utilized
@@ -57,8 +62,39 @@ export const boxes: Set<SquareId>[] = [
 export const rowLabels = ['r1', 'r2', 'r3'];
 export const colLabels = ['c1', 'c2', 'c3'];
 export const boxLabels = ['b1', 'b2', 'b3', 'b4', 'b5', 'b6', 'b7', 'b8', 'b9'];
+export const boxLabelRowSets = [
+  ['b1', 'b2', 'b3'],
+  ['b4', 'b5', 'b6'],
+  ['b7', 'b8', 'b9']
+];
+export const boxLabelColSets = [
+  ['b1', 'b4', 'b7'],
+  ['b2', 'b5', 'b8'],
+  ['b3', 'b6', 'b9']
+];
 
-export const boxRowsCols: BoxRowsCols = {
+const boxesLayout = {
+  r1: ['b1', 'b2', 'b3'],
+  r2: ['b4', 'b5', 'b6'],
+  r3: ['b7', 'b8', 'b9'],
+  c1: ['b1', 'b4', 'b7'],
+  c2: ['b2', 'b5', 'b8'],
+  c3: ['b3', 'b6', 'b9']
+};
+
+const rowPositions = [
+  ['1', '2', '3'],
+  ['4', '5', '6'],
+  ['7', '8', '9']
+];
+
+const colPositions = [
+  ['1', '4', '7'],
+  ['2', '5', '8'],
+  ['3', '6', '9']
+];
+
+export const boxSquareIdsByRowsCols: BoxSquareIdsByRowsCols = {
   b1: {
     r1: ['A1', 'A2', 'A3'],
     r2: ['B1', 'B2', 'B3'],
@@ -133,8 +169,198 @@ export const boxRowsCols: BoxRowsCols = {
   }
 };
 
+export const boxSquareIdsByPosition: BoxSquareIdsByPosition = {
+  b1: {
+    1: 'A1',
+    2: 'A2',
+    3: 'A3',
+    4: 'B1',
+    5: 'B2',
+    6: 'B3',
+    7: 'C1',
+    8: 'C2',
+    9: 'C3'
+  },
+  b2: {
+    1: 'A4',
+    2: 'A5',
+    3: 'A6',
+    4: 'B4',
+    5: 'B5',
+    6: 'B6',
+    7: 'C4',
+    8: 'C5',
+    9: 'C6'
+  },
+  b3: {
+    1: 'A7',
+    2: 'A8',
+    3: 'A9',
+    4: 'B7',
+    5: 'B8',
+    6: 'B9',
+    7: 'C7',
+    8: 'C8',
+    9: 'C9'
+  },
+  b4: {
+    1: 'D1',
+    2: 'D2',
+    3: 'D3',
+    4: 'E1',
+    5: 'E2',
+    6: 'E3',
+    7: 'F1',
+    8: 'F2',
+    9: 'F3'
+  },
+  b5: {
+    1: 'D4',
+    2: 'D5',
+    3: 'D6',
+    4: 'E4',
+    5: 'E5',
+    6: 'E6',
+    7: 'F4',
+    8: 'F5',
+    9: 'F6'
+  },
+  b6: {
+    1: 'D7',
+    2: 'D8',
+    3: 'D9',
+    4: 'E7',
+    5: 'E8',
+    6: 'E9',
+    7: 'F7',
+    8: 'F8',
+    9: 'F9'
+  },
+  b7: {
+    1: 'G1',
+    2: 'G2',
+    3: 'G3',
+    4: 'H1',
+    5: 'H2',
+    6: 'H3',
+    7: 'I1',
+    8: 'I2',
+    9: 'I3'
+  },
+  b8: {
+    1: 'G4',
+    2: 'G5',
+    3: 'G6',
+    4: 'H4',
+    5: 'H5',
+    6: 'H6',
+    7: 'I4',
+    8: 'I5',
+    9: 'I6'
+  },
+  b9: {
+    1: 'G7',
+    2: 'G8',
+    3: 'G9',
+    4: 'H7',
+    5: 'H8',
+    6: 'H9',
+    7: 'I7',
+    8: 'I8',
+    9: 'I9'
+  }
+};
+
+export type PositionCombinations =
+  | '12'
+  | '13'
+  | '23'
+  | '45'
+  | '46'
+  | '56'
+  | '78'
+  | '79'
+  | '89'
+  | '14'
+  | '17'
+  | '47'
+  | '25'
+  | '28'
+  | '58'
+  | '36'
+  | '39'
+  | '69';
+
+// export type TwoBoxCombinations =
+//   | 'b1b2'
+//   | 'b1b3'
+//   | 'b2b3'
+//   | 'b4b5'
+//   | 'b4b6'
+//   | 'b5b6'
+//   | 'b7b8'
+//   | 'b7b9'
+//   | 'b8b9'
+//   | 'b1b4'
+//   | 'b1b7'
+//   | 'b4b7'
+//   | 'b2b5'
+//   | 'b2b8'
+//   | 'b5b8'
+//   | 'b3b6'
+//   | 'b3b9'
+//   | 'b6b9';
+
+export type BoxSegmentCombinationKey = 'firstSecond' | 'firstThird' | 'secondThird';
+
 /**
  * Array of every valid Sudoku square string:
  * ['1', '2', '3', '4', '5', '6', '7', '8', '9']
  */
 export const puzzleVals: PuzzleVal[] = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
+
+/** neighboringRowBoxes
+ *
+ * Given a boxLabel, this function returns the neighboring box labels from this row. For example,
+ * given 'b1', this function will return ['b2', 'b3']
+ *
+ * @param boxLabel 'b1' - 'b9'
+ * @returns array of 2 box label strings
+ */
+export const neighboringRowBoxes = (boxLabel: string) => {
+  // Designate other boxes in line with current boxLabel
+  // (e.g. for boxLabel 'b1': 2ndBox 'b2', 3rd box 'b3')
+  const boxNum = Number(boxLabel[1]) - 1;
+  let secondBoxNum = boxNum + 1;
+  let thirdBoxNum = boxNum + 2;
+  const boxSection = Math.floor(boxNum / 3);
+  const secondBoxSection = Math.floor(secondBoxNum / 3);
+  const thirdBoxSection = Math.floor(thirdBoxNum / 3);
+
+  if (secondBoxSection > boxSection) secondBoxNum -= 3;
+  if (thirdBoxSection > boxSection) thirdBoxNum -= 3;
+  secondBoxNum += 1;
+  thirdBoxNum += 1;
+
+  const secondBoxLabel = 'b' + secondBoxNum.toString();
+  const thirdBoxLabel = 'b' + thirdBoxNum.toString();
+  return [secondBoxLabel, thirdBoxLabel];
+};
+
+/** neighboringColBoxes
+ *
+ * Given a boxLabel, this function returns the neighboring box labels from this col. For example,
+ * given 'b1', this function will return ['b4', 'b7']
+ *
+ * @param boxLabel 'b1' - 'b9'
+ * @returns array of 2 box label strings
+ */
+export const neighboringColBoxes = (boxLabel: string) => {
+  const secondBoxNum =
+    Number(boxLabel[1]) + 3 > 9 ? Number(boxLabel[1]) + 3 - 9 : Number(boxLabel[1]) + 3;
+  const thirdBoxNum =
+    Number(boxLabel[1]) + 6 > 9 ? Number(boxLabel[1]) + 6 - 9 : Number(boxLabel[1]) + 6;
+  const secondBoxLabel = 'b' + secondBoxNum.toString();
+  const thirdBoxLabel = 'b' + thirdBoxNum.toString();
+  return [secondBoxLabel, thirdBoxLabel];
+};
