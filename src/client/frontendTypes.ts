@@ -29,12 +29,20 @@ export type SquareId =
  */
 export type PuzzleVal = '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9';
 
-type RowsCols = {
+type SquareIdsByRowsCols = {
   [key: string]: SquareId[];
 };
 
-export type BoxRowsCols = {
-  [key: string]: RowsCols;
+export type BoxSquareIdsByRowsCols = {
+  [key: string]: SquareIdsByRowsCols;
+};
+
+type SquareIdsByPosition = {
+  [key: string]: SquareId;
+};
+
+export type BoxSquareIdsByPosition = {
+  [key: string]: SquareIdsByPosition;
 };
 
 /** AllPeers
