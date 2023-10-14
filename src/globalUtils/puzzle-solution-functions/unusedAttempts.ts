@@ -207,3 +207,168 @@ export const singlePositionSolver: SolveTechnique = (
   }
   return changeMade;
 };
+
+/** Notes:
+ * On my first go, I thought I needed the squareId at the end of the function. However, it's much
+ * more efficient to check a whole row or col of a box at a time. Going by squareIds would've been
+ * redundant, checking each row/col in a box three times. This is why I had a cache, but really it
+ * wasn't necessary
+ */
+
+// type RowColIntersection = {
+//   [key: string]: Set<PuzzleVal>;
+// };
+
+// export type BoxIntersectionCache = {
+//   [key: string]: RowColIntersection;
+// };
+
+// export const candidateLinesSolver1: SolveTechnique = (
+//   filledSquares,
+//   solveSquares,
+//   solutionCache
+// ) => {
+//   let changeMade = false;
+//   const boxIntersectionCache: BoxIntersectionCache = {};
+//   let foundPuzzleVal: PuzzleVal | null = null;
+//   // let foundSquareId: SquareId | null = null;
+//   let secondBoxLabel: string | null = null;
+//   let thirdBoxLabel: string | null = null;
+//   const neighborBoxSquareIds: SquareId[] = [];
+
+//   for (const squareId of allSquareIds) {
+//     if (filledSquares[squareId]) continue;
+//     const rowNum = squareId.charCodeAt(0) - 65;
+//     const rowSection = rowNum / 3;
+//     const colNum = Number(squareId[1]) - 1;
+//     const colSection = colNum / 3;
+//     const rowLabel = 'r' + (rowSection + 1).toString();
+//     const colLabel = 'c' + (colSection + 1).toString();
+//     let boxLabel = 'b';
+
+//     if (rowSection === 0) {
+//       if (colSection === 0) boxLabel += '1';
+//       if (colSection === 1) boxLabel += '2';
+//       if (colSection === 2) boxLabel += '3';
+//     } else if (rowSection === 1) {
+//       if (colSection === 0) boxLabel += '4';
+//       if (colSection === 1) boxLabel += '5';
+//       if (colSection === 2) boxLabel += '6';
+//     } else if (rowSection === 2) {
+//       if (colSection === 0) boxLabel += '7';
+//       if (colSection === 1) boxLabel += '8';
+//       if (colSection === 2) boxLabel += '9';
+//     }
+
+//     const secondBoxNum =
+//       Number(boxLabel[1]) + 3 > 9 ? Number(boxLabel[1]) + 3 - 9 : Number(boxLabel[1]) + 3;
+//     const thirdBoxNum =
+//       Number(boxLabel[1]) + 6 > 9 ? Number(boxLabel[1]) + 6 - 9 : Number(boxLabel[1]) + 6;
+//     secondBoxLabel = 'b' + secondBoxNum.toString();
+//     thirdBoxLabel = 'b' + thirdBoxNum.toString();
+
+//     if (!boxIntersectionCache[boxLabel]) {
+//       boxIntersectionCache[boxLabel] = {};
+//     }
+
+//     if (!boxIntersectionCache[boxLabel][rowLabel]) {
+//       boxIntersectionCache[boxLabel][rowLabel] = solveSquaresIntersection(
+//         solveSquares,
+//         boxSquareIdsByRowsCols[boxLabel][rowLabel]
+//       );
+//     }
+
+//     if (boxIntersectionCache[boxLabel][rowLabel].size > 0) {
+//       const sameBoxSquareIds: SquareId[] = [];
+//       for (const otherRow of rowLabels) {
+//         if (otherRow === rowLabel) continue;
+//         sameBoxSquareIds.push(...boxSquareIdsByRowsCols[boxLabel][otherRow]);
+//       }
+//       neighborBoxSquareIds.push(
+//         ...boxSquareIdsByRowsCols[secondBoxLabel][rowLabel],
+//         ...boxSquareIdsByRowsCols[thirdBoxLabel][rowLabel]
+//       );
+//       sameBoxSquareIds.push(...neighborBoxSquareIds);
+
+//       boxIntersectionCache[boxLabel][rowLabel].forEach((puzzleVal) => {
+//         if (!puzzleValInSquares(puzzleVal, sameBoxSquareIds, filledSquares, solveSquares)) {
+//           foundPuzzleVal = puzzleVal;
+//         }
+//       });
+
+//       if (foundPuzzleVal) {
+//         for (const removeSquareId of neighborBoxSquareIds) {
+//           if (solveSquares[removeSquareId].has(foundPuzzleVal)) {
+//             solveSquares[removeSquareId].delete(foundPuzzleVal);
+//             changeMade = true;
+//             solutionCache.candidateLines += 1;
+//           }
+//         }
+//         if (changeMade) {
+//           // foundSquareId = squareId;
+//           break;
+//         }
+//       }
+//     }
+
+//     if (!boxIntersectionCache[boxLabel][colLabel]) {
+//       boxIntersectionCache[boxLabel][colLabel] = solveSquaresIntersection(
+//         solveSquares,
+//         boxSquareIdsByRowsCols[boxLabel][colLabel]
+//       );
+//     }
+
+//     if (boxIntersectionCache[boxLabel][colLabel].size > 0) {
+//       const sameBoxSquareIds: SquareId[] = [];
+//       for (const otherCol of colLabels) {
+//         if (otherCol === colLabel) continue;
+//         sameBoxSquareIds.push(...boxSquareIdsByRowsCols[boxLabel][otherCol]);
+//       }
+//       neighborBoxSquareIds.push(
+//         ...boxSquareIdsByRowsCols[secondBoxLabel][colLabel],
+//         ...boxSquareIdsByRowsCols[thirdBoxLabel][colLabel]
+//       );
+//       sameBoxSquareIds.push(...neighborBoxSquareIds);
+
+//       boxIntersectionCache[boxLabel][colLabel].forEach((puzzleVal) => {
+//         if (!puzzleValInSquares(puzzleVal, sameBoxSquareIds, filledSquares, solveSquares)) {
+//           foundPuzzleVal = puzzleVal;
+//         }
+//       });
+
+//       if (foundPuzzleVal) {
+//         for (const removeSquareId of neighborBoxSquareIds) {
+//           if (solveSquares[removeSquareId].has(foundPuzzleVal)) {
+//             solveSquares[removeSquareId].delete(foundPuzzleVal);
+//             changeMade = true;
+//           }
+//         }
+//         if (changeMade) {
+//           // foundSquareId = squareId;
+//           break;
+//         }
+//       }
+//     }
+//   }
+//   return changeMade;
+// };
+
+// const onlySetWithPuzzleVal = (
+//   primarySet: Set<PuzzleVal>,
+//   otherSets: Set<PuzzleVal>[]
+// ): PuzzleVal | null => {
+//   let value: PuzzleVal | null = null;
+//   const secondary = new Set<PuzzleVal>();
+
+//   for (const set of otherSets) {
+//     set.forEach((puzzleVal) => {
+//       secondary.add(puzzleVal);
+//     });
+//   }
+
+//   primarySet.forEach((puzzleVal) => {
+//     if (!secondary.has(puzzleVal)) value = puzzleVal;
+//   });
+
+//   return value;
+// };

@@ -6,6 +6,7 @@ import { PuzzleVal } from '../../client/frontendTypes';
 import { allSquareIds } from '../../client/utils/puzzle-state-management-functions/squareIdsAndPuzzleVals';
 import { updateSolveSquares } from './updateSolveSquares';
 import { newFilledSquare } from '../../client/utils/puzzle-state-management-functions/newFilledSquare';
+import { updateOrPopulateSolveSquares } from './populateSolveSquaresIfEmpty';
 
 /** singleCandidateSolver
  *
@@ -25,8 +26,7 @@ export const singleCandidateSolver: SolveTechnique = (
   solveSquares,
   solutionCache
 ) => {
-  updateSolveSquares(filledSquares, solveSquares);
-
+  updateOrPopulateSolveSquares(filledSquares, solveSquares);
   for (const squareId of allSquareIds) {
     if (solveSquares[squareId].size === 1) {
       const val = solveSquares[squareId].values().next().value as PuzzleVal;

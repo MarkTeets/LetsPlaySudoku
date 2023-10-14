@@ -44,7 +44,10 @@ export const populateSolveSquaresIfEmpty = (
   populateSolveSquares(filledSquares, solveSquares);
 };
 
-const updateOrPopulateSolveSquares = (filledSquares: FilledSquares, solveSquares: SolveSquares) => {
+export const updateOrPopulateSolveSquares = (
+  filledSquares: FilledSquares,
+  solveSquares: SolveSquares
+) => {
   if (isSolveSquaresEmpty(solveSquares)) {
     populateSolveSquares(filledSquares, solveSquares);
   } else {

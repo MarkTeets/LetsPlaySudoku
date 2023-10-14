@@ -319,6 +319,8 @@ export type BoxSegmentCombinationKey = 'firstSecond' | 'firstThird' | 'secondThi
  */
 export const puzzleVals: PuzzleVal[] = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
+export type NeighboringBoxLabels = (boxLabel: string) => string[];
+
 /** neighboringRowBoxes
  *
  * Given a boxLabel, this function returns the neighboring box labels from this row. For example,
@@ -327,7 +329,7 @@ export const puzzleVals: PuzzleVal[] = ['1', '2', '3', '4', '5', '6', '7', '8', 
  * @param boxLabel 'b1' - 'b9'
  * @returns array of 2 box label strings
  */
-export const neighboringRowBoxes = (boxLabel: string) => {
+export const neighboringRowBoxes: NeighboringBoxLabels = (boxLabel) => {
   // Designate other boxes in line with current boxLabel
   // (e.g. for boxLabel 'b1': 2ndBox 'b2', 3rd box 'b3')
   const boxNum = Number(boxLabel[1]) - 1;
