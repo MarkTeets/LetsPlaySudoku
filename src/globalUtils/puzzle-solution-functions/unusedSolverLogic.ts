@@ -372,3 +372,232 @@ export const singlePositionSolver: SolveTechnique = (
 
 //   return value;
 // };
+
+// const filledSquaresUnion = (
+// filledSquares: FilledSquares,
+// squareIdsCollection: Set<SquareId>[]
+// ) => {
+//   const filledSquaresUnion: FilledSquaresUnion = {};
+//   for (let i = 0; i < 9; i++) {
+//     const position = (i + 1).toString();
+//     filledSquaresUnion[position] = new Set<PuzzleVal>();
+//     const squareIds = squareIdsCollection[i];
+//     squareIds.forEach((squareId) => {
+//       if (filledSquares[squareId]) {
+//         filledSquaresUnion[position].add((filledSquares[squareId] as FilledSquare).puzzleVal);
+//       }
+//     });
+//   }
+//   return filledSquaresUnion;
+// };
+
+/** boxSegmentSolveSquarePuzzleValUnion
+ *
+ * Returns a union of puzzleVals for a given solveSquares box's (set of 9x9 squares) box segment
+ * (row or col of 3 squares). Will not include solveSquares that aren't valid due to the value being
+ * present in a peer's filledSquares.
+ *
+ * For example, a returned puzzleVal set from a function call where the boxLabel is b1 and the
+ * boxSegmentLabel is r1 is the combined Set of any and all puzzleVals in solveSquares['A1'],
+ * solveSquares['A2'], and/or solveSquares['A3'], wherein those values aren't in the filledSquares
+ * peers of the respective squareIds
+ *
+ * @param boxLabel
+ * @param boxSegmentLabel
+ * @param filledSquares
+ * @param solveSquares
+ * @returns
+ */
+// const boxSegmentSolveSquarePuzzleValUnion = (
+//   boxLabel: string,
+//   boxSegmentLabel: string,
+//   filledSquares: FilledSquares,
+//   solveSquares: SolveSquares
+// ): Set<PuzzleVal> => {ƒ
+//   const union = new Set<PuzzleVal>();
+//   // For example, boxSquareIdsByRowsCols[b1][r1] = ['A1', 'A2', 'A3']
+//   for (const squareId of boxSquareIdsByRowsCols[boxLabel][boxSegmentLabel]) {
+//     if (solveSquares[squareId].size === 0) continue;
+//     // If there are puzzleVals in the solveSquares[squareId] Set, make a Set of the squareId's
+//     // peers filledSquares puzzleVals. This way we can discount faulty duplicate pencilVals
+//     // from the user
+//     const peersPuzzleVals = new Set<PuzzleVal>();
+//     allPeers[squareId].forEach((peerId) => {
+//       if (filledSquares[peerId]) {
+//         peersPuzzleVals.add((filledSquares[peerId] as FilledSquare).puzzleVal);
+//       }
+//     });
+//     // If the solveSquares puzzleVal is legit, add it to the union of said row/col to be returned
+//     solveSquares[squareId].forEach((puzzleVal) => {
+//       if (peersPuzzleVals.has(puzzleVal)) return;
+//       union.add(puzzleVal);
+//     });
+//   }
+
+//   return union;
+// };
+
+// type BoxRowOrCol = {
+//   [key: string]: string;
+// };
+
+// type BoxRowsAndCols = {
+//   [key: string]: BoxRowOrCol;
+// };
+
+// export const boxRowsAndCols: BoxRowsAndCols = {
+//   b1: {
+//     r1: '1',
+//     r2: '2',
+//     r3: '3',
+//     c1: '1',
+//     c2: '2',
+//     c3: '3'
+//   },
+//   b2: {
+//     r1: '1',
+//     r2: '2',
+//     r3: '3',
+//     c1: '4',
+//     c2: '5',
+//     c3: '6'
+//   },
+//   b3: {
+//     r1: '1',
+//     r2: '2',
+//     r3: '3',
+//     c1: '7',
+//     c2: '8',
+//     c3: '9'
+//   },
+//   b4: {
+//     r1: '4',
+//     r2: '5',
+//     r3: '6',
+//     c1: '1',
+//     c2: '2',
+//     c3: '3'
+//   },
+//   b5: {
+//     r1: '4',
+//     r2: '5',
+//     r3: '6',
+//     c1: '4',
+//     c2: '5',
+//     c3: '6'
+//   },
+//   b6: {
+//     r1: '4',
+//     r2: '5',
+//     r3: '6',
+//     c1: '7',
+//     c2: '8',
+//     c3: '9'
+//   },
+//   b7: {
+//     r1: '7',
+//     r2: '8',
+//     r3: '9',
+//     c1: '1',
+//     c2: '2',
+//     c3: '3'
+//   },
+//   b8: {
+//     r1: '7',
+//     r2: '8',
+//     r3: '9',
+//     c1: '4',
+//     c2: '5',
+//     c3: '6'
+//   },
+//   b9: {
+//     r1: '7',
+//     r2: '8',
+//     r3: '9',
+//     c1: '7',
+//     c2: '8',
+//     c3: '9'
+//   }
+// };
+
+// const boxRowsAndCols = {
+//   b1: {
+//     rows: ['1', '2', '3'],
+//     cols: ['1', '2', '3']
+//   },
+//   b2: {
+//     rows: ['1', '2', '3'],
+//     cols: ['4', '5', '6']
+//   },
+//   b3: {
+//     rows: ['1', '2', '3'],
+//     cols: ['7', '8', '9']
+//   },
+//   b4: {
+//     rows: ['4', '5', '6'],
+//     cols: ['1', '2', '3']
+//   },
+//   b5: {
+//     rows: ['4', '5', '6'],
+//     cols: ['4', '5', '6']
+//   },
+//   b6: {
+//     rows: ['4', '5', '6'],
+//     cols: ['7', '8', '9']
+//   },
+//   b7: {
+//     rows: ['7', '8', '9'],
+//     cols: ['1', '2', '3']
+//   },
+//   b8: {
+//     rows: ['7', '8', '9'],
+//     cols: ['4', '5', '6']
+//   },
+//   b9: {
+//     rows: ['7', '8', '9'],
+//     cols: ['7', '8', '9']
+//   }
+// };
+
+// export type TwoBoxCombinations =
+//   | 'b1b2'
+//   | 'b1b3'
+//   | 'b2b3'
+//   | 'b4b5'
+//   | 'b4b6'
+//   | 'b5b6'
+//   | 'b7b8'
+//   | 'b7b9'
+//   | 'b8b9'
+//   | 'b1b4'
+//   | 'b1b7'
+//   | 'b4b7'
+//   | 'b2b5'
+//   | 'b2b8'
+//   | 'b5b8'
+//   | 'b3b6'
+//   | 'b3b9'
+//   | 'b6b9';
+
+// const boxesLayout = {
+//   r1: ['b1', 'b2', 'b3'],
+//   r2: ['b4', 'b5', 'b6'],
+//   r3: ['b7', 'b8', 'b9'],
+//   c1: ['b1', 'b4', 'b7'],
+//   c2: ['b2', 'b5', 'b8'],
+//   c3: ['b3', 'b6', 'b9']
+// };
+
+// const rowPositions = [
+//   ['1', '2', '3'],
+//   ['4', '5', '6'],
+//   ['7', '8', '9']
+// ];
+
+// const colPositions = [
+//   ['1', '4', '7'],
+//   ['2', '5', '8'],
+//   ['3', '6', '9']
+// ];
+
+// const positions = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];

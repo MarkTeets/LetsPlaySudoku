@@ -16,7 +16,8 @@ import {
   PencilSquares,
   PencilSquare,
   SetPencilSquares,
-  SetFilledSquares
+  SetFilledSquares,
+  PencilData
 } from '../../client/frontendTypes';
 
 // Utilities
@@ -244,7 +245,9 @@ const pencilSquaresToSolveSquares = (pencilSquares: PencilSquares): SolveSquares
     if (pencilSquares[squareId]) {
       for (const puzzleVal of puzzleVals) {
         if (pencilSquares[squareId]?.[puzzleVal]) {
-          solveSquares[squareId].add(puzzleVal);
+          if (!((pencilSquares[squareId] as PencilSquare)[puzzleVal] as PencilData).duplicate) {
+            solveSquares[squareId].add(puzzleVal);
+          }
         }
       }
     }

@@ -3,7 +3,10 @@ import {
   SquareId,
   PuzzleVal,
   BoxSquareIdsByRowsCols,
-  BoxSquareIdsByPosition
+  BoxSquareIdsByPosition,
+  BoxSegmentCombinationLabels,
+  BoxSegmentCombinationExcludedLabel,
+  BoxSegmentCombinationKey
 } from '../../frontendTypes';
 
 /**
@@ -61,7 +64,39 @@ export const boxes: Set<SquareId>[] = [
 
 export const rowLabels = ['r1', 'r2', 'r3'];
 export const colLabels = ['c1', 'c2', 'c3'];
+
+export const boxSegmentCombinationKeys: BoxSegmentCombinationKey[] = [
+  'firstSecond',
+  'firstThird',
+  'secondThird'
+];
+
+export const boxSegmentCombinationRowLabels: BoxSegmentCombinationLabels = {
+  firstSecond: ['r1', 'r2'],
+  firstThird: ['r1', 'r3'],
+  secondThird: ['r2', 'r3']
+};
+
+export const boxSegmentCombinationExcludedRowLabel: BoxSegmentCombinationExcludedLabel = {
+  firstSecond: 'r3',
+  firstThird: 'r2',
+  secondThird: 'r1'
+};
+
+export const boxSegmentCombinationColLabels: BoxSegmentCombinationLabels = {
+  firstSecond: ['c1', 'c2'],
+  firstThird: ['c1', 'c3'],
+  secondThird: ['c2', 'c3']
+};
+
+export const boxSegmentCombinationExcludedColLabel: BoxSegmentCombinationExcludedLabel = {
+  firstSecond: 'c3',
+  firstThird: 'c2',
+  secondThird: 'c1'
+};
+
 export const boxLabels = ['b1', 'b2', 'b3', 'b4', 'b5', 'b6', 'b7', 'b8', 'b9'];
+
 export const boxLabelRowSets = [
   ['b1', 'b2', 'b3'],
   ['b4', 'b5', 'b6'],
@@ -71,27 +106,6 @@ export const boxLabelColSets = [
   ['b1', 'b4', 'b7'],
   ['b2', 'b5', 'b8'],
   ['b3', 'b6', 'b9']
-];
-
-const boxesLayout = {
-  r1: ['b1', 'b2', 'b3'],
-  r2: ['b4', 'b5', 'b6'],
-  r3: ['b7', 'b8', 'b9'],
-  c1: ['b1', 'b4', 'b7'],
-  c2: ['b2', 'b5', 'b8'],
-  c3: ['b3', 'b6', 'b9']
-};
-
-const rowPositions = [
-  ['1', '2', '3'],
-  ['4', '5', '6'],
-  ['7', '8', '9']
-];
-
-const colPositions = [
-  ['1', '4', '7'],
-  ['2', '5', '8'],
-  ['3', '6', '9']
 ];
 
 export const boxSquareIdsByRowsCols: BoxSquareIdsByRowsCols = {
@@ -270,48 +284,6 @@ export const boxSquareIdsByPosition: BoxSquareIdsByPosition = {
     9: 'I9'
   }
 };
-
-export type PositionCombinations =
-  | '12'
-  | '13'
-  | '23'
-  | '45'
-  | '46'
-  | '56'
-  | '78'
-  | '79'
-  | '89'
-  | '14'
-  | '17'
-  | '47'
-  | '25'
-  | '28'
-  | '58'
-  | '36'
-  | '39'
-  | '69';
-
-// export type TwoBoxCombinations =
-//   | 'b1b2'
-//   | 'b1b3'
-//   | 'b2b3'
-//   | 'b4b5'
-//   | 'b4b6'
-//   | 'b5b6'
-//   | 'b7b8'
-//   | 'b7b9'
-//   | 'b8b9'
-//   | 'b1b4'
-//   | 'b1b7'
-//   | 'b4b7'
-//   | 'b2b5'
-//   | 'b2b8'
-//   | 'b5b8'
-//   | 'b3b6'
-//   | 'b3b9'
-//   | 'b6b9';
-
-export type BoxSegmentCombinationKey = 'firstSecond' | 'firstThird' | 'secondThird';
 
 /**
  * Array of every valid Sudoku square string:

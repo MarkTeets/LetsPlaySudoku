@@ -45,6 +45,36 @@ export type BoxSquareIdsByPosition = {
   [key: string]: SquareIdsByPosition;
 };
 
+export type BoxSegmentCombinationKey = 'firstSecond' | 'firstThird' | 'secondThird';
+
+export type BoxSegmentCombinationLabels = {
+  [key in BoxSegmentCombinationKey]: string[];
+};
+
+export type BoxSegmentCombinationExcludedLabel = {
+  [key in BoxSegmentCombinationKey]: string;
+};
+
+export type PositionCombinations =
+  | '12'
+  | '13'
+  | '23'
+  | '45'
+  | '46'
+  | '56'
+  | '78'
+  | '79'
+  | '89'
+  | '14'
+  | '17'
+  | '47'
+  | '25'
+  | '28'
+  | '58'
+  | '36'
+  | '39'
+  | '69';
+
 /** AllPeers
  *
  * @type AllPeers: object - For any given first square, a peer is another square that can't

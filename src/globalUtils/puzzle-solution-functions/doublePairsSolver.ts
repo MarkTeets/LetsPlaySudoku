@@ -1,6 +1,13 @@
 // Types
 import { SolveSquares, SolveTechnique } from '../../types';
-import { FilledSquare, FilledSquares, PuzzleVal, SquareId } from '../../client/frontendTypes';
+import {
+  BoxSegmentCombinationExcludedLabel,
+  BoxSegmentCombinationLabels,
+  PuzzleVal,
+  SquareId,
+  PositionCombinations,
+  BoxSegmentCombinationKey
+} from '../../client/frontendTypes';
 
 // Utilities
 import {
@@ -8,8 +15,11 @@ import {
   boxLabelColSets,
   boxSquareIdsByRowsCols,
   boxSquareIdsByPosition,
-  PositionCombinations,
-  BoxSegmentCombinationKey
+  boxSegmentCombinationRowLabels,
+  boxSegmentCombinationExcludedRowLabel,
+  boxSegmentCombinationColLabels,
+  boxSegmentCombinationExcludedColLabel,
+  boxSegmentCombinationKeys
 } from '../../client/utils/puzzle-state-management-functions/squareIdsAndPuzzleVals';
 
 const rowPositionCombinations: PositionCombinations[] = [
@@ -36,22 +46,8 @@ const colPositionCombinations: PositionCombinations[] = [
   '89'
 ];
 
-const boxSegmentCombinationKeys: BoxSegmentCombinationKey[] = [
-  'firstSecond',
-  'firstThird',
-  'secondThird'
-];
-
 type BoxSegmentCombinationPositionIntersectionMap = {
   [key in BoxSegmentCombinationKey]: PositionCombinations[];
-};
-
-type BoxSegmentCombinationLabels = {
-  [key in BoxSegmentCombinationKey]: string[];
-};
-
-type BoxSegmentCombinationExcludedLabel = {
-  [key in BoxSegmentCombinationKey]: string;
 };
 
 const boxSegmentCombinationRowIntersectionMap: BoxSegmentCombinationPositionIntersectionMap = {
@@ -60,41 +56,15 @@ const boxSegmentCombinationRowIntersectionMap: BoxSegmentCombinationPositionInte
   secondThird: ['47', '58', '69']
 };
 
-const boxSegmentCombinationRowLabels: BoxSegmentCombinationLabels = {
-  firstSecond: ['r1', 'r2'],
-  firstThird: ['r1', 'r3'],
-  secondThird: ['r2', 'r3']
-};
-
-const boxSegmentCombinationExcludedRowLabel: BoxSegmentCombinationExcludedLabel = {
-  firstSecond: 'r3',
-  firstThird: 'r2',
-  secondThird: 'r1'
-};
-
 const boxSegmentCombinationColIntersectionMap: BoxSegmentCombinationPositionIntersectionMap = {
   firstSecond: ['12', '45', '78'],
   firstThird: ['13', '46', '79'],
   secondThird: ['23', '56', '89']
 };
 
-const boxSegmentCombinationColLabels: BoxSegmentCombinationLabels = {
-  firstSecond: ['c1', 'c2'],
-  firstThird: ['c1', 'c3'],
-  secondThird: ['c2', 'c3']
-};
-
-const boxSegmentCombinationExcludedColLabel: BoxSegmentCombinationExcludedLabel = {
-  firstSecond: 'c3',
-  firstThird: 'c2',
-  secondThird: 'c1'
-};
-
 type PositionalPuzzleValIntersection = {
   [key: string]: Set<PuzzleVal>;
 };
-
-const positions: string[] = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
 type twoSquareIntersection = {
   [key: string]: Set<PuzzleVal>;
@@ -153,7 +123,6 @@ const poolPuzzleValsForSquaresInSameBoxSegmentCombinations = (
   boxLabel: string,
   doublePairMap: BoxSegmentCombinationPositionIntersectionMap,
   doublePairExcludedSetMap: BoxSegmentCombinationExcludedLabel,
-  filledSquares: FilledSquares,
   solveSquares: SolveSquares,
   twoSquareIntersections: PositionalPuzzleValIntersection
 ) => {
@@ -185,14 +154,6 @@ const poolPuzzleValsForSquaresInSameBoxSegmentCombinations = (
         });
       }
     });
-    // Remove any filledSquares value from the box in the combination[comboKey], as these are the
-    // results of wrong pencilSquares values from the user
-    for (const position of positions) {
-      const squareId = boxSquareIdsByPosition[boxLabel][position];
-      if (filledSquares[squareId]) {
-        combinations[comboKey].delete((filledSquares[squareId] as FilledSquare).puzzleVal);
-      }
-    }
   }
   // After this has been done for every comboKey, we're left with a combinations object that
   // includes keys 'firstSecond', 'firstThird', and 'secondThird' that include puzzleVals
@@ -263,7 +224,6 @@ const boxComboLabels = (boxLabelSet: string[]) => {
  * @returns
  */
 export const doublePairsRowOrColSolve = (
-  filledSquares: FilledSquares,
   solveSquares: SolveSquares,
   boxLabelSets: string[][],
   positionCombinations: PositionCombinations[],
@@ -299,7 +259,6 @@ export const doublePairsRowOrColSolve = (
         boxLabel,
         boxSegmentCombinationIntersectionMap,
         boxSegmentCombinationExcludedLabel,
-        filledSquares,
         solveSquares,
         boxTwoSquareIntersectionCache[boxLabel]
       );
@@ -378,7 +337,6 @@ export const doublePairsRowOrColSolve = (
  */
 export const doublePairsSolver: SolveTechnique = (filledSquares, solveSquares, solutionCache) => {
   let changeMade = doublePairsRowOrColSolve(
-    filledSquares,
     solveSquares,
     boxLabelRowSets,
     rowPositionCombinations,
@@ -388,7 +346,6 @@ export const doublePairsSolver: SolveTechnique = (filledSquares, solveSquares, s
   );
   if (!changeMade) {
     changeMade = doublePairsRowOrColSolve(
-      filledSquares,
       solveSquares,
       boxLabelColSets,
       colPositionCombinations,
