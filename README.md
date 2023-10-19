@@ -51,3 +51,11 @@ This project was made possible via the following technologies:
 - Ask for a hint: will highlight numbers that will lead to next definitive number to enter
 - User statistics
 - Tutorials for each solution technique
+
+
+Resources and credits:
+
+Icons for the application were sourced from the following websites:
+
+- <a href="https://www.flaticon.com/free-icons/sudoku" title="sudoku icons">Sudoku icons created by Freepik - Flaticon</a>
+- <a href="https://icons.getbootstrap.com/" title="bootstrap icons">Bootstraps Icons</a>
