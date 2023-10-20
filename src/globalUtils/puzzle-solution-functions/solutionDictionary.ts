@@ -7,13 +7,11 @@ import { singleCandidateSolver } from './singleCandidateSolver';
 import { candidateLinesSolver } from './candidateLinesSolver';
 import { doublePairsSolver } from './doublePairsSolver';
 import { multipleLinesSolver } from './multipleLinesSolver';
-import { nakedPairSolver } from './nakedPairSolver';
+import { nakedPairSolver, nakedTripleSolver, nakedQuadSolver } from './nakedSubsetSolver';
 import { hiddenPairSolver } from './hiddenPairSolver';
-import { nakedTripleSolver } from './nakedTripleSolver';
 import { hiddenTripleSolver } from './hiddenTripleSolver';
 import { xWingSolver } from './xWingSolver';
 import { forcingChainsSolver } from './forcingChainsSolver';
-import { nakedQuadSolver } from './nakedQuadSolver';
 import { hiddenQuadSolver } from './hiddenQuadSolver';
 import { swordfishSolver } from './swordfishSolver';
 
