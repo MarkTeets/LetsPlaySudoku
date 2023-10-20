@@ -15,6 +15,7 @@ import {
 import PuzzleContainer from './components/PuzzleContainer';
 import NumberSelectBar from './components/NumberSelectBar';
 import ToolBar from './components/ToolBar';
+import PuzzleStringDisplay from './components/PuzzleStringDisplay';
 // import SavedPuzzleGraphic from '../PuzzleSelect/components/SavedPuzzleGraphic';
 
 // Context
@@ -24,8 +25,6 @@ import { squareContext, pageContext } from '../../context';
 import { initializeSquaresForTestPage } from '../../utils/puzzle-state-management-functions/initialSquareStatePopulation';
 import { isPuzzleFinished } from '../../utils/puzzle-state-management-functions/isPuzzleFinished';
 import { onPuzzleKeyDown } from '../../utils/puzzle-state-management-functions/puzzleValueChange';
-// import { createProgressString } from
-// '../../utils/puzzle-state-management-functions/puzzleStringsFromSquares';
 // const lps = '100000000200111100300100100400111100511100111000101000000101110000000001000001110';
 // const lps2 = '100000000100111100100100100100111000111100111000101000000100110000000001000001110'
 
@@ -121,6 +120,7 @@ const PuzzlePageTest = () => {
           <PuzzleContainer key='PuzzleContainer' />
           <NumberSelectBar key='NumberSelectBar' />
           <ToolBar key='ToolBar' />
+          <PuzzleStringDisplay key='PuzzleStringDisplay' />
         </div>
       </div>
     </squareContext.Provider>
@@ -141,4 +141,5 @@ const emptyPuzzle = '0'.repeat(81);
 
 export const puzzleTestLoader = () => {
   return { puzzle: samplePuzzle1 };
+  // return { puzzle: emptyPuzzle };
 };
