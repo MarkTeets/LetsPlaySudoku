@@ -10,6 +10,6 @@ import Sample from '../Sample';
 it('Renders sample element', () => {
   render(<Sample />);
   const sampleElement = screen.getByText(/Sample div element/);
-  expect(sampleElement).toBeInTheDocument();
+  expect(sampleElement).not.toBeInTheDocument();
   // screen.debug();
 });
