@@ -21,10 +21,8 @@ This project was made possible via the following technologies:
 ![prettier](https://img.shields.io/badge/prettier-F7B93E?style=for-the-badge&logo=prettier&logoColor=black)
 ![Jest](https://img.shields.io/badge/-jest-%23C21325?style=for-the-badge&logo=jest&logoColor=white)
 ![Testing Library](https://img.shields.io/badge/RTL-E33332?style=for-the-badge&logo=testinglibrary&logoColor=white)
-
-<!-- Coming soon:
+![Docker](https://img.shields.io/badge/docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 ![Github Actions](https://img.shields.io/badge/Github&nbsp;Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)
-![Docker](https://img.shields.io/badge/docker-2496ED?style=for-the-badge&logo=docker&logoColor=white) -->
 
 ## Current features:
 
@@ -48,7 +46,6 @@ This project was made possible via the following technologies:
 
 - Choose puzzle based on difficulty and/or techniques required to solve
 - Ask for a hint: will highlight numbers that will lead to next definitive number to enter
-- User statistics
 - Tutorials for each solution technique
 
 
