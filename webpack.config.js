@@ -17,17 +17,26 @@ module.exports = {
       template: './src/client/index.html'
     })
   ],
+  mode: process.env.NODE_ENV,
 
   devServer: {
+    // Required for Docker to work with dev server
+    host: '0.0.0.0',
     // host: 'localhost',
     port: 8080,
+    //enable HMR on the devServer
+    hot: true,
+    // for react router
+    historyApiFallback: true,
 
     static: {
       // match the output path
-      directory: path.join(__dirname, '/dist')
+      directory: path.join(__dirname, '/dist'),
+      //match the output 'publicPath'
+      publicPath: '/'
     },
 
-    // headers: { 'Access-Control-Allow-Origin': '*' },
+    headers: { 'Access-Control-Allow-Origin': '*' },
 
     proxy: {
       '/api/**': {
@@ -38,12 +47,8 @@ module.exports = {
         target: 'http://localhost:3000/',
         secure: false
       }
-    },
-    // for react router
-    historyApiFallback: true
+    }
   },
-
-  mode: process.env.NODE_ENV,
 
   module: {
     rules: [

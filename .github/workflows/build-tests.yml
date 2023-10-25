@@ -1,0 +1,17 @@
+name: Build-tests
+
+on: 
+  push:
+  # Runs on pull requests to the default branch
+  # pull_request:
+  #   branches: ["main"]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  unit-testing:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker-compose -f docker-compose-test.yml up --abort-on-container-exit
