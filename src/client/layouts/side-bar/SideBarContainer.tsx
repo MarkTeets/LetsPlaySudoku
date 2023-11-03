@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import xSvg from '../../assets/x.svg';
+import listSvg from '../../assets/list.svg';
 
 // Types
 import { SideBarProps, SideBarContainerProps } from '../../frontendTypes';
@@ -37,9 +39,9 @@ const SideBarContainer = ({ SideBar }: SideBarContainerProps) => {
       >
         <button className='side-bar-button' onClick={switchSideBarExpanded}>
           {isSideBarExpanded ? (
-            <img src='/assets/x.svg' alt='X icon'></img>
+            <img src={xSvg} alt='X icon'></img>
           ) : (
-            <img src='/assets/list.svg' alt='list icon'></img>
+            <img src={listSvg} alt='list icon'></img>
           )}
         </button>
         <div className={`side-bar${isSideBarExpanded ? '' : ' is-height-collapsed'}`}>
