@@ -26,10 +26,12 @@ const SavedPuzzleMenu = () => {
         <Loading key='SavedPuzzleMenu-Loading' />
       ) : (
         <>
-          {<h2>{user?.displayName}&apos;s Saved Games</h2>}
-          <div className='centered-div'>
-            <h3>Choose a saved puzzle</h3>
-            {createPuzzleLinks(user)}
+          <div className='centering-div'>
+            {<h2>{user?.displayName}&apos;s Saved Games</h2>}
+            <div className='puzzle-select-menu'>
+              <h3>Choose a saved puzzle</h3>
+              {createPuzzleLinks(user)}
+            </div>
           </div>
         </>
       )}

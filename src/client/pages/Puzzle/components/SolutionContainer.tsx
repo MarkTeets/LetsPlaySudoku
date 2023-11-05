@@ -84,25 +84,31 @@ const SolutionContainer = () => {
   };
 
   return (
-    <>
-      <div>Solution Container</div>
-      <label>
-        Technique:{' '}
-        <select
-          onChange={(e) => setSelectedTechnique(e.currentTarget.value as 'any' | TechniqueString)}
-        >
-          <option value='any'>Any</option>
-          {techniqueOptions}
-        </select>
-      </label>
-      {/* <div>Hints</div>
-      <button>Find Next Case</button> {/* This button will highlight the numbers */}
-      {/* <button>Apply Technique</button>
-      <div>Solve</div> */}
-      <button onClick={applyTechniqueOnce}>Apply Technique Once</button>
-      <div>Last technique applied: {foundTechnique ? foundTechnique : 'None'}</div>
-      {/* <button>Apply as Many Times as Possible</button> */}
-    </>
+    <div className='centering-div'>
+      <div className='solution-container'>
+        <div className='solution-container__technique-applier'>
+          <label>
+            Technique:{' '}
+            <select
+              onChange={(e) =>
+                setSelectedTechnique(e.currentTarget.value as 'any' | TechniqueString)
+              }
+            >
+              <option value='any'>Any</option>
+              {techniqueOptions}
+            </select>
+          </label>
+          {/* <div>Hints</div>
+              <button>Find Next Case</button> {/* This button will highlight the numbers */}
+          {/* <button>Apply Technique</button>
+            <div>Solve</div> */}
+          <button onClick={applyTechniqueOnce}>Apply Technique Once</button>
+        </div>
+
+        <p>Last technique applied: {foundTechnique ? foundTechnique : 'None'}</p>
+        {/* <button>Apply as Many Times as Possible</button> */}
+      </div>
+    </div>
   );
 };
 

@@ -9,13 +9,12 @@
 
 html {
   background-color: $bodyColorTransparent;
-  // background-image: radial-gradient(ellipse at top left, $bodyColor, transparent 100%);
+  min-width: 250px;
 }
 
 body {
   min-height: 100vh;
   margin: 0;
-  // background-color: $bodyColor;
   background-image: radial-gradient(ellipse at top left, $bodyColor, transparent 100%);
   font-family: "Roboto", sans-serif;
   // font-family:'Lucinda Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
@@ -23,3 +22,6 @@ body {
   color: $textColor;
 }
 
+p {
+  margin: 0;
+}

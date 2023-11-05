@@ -2,12 +2,7 @@
   background-color: aqua;
   width: 100%;
   padding: 4px;
-  margin-bottom: 20px;
-}
-
-@mixin l-flex-row-justify-center {
-  display: flex;
-  justify-content: center;
+  margin-bottom: 15px;
 }
 
 @mixin l-flex-column-align-center {
@@ -16,10 +11,35 @@
   align-items: center;
 }
 
+@mixin l-menu-border {
+  border: $menuBorderColor groove 7px;
+  border-radius: 18px;
+}
+
+.centering-div {
+  @include l-flex-column-align-center;
+}
+
+@mixin l-flex-row-justify-center {
+  display: flex;
+  justify-content: center;
+}
+
+@mixin l-flex-row-justify-start {
+  display: flex;
+  justify-content: flex-start;
+}
+
 @mixin l-flex-column-align-right {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+}
+
+@mixin l-flex-column-align-left {
+  display: flex;
+  flex-direction: column;
+  align-items:flex-start;
 }
 
 .l-align-self-left {

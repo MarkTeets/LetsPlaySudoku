@@ -30,23 +30,23 @@ const PuzzleSelectViaFilters = () => {
 
   useEffect(() => {
     pageInfo.current = 'PuzzleSelectMenu';
-  }, []);
-
+  }, [pageInfo]);
+  /*
   const testClick = () => {
     navigate(`/${user.username}/puzzle/2`);
-    /* This works using the loaders as they're set-up
+    This works using the loaders as they're set-up
 
-      To make the switch from this shortcut to the second puzzle to what I'm looking for I'll have to:
-      Have a submit button attached to a submit method, wherein the submit method performs a fetch request
-      That comes back with a new puzzle. I'll then have to update both the user and the puzzleCollection to
-      include the new puzzle, and then I can't navigate yet because I can't change state and navigate in the same 
-      click.
-      I have to wait for state to be updated and then navigate using a useEffect. I'll probs update user's lastPuzzle, and
-      then navigate using that state as my param. Then PuzzlePage will use the state from user and puzzleCollection with said param to 
-      render the puzzle
-     */
+    To make the switch from this shortcut to the second puzzle to what I'm looking for I'll have to:
+    Have a submit button attached to a submit method, wherein the submit method performs a fetch 
+    request that comes back with a new puzzle. I'll then have to update both the user and the 
+    puzzleCollection to include the new puzzle, and then I can't navigate yet because I can't change
+    state and navigate in the same click. I have to wait for state to be updated and then navigate
+    using a useEffect. I'll probably update user's lastPuzzle, and then navigate using that state as
+    my param. Then PuzzlePage will use the state from user and puzzleCollection with said param to
+    render the puzzle
+     
   };
-
+  */
   return (
     <>
       <h1>New puzzle select</h1>
@@ -55,7 +55,7 @@ const PuzzleSelectViaFilters = () => {
         <button disabled>Easy</button>
         <button disabled>Medium</button>
         <button disabled>Hard</button>
-        <button onClick={testClick}>Random</button>
+        {/* <button onClick={testClick}>Random</button> */}
       </div>
       <h2>Puzzle Filters:</h2>
       <div className='puzzle-filters'>
@@ -138,7 +138,8 @@ export default PuzzleSelectViaFilters;
 //   let numberIsValid = false;
 //   let puzzleNumber;
 //   while (!numberIsValid) {
-//     puzzleNumber = Math.floor(Math.random() * (puzzleRangeEnd - puzzleRangeStart) + puzzleRangeStart);
+//     puzzleNumber =
+//      Math.floor(Math.random() * (puzzleRangeEnd - puzzleRangeStart) + puzzleRangeStart);
 //     if (!takenNumbers.has(puzzleNumber)) numberIsValid = true;
 //   }
 //   return puzzleNumber;

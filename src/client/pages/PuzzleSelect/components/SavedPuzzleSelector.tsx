@@ -21,9 +21,9 @@ const SavedPuzzleSelector = (props: PuzzleNumberProp) => {
   return (
     <>
       {typeof puzzleNumber === 'number' && user?.allPuzzles?.[puzzleNumber]?.progress ? (
-        <div>
+        <div className='saved-puzzle-select'>
           <div
-            className='saved-puzzle-link-and-graphic-div'
+            className='saved-puzzle-select__link-and-graphic'
             key={`saved-puzzle-${puzzleNumber}-link-div`}
           >
             <Link
@@ -34,12 +34,14 @@ const SavedPuzzleSelector = (props: PuzzleNumberProp) => {
             </Link>
             <SavedPuzzleGraphic progress={user.allPuzzles[puzzleNumber].progress} />
           </div>
-          <button
-            className='saved-puzzle-game-stats-button'
-            onClick={() => setShowGameStats(!showGameStats)}
-          >
-            Game Details
-          </button>
+          <div className='centering-div'>
+            <button
+              className='saved-puzzle-select__stats-button'
+              onClick={() => setShowGameStats(!showGameStats)}
+            >
+              Game Details
+            </button>
+          </div>
           {showGameStats && <GameStats {...props} />}
         </div>
       ) : (

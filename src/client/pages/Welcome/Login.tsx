@@ -49,29 +49,23 @@ const Login = () => {
   }, [newLoginData, setUser, setPuzzleCollection, pageInfo]);
 
   return (
-    <div className='login-page'>
-      <div className='login-container'>
-        <h2>Please Log In</h2>
-        <Form method='post' action='/login' className='login-form'>
-          <div className='centered-div'>
-            <label>
-              <span>Username</span>
-              <br />
-              <input type='username' name='username' placeholder='Enter your username' required />
-            </label>
-            <label>
-              <span>Password</span>
-              <br />
-              <input type='password' name='password' placeholder='Enter your password' required />
-            </label>
-            {newLoginData?.error && <p>{newLoginData.error}</p>}
-            <button className='login-button'>Login</button>
-          </div>
-        </Form>
-        <div>
-          No account? <Link to='/signUp'>Sign up</Link>
-        </div>
-      </div>
+    <div className='login'>
+      <h2 className='login__heading'>Please Log In</h2>
+      <Form className='login__form' method='post' action='/login'>
+        <label>
+          <p>Username</p>
+          <input type='username' name='username' placeholder='Enter your username' required />
+        </label>
+        <label>
+          <div>Password</div>
+          <input type='password' name='password' placeholder='Enter your password' required />
+        </label>
+        {newLoginData?.error && <p>{newLoginData.error}</p>}
+        <button className='login-button'>Login</button>
+      </Form>
+      <p>
+        No account? <Link to='/signUp'>Sign up</Link>
+      </p>
     </div>
   );
 };

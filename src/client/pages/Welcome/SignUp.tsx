@@ -37,31 +37,24 @@ const SignUp = () => {
   }, [newSignUpData, pageInfo, setUser]);
 
   return (
-    <div className='login-page'>
-      <div className='login-container'>
-        <h2>Create New Account</h2>
-        <Form method='post' action='/signUp' className='login-form'>
-          <div className='centered-div'>
-            <label>
-              <span>Username</span>
-              <br />
-              <input type='username' name='username' placeholder='Enter your username' required />
-            </label>
-            <label>
-              <span>Password</span>
-              <br />
-              <input type='password' name='password' placeholder='Enter your password' required />
-            </label>
-            <label>
-              <span>Site Display Name</span>
-              <br />
-              <input type='displayName' name='displayName' placeholder={'Optional'} />
-            </label>
-            {newSignUpData?.error && <p>{newSignUpData.error}</p>}
-            <button>Submit</button>
-          </div>
-        </Form>
-      </div>
+    <div className='login'>
+      <h2 className='login__heading'>Create New Account</h2>
+      <Form className='login__form' method='post' action='/signUp'>
+        <label>
+          <p>Username</p>
+          <input type='username' name='username' placeholder='Enter your username' required />
+        </label>
+        <label>
+          <p>Password</p>
+          <input type='password' name='password' placeholder='Enter your password' required />
+        </label>
+        <label>
+          <p>Site Display Name</p>
+          <input type='displayName' name='displayName' placeholder={'Optional'} />
+        </label>
+        {newSignUpData?.error && <p>{newSignUpData.error}</p>}
+        <button>Submit</button>
+      </Form>
     </div>
   );
 };

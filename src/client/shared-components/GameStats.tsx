@@ -23,7 +23,7 @@ const GameStats = ({ puzzleNumber }: PuzzleNumberProp) => {
   );
 
   return (
-    <div className='side-bar-section'>
+    <div className='game-stat-section'>
       {completePercent === 0 ? (
         <div className='side-bar-section__detail' style={{ width: '160px' }}>
           Start a puzzle to see its stats

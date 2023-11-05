@@ -10,8 +10,8 @@ const SiteInfo = () => {
         an account to save your progress on your puzzles and come back to them whenever you like.
       </p>
       <p className='site-info__par'>
-        These features are in development, but soon you&apos;ll be able to choose a puzzle to play
-        by difficulty or by a specific technique used to solve the puzzle.
+        Many features are in development! Soon you&apos;ll be able to choose a puzzle to play by
+        difficulty or by a specific technique used to solve the puzzle.
       </p>
     </div>
   );

@@ -106,7 +106,7 @@ $visitedLink: rgb(128, 179, 171);
 
 .current-square-outline {
   padding: 0;
-  border: $numberColor solid 2px;
+  border: lighten($numberColor, 10%) solid 2px;
 }
 
 .current-square-background {
@@ -148,7 +148,7 @@ $visitedLink: rgb(128, 179, 171);
   margin: 0 4px 12px;
   color: $puzzleButtonText;
   background-color: $puzzleButtonBackground;
-  font-size: max(16px, min(4vw, 20px));
+  font-size: max(16px, min(4vw, 19px));
   padding: 5px 12px;
   border-radius: 5px;
 }

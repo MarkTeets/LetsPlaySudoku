@@ -1,0 +1,18 @@
+.login {
+  @include l-flex-column-align-center;
+
+  &__heading {
+    margin: 0 0 10px 0;
+  }
+
+  &__form {
+    @include l-flex-column-align-center;
+    @include l-menu-border;
+    padding: 10px;
+    margin-bottom: 12px;
+
+    label {
+      margin-bottom: 12px;
+    }
+  }
+}

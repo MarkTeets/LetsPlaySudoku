@@ -1,7 +1,11 @@
-.saved-puzzle-link-and-graphic-div {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.saved-puzzle-select {
+  margin-bottom: 15px;
+
+  &__link-and-graphic {
+    @include l-flex-row-justify-center;
+    align-items: center;
+    margin-bottom: 8px;
+  }
 }
 
 .saved-puzzle-graphic {
@@ -10,20 +14,18 @@
   grid-template-columns: repeat(9, 1fr);
   width: max-content;
   margin-left: 20px;
-}
+  border: 1px black solid;
 
-.saved-puzzle-graphic .light-square {
-  width: 4px;
-  height: 4px;
-  background-color: $squareBackground;
-}
+  div {
+    width: 4px;
+    height: 4px;
+  }
 
-.saved-puzzle-graphic .dark-square {
-  width: 4px;
-  height: 4px;
-  background-color: $numberColor;
-}
+  .light-square {
+    background-color: $squareBackground;
+  }
 
-.saved-puzzle-game-stats-button {
-  width: 156px;
+  .dark-square {
+    background-color: $numberColor;
+  }
 }
