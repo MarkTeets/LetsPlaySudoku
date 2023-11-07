@@ -5,7 +5,7 @@ import { AutofillPencilSquares } from '../../frontendTypes';
 import { newSolveSquares } from '../../../globalUtils/puzzle-solution-functions/solutionFramework';
 import { updateSolveSquares } from '../../../globalUtils/puzzle-solution-functions/updateSolveSquares';
 import { updatePencilSquaresDuplicates } from './updateSquaresDuplicates';
-import { solveSquareToPencilSquares } from '../../../globalUtils/puzzle-solution-functions/solutionFramework';
+import { solveSquareToPencilSquares } from '../../../globalUtils/puzzle-solution-functions/solveSquaresConversion';
 
 /** autofillPencilSquares
  *

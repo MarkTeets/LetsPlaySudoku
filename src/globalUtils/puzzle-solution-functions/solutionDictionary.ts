@@ -8,11 +8,9 @@ import { candidateLinesSolver } from './candidateLinesSolver';
 import { doublePairsSolver } from './doublePairsSolver';
 import { multipleLinesSolver } from './multipleLinesSolver';
 import { nakedPairSolver, nakedTripleSolver, nakedQuadSolver } from './nakedSubsetSolver';
-import { hiddenPairSolver } from './hiddenPairSolver';
-import { hiddenTripleSolver } from './hiddenTripleSolver';
+import { hiddenPairSolver, hiddenTripleSolver, hiddenQuadSolver } from './hiddenSubsetSolver';
 import { xWingSolver } from './xWingSolver';
 import { forcingChainsSolver } from './forcingChainsSolver';
-import { hiddenQuadSolver } from './hiddenQuadSolver';
 import { swordfishSolver } from './swordfishSolver';
 
 export const solutionFunctionDictionary: SolutionFunctionDictionary = {

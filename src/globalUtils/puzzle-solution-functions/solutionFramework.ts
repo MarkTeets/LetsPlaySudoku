@@ -11,17 +11,17 @@ import {
   Puzzle
 } from '../../types';
 import {
-  PuzzleVal,
   FilledSquares,
   PencilSquares,
-  PencilSquare,
   SetPencilSquares,
-  SetFilledSquares,
-  PencilData
+  SetFilledSquares
 } from '../../client/frontendTypes';
 
 // Utilities
-import { allSquareIds } from '../../client/utils/puzzle-state-management-functions/squareIdsAndPuzzleVals';
+import {
+  puzzleVals,
+  allSquareIds
+} from '../../client/utils/puzzle-state-management-functions/squareIdsAndPuzzleVals';
 import { isPuzzleFinished } from '../../client/utils/puzzle-state-management-functions/isPuzzleFinished';
 import { filledSquaresFromString } from '../../client/utils/puzzle-state-management-functions/squaresFromPuzzleStrings';
 import {
@@ -30,6 +30,7 @@ import {
 } from '../../client/utils/puzzle-state-management-functions/updateSquaresDuplicates';
 import { deepCopyFilledSquares } from '../../client/utils/puzzle-state-management-functions/deepCopySquares';
 import { solutionFunctionDictionary } from './solutionDictionary';
+import { solveSquareToPencilSquares, pencilSquaresToSolveSquares } from './solveSquaresConversion';
 
 const printFilledSquaresKeys = (filledSquares: FilledSquares) => {
   const keys = [];
@@ -63,8 +64,6 @@ export const techniqueStrings: TechniqueString[] = [
   'hiddenQuad',
   'swordfish'
 ];
-
-const puzzleVals: PuzzleVal[] = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
 /** newSolveSquares
  *
@@ -125,7 +124,7 @@ export const newSolutionCache = () => {
 // singleCandidateSolver(sampleFilledSquares, newSolveSquares(), newSolutionCache());
 
 const defaultSolutionProcedure: SolutionProcedure = [
-  [solutionFunctionDictionary.singleCandidate, 81]
+  [solutionFunctionDictionary['singlePosition'], 81]
 ];
 
 /** solutionExecuter
@@ -199,60 +198,6 @@ export const puzzleSolver = (
   }
   // printFilledSquaresKeys(filledSquares);
   return changeMade;
-};
-
-/** solveSquareToPencilSquares
- *
- * Converts a solveSquares object to a pencilSquares object and returns it. This conversion sets
- * duplicate and highlight properties to false, they must be updated after this conversion in a
- * different function. solveSquare objects are similar to pencilSquares but are structured for
- * efficient puzzle solution functions rather than for displaying numbers on the frontend.
- *
- * @param solveSquares
- * @returns
- */
-export const solveSquareToPencilSquares = (solveSquares: SolveSquares) => {
-  const pencilSquares: PencilSquares = {};
-  for (const squareId of allSquareIds) {
-    if (solveSquares[squareId].size > 0) {
-      pencilSquares[squareId] = { size: 0 };
-      const pencilSquare = pencilSquares[squareId] as PencilSquare;
-      solveSquares[squareId].forEach((puzzleVal) => {
-        pencilSquare[puzzleVal] = {
-          duplicate: false,
-          highlightNumber: false
-        };
-        pencilSquare.size += 1;
-      });
-    }
-  }
-  return pencilSquares;
-};
-
-/** pencilSquaresToSolveSquares
- *
- * Converts a pencilSquares object to a solveSquares object and returns it. solveSquare objects are
- * similar to pencilSquares but are structured for efficient puzzle solution functions rather than
- * for displaying numbers on the frontend.
- *
- * @param pencilSquares
- * @returns
- */
-const pencilSquaresToSolveSquares = (pencilSquares: PencilSquares): SolveSquares => {
-  const solveSquares: SolveSquares = {};
-  for (const squareId of allSquareIds) {
-    solveSquares[squareId] = new Set();
-    if (pencilSquares[squareId]) {
-      for (const puzzleVal of puzzleVals) {
-        if (pencilSquares[squareId]?.[puzzleVal]) {
-          if (!((pencilSquares[squareId] as PencilSquare)[puzzleVal] as PencilData).duplicate) {
-            solveSquares[squareId].add(puzzleVal);
-          }
-        }
-      }
-    }
-  }
-  return solveSquares;
 };
 
 /** puzzleSolveOnce
