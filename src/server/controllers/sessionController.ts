@@ -15,10 +15,10 @@ import {
 import controllerErrorMaker from '../utils/controllerErrorMaker';
 const createErr: CustomErrorGenerator = controllerErrorMaker('sessionController');
 
-//---START SESSION --------------------------------------------------------------------------------------------------------------------------
+//---START SESSION ---------------------------------------------------------------------------------
 
 const startSession: RequestHandler = async (req, res, next) => {
-  // Make sure login/signup was successful and userDocument exists
+  // Make sure login/sign-up was successful and userDocument exists
   if (res.locals.status !== 'validUser' || res.locals.userDocument === null) {
     return next();
   }
@@ -50,9 +50,9 @@ const startSession: RequestHandler = async (req, res, next) => {
   }
 };
 
-//---IS LOGGED IN --------------------------------------------------------------------------------------------------------------------------
+//---FIND SESSION ----------------------------------------------------------------------------------
 
-const isLoggedIn: RequestHandler = async (req, res, next) => {
+const findSession: RequestHandler = async (req, res, next) => {
   const cookieId = req.cookies.ssid;
 
   // See if ssid cookie exists, if not redirect to no session path
@@ -75,7 +75,7 @@ const isLoggedIn: RequestHandler = async (req, res, next) => {
   } catch (err) {
     return next(
       createErr({
-        method: 'isLoggedIn',
+        method: 'findSession',
         overview: 'finding session document for user',
         status: 400,
         err
@@ -84,9 +84,9 @@ const isLoggedIn: RequestHandler = async (req, res, next) => {
   }
 };
 
-//---LOG OUT --------------------------------------------------------------------------------------------------------------------------
+//---DELETE SESSION --------------------------------------------------------------------------------
 
-const logOut: RequestHandler = async (req, res, next) => {
+const deleteSession: RequestHandler = async (req, res, next) => {
   // Make sure getUser was successful and userDocument exists
   if (res.locals.userDocument === null) {
     res.locals.frontendData = { status: 'userNotFound' };
@@ -104,7 +104,7 @@ const logOut: RequestHandler = async (req, res, next) => {
     if (deletedSession === null) {
       return next(
         createErr({
-          method: 'logOut',
+          method: 'deleteSession',
           overview: 'deleting session document for user',
           status: 400,
           err: `findOneAndDelete query for user ${res.locals.userDocument.username} returned null`
@@ -119,7 +119,7 @@ const logOut: RequestHandler = async (req, res, next) => {
   } catch (err) {
     return next(
       createErr({
-        method: 'logOut',
+        method: 'deleteSession',
         overview: 'deleting session document for user',
         status: 400,
         err
@@ -128,6 +128,6 @@ const logOut: RequestHandler = async (req, res, next) => {
   }
 };
 
-const sessionController: SessionController = { startSession, isLoggedIn, logOut };
+const sessionController: SessionController = { startSession, findSession, deleteSession };
 
 export default sessionController;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 // Types
 import { SquareId, BoxUnitContainerProps, SquareContainerProps } from '../../../frontendTypes';
@@ -8,7 +8,8 @@ import SquareContainer from './SquareContainer';
 
 // Main Component
 const BoxUnitContainer = ({ boxUnit }: BoxUnitContainerProps) => {
-  return <div className='box-unit-container'>{generateSquares(boxUnit)}</div>;
+  const generatedSquares = useMemo(() => generateSquares(boxUnit), [boxUnit]);
+  return <div className='box-unit-container'>{generatedSquares}</div>;
 };
 
 export default BoxUnitContainer;
@@ -16,14 +17,11 @@ export default BoxUnitContainer;
 // Helper Functions
 function generateSquares(boxUnit: Set<SquareId>): React.JSX.Element[] {
   const squares = [] as React.JSX.Element[];
-  let position = 1;
   boxUnit.forEach((squareId) => {
     const squareContainerProps: SquareContainerProps = {
-      squareId,
-      squareClasses: `square-display square-${position}`
+      squareId
     };
     squares.push(<SquareContainer key={`Square-${squareId}`} {...squareContainerProps} />);
-    position += 1;
   });
   return squares;
 }

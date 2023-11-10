@@ -1,11 +1,13 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 
 // Types
 import {
   SquareId,
+  ClickedSquare,
   OnSquareClick,
   SquareContainerProps,
   SquareContextValue,
+  GameSettingContextValue,
   SquareProps
 } from '../../../frontendTypes';
 
@@ -15,35 +17,29 @@ import PencilSquareDisplay from './PencilSquareDisplay';
 import EmptySquareDisplay from './EmptySquareDisplay';
 
 // Context
-import { squareContext } from '../../../context';
+import { squareContext, gameSettingsContext } from '../../../context';
 
 // Utilities
-import { allPeers } from '../../../utils/squares';
+import { allPeers } from '../../../utils/puzzle-state-management-functions/makeAllPeers';
 
 // Main Component
-const SquareContainer = (props: SquareContainerProps) => {
-  const { squareId, squareClasses } = props;
+const SquareContainer = ({ squareId }: SquareContainerProps) => {
   const { clickedSquare, setClickedSquare, filledSquares, pencilSquares } =
     useContext<SquareContextValue>(squareContext);
+  const { highlightPeers } = useContext<GameSettingContextValue>(gameSettingsContext);
+  const squareClasses = useMemo(
+    () => generateSquareClasses(squareId, clickedSquare, highlightPeers),
+    [squareId, clickedSquare, highlightPeers]
+  );
 
   const onSquareClick: OnSquareClick = (event) => {
     setClickedSquare(event.currentTarget.dataset.square as SquareId);
     // console.log('clickedSquare:', event.currentTarget.dataset.square);
   };
 
-  let classes = squareClasses;
-  if (clickedSquare) {
-    if (squareId === clickedSquare) {
-      classes += ' current-square';
-    }
-    if (allPeers[squareId].has(clickedSquare)) {
-      classes += ' current-peer';
-    }
-  }
-
   const squareProps: SquareProps = {
     squareId,
-    squareClasses: classes,
+    squareClasses,
     onSquareClick
   };
 
@@ -59,3 +55,22 @@ const SquareContainer = (props: SquareContainerProps) => {
 };
 
 export default SquareContainer;
+
+// Helper Function
+const generateSquareClasses = (
+  squareId: SquareId,
+  clickedSquare: ClickedSquare,
+  highlightPeers: boolean
+) => {
+  let squareClasses = 'square-container';
+  if (clickedSquare) {
+    if (squareId === clickedSquare) {
+      squareClasses += ' current-square-outline';
+      if (highlightPeers) squareClasses += ' current-square-background';
+    }
+    if (highlightPeers && allPeers[squareId].has(clickedSquare)) {
+      squareClasses += ' current-peer';
+    }
+  }
+  return squareClasses;
+};

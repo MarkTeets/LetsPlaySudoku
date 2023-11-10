@@ -1,66 +1,51 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useLoaderData } from 'react-router-dom';
 
 // Types
 import {
+  InitialSquares,
   FilledSquares,
   PencilSquares,
-  NumberSelectBarProps,
+  ClickedSquare,
   SquareContextValue,
-  ClickedSquare
+  PageContextValue
 } from '../../frontendTypes';
 
 // Components
 import PuzzleContainer from './components/PuzzleContainer';
 import NumberSelectBar from './components/NumberSelectBar';
+import ToolBar from './components/ToolBar';
+import PuzzleStringDisplay from './components/PuzzleStringDisplay';
+// import SavedPuzzleGraphic from '../PuzzleSelect/components/SavedPuzzleGraphic';
 
 // Context
-import { squareContext } from '../../context';
+import { squareContext, pageContext } from '../../context';
 
 // Utilities
-import {
-  filledSquaresFromString,
-  handleFirstPencilSquaresDuplicates,
-  pencilSquaresFromString,
-  isPuzzleFinished,
-  autofillPencilSquares
-} from '../../utils/squares';
-import { onPuzzleKeyDown } from './PuzzlePage';
-import {
-  SolutionProcedure,
-  puzzleSolver,
-  singleCandidateSolver,
-  soltutionExecuter
-} from '../../utils/solutionFunctions';
-// const savePuzzle = savePuzzleAtLeastOnce();
+import { initializeSquaresForTestPage } from '../../utils/puzzle-state-management-functions/initialSquareStatePopulation';
+import { isPuzzleFinished } from '../../utils/puzzle-state-management-functions/isPuzzleFinished';
+import { onPuzzleKeyDown } from '../../utils/puzzle-state-management-functions/puzzleValueChange';
+// const lps = '100000000200111100300100100400111100511100111000101000000101110000000001000001110';
+// const lps2 = '100000000100111100100100100100111000111100111000101000000100110000000001000001110'
 
 // Main Component
 const PuzzlePageTest = () => {
   const puzzleData = useLoaderData() as { puzzle: string };
+  const { pageInfo } = useContext<PageContextValue>(pageContext);
   const [pencilMode, setPencilMode] = useState<boolean>(false);
   const [clickedSquare, setClickedSquare] = useState<ClickedSquare>(null);
-  const keepSquareFocus = useRef<boolean>(false);
 
-  // This implementation will calculate the initialState the first time the page loads, and then each
-  // time reset is pressed it will skip recaluclating and just use the initialFilledSquares value
-  const [initialFilledSquares, setInitialFilledSquares] = useState<FilledSquares>(
-    filledSquaresFromString(puzzleData.puzzle)
+  // initialSquares acts as a cache so that all square objects can be simultaneously calculated
+  // with their duplicates accounted for before the first render without repeating calculations
+  const [initialSquares, setInitialSquares] = useState<InitialSquares>(() =>
+    initializeSquaresForTestPage(puzzleData.puzzle)
   );
-  const [pencilSquares, setPencilSquares] = useState<PencilSquares>(pencilSquaresFromString());
-
-  // The firstFilledSquares function compares the original puzzle string to a user's progress string.
-  // If they're the same, it returns the initialFilledSquares object
-  // If they're different, it returns a deepCopy of the the initialFilledSquares object with updated puzzleVals
-  // By doing it in a two step process, every non-zero puzzle value in the initialFilledSquares object will have a
-  // true "fixedVal" property, and any updates from the progress string don't.
-  const [filledSquares, setFilledSquares] = useState<FilledSquares>(initialFilledSquares);
-
-  // For tracking renders:
-  // const renderCount = useRef(1);
+  const [filledSquares, setFilledSquares] = useState<FilledSquares>(initialSquares.filledSquares);
+  const [pencilSquares, setPencilSquares] = useState<PencilSquares>(initialSquares.pencilSquares);
 
   useEffect(() => {
-    handleFirstPencilSquaresDuplicates(filledSquares, pencilSquares, setPencilSquares);
-  }, []);
+    pageInfo.current = 'PuzzlePage';
+  }, [pageInfo]);
 
   // Checks to see if user has solved puzzle on each allSquares update
   useEffect(() => {
@@ -68,110 +53,58 @@ const PuzzlePageTest = () => {
     if (isPuzzleFinished(filledSquares)) {
       const clear = setTimeout(() => {
         alert('You finished the puzzle!');
-      }, 0);
+      }, 100);
       return () => clearTimeout(clear);
     }
   }, [filledSquares]);
 
+  // For tracking renders:
+  // const renderCount = useRef(1);
   // useEffect(() => {
-  //   console.log('Puzzle Page render number:', renderCount.current);
+  //   console.log('PuzzlePage render:', renderCount.current);
   //   renderCount.current += 1;
   // });
 
-  const setSquareFocusTrue = (): void => {
-    keepSquareFocus.current = true;
+  /** removeClickedSquareOnPuzzlePageBlur
+   *
+   * If a blur event is triggered for the puzzle-page-container, this function ensures that
+   * clickedSquare is set to null only if the user clicked outside of puzzle-page-container.
+   *
+   * @param e - React.FocusEvent
+   */
+  const removeClickedSquareOnPuzzlePageBlur = (e: React.FocusEvent): void => {
+    /**
+     * e.currentTarget is the element with the listener attached to it, aka puzzle-page-container.
+     * e.relatedTarget is the element that triggers the blur event, aka the element clicked on.
+     * e.currentTarget.contains(e.relatedTarget) will be true changing focus within the
+     * puzzle-page-container; e.currentTarget === e.relatedTarget will be true if transitioning
+     * from focusing on a button to the puzzle-page-container
+     */
+    if (!(e.currentTarget === e.relatedTarget || e.currentTarget.contains(e.relatedTarget))) {
+      setClickedSquare(null);
+    }
   };
 
-  const onPuzzleContainerBlur = (): void => {
-    if (!keepSquareFocus.current) setClickedSquare(null);
-  };
-
-  const setSquareFocusFalse = (): void => {
-    keepSquareFocus.current = false;
-  };
-
-  const pencilModeSwitch = () => {
-    setPencilMode(!pencilMode);
-  };
-
-  const onAutofillPencilClick = () => {
-    autofillPencilSquares(filledSquares, setPencilSquares);
-  };
-
-  const resetPuzzle = (): void => {
-    setFilledSquares(initialFilledSquares);
-    setPencilSquares(pencilSquaresFromString());
-    setClickedSquare(null);
-    setPencilMode(false);
-  };
-
-  const SquareContextValue: SquareContextValue = {
+  const squareContextValue: SquareContextValue = {
+    puzzleNumber: 0,
     clickedSquare,
     setClickedSquare,
-    filledSquares,
-    pencilSquares
-  };
-
-  const numberSelectBarProps: NumberSelectBarProps = {
+    initialSquares,
     pencilMode,
-    clickedSquare,
+    setPencilMode,
     filledSquares,
     setFilledSquares,
     pencilSquares,
     setPencilSquares
   };
 
-  const puzzleButtonClass = 'puzzle-button';
-
-  let pencilClasses = puzzleButtonClass;
-  if (pencilMode) {
-    pencilClasses += ' highlight-number-button';
-  }
-
-  // const solveOneSingleCandidate = () => {
-  //   const singleCandidateOnce: SolutionProcedure = [[singleCandidateSolver, 1]];
-
-  //   // console.log("allSquares['A7'].puzzleVal", allSquares['A7'].puzzleVal);
-  //   const newAllSquares = deepCopyAllSquares(allSquares);
-  //   // console.log('deep copy made');
-  //   if (possibleValUpdateViaPuzzleValue(newAllSquares)) {
-  //     // console.log('updated possible vals');
-  //   }
-  //   if (soltutionExecuter(newAllSquares, singleCandidateOnce[0])) {
-  //     // console.log('Change made by solution executer');
-  //     findDuplicates(newAllSquares);
-  //     setAllSquares(newAllSquares);
-  //     // console.log('set new allSquares');
-  //   }
-  // };
-
-  // const solveAsMuchAsPossible = () => {
-  //   const newAllSquares = deepCopyAllSquares(allSquares);
-  //   if (puzzleSolver(newAllSquares)) {
-  //     setAllSquares(newAllSquares);
-  //     // console.log('Changed made via puzzleSolver');
-  //   }
-  // };
-
   return (
-    <squareContext.Provider value={SquareContextValue}>
-      {/* puzzle-page div is here to reduce the size of the puzzle-page-container for the onBlur event*/}
-      <div id='puzzle-page'>
+    <squareContext.Provider value={squareContextValue}>
+      <div className='puzzle-page-centerer'>
         <div
-          id='puzzle-page-container'
+          className='puzzle-page-container'
           tabIndex={0}
-          // onPuzzleContainerBlur will remove the current clicked square if the user clicks elsewhere on the screen.
-          // The onMouseDown and onClick events are used to track whether or not the blur event was caused by a click
-          // on a button within "puzzle-page-container", and if so to avoid setting clickedSquare to null.
-          // For example, if the user clicks a square (setting clickedSquare to its squareId) and then they click a number button:
-          // 1. onMouseDown will fire setting keepSquareFocus.current to true
-          // 2. onBlur event for the puzzle-page-container will fire as focus is shifting to the specific number button, but
-          //    onPuzzleContainerBlur will not set clickedSquare to null as keepSquareFocus.current is true
-          // 3. onClick event for the puzzle-page-container sets keepSquareFocus.current to false so if the
-          //    next click isn't in puzzle-page-container, onPuzzleContainerBlur can set clickedSquare to null
-          onMouseDown={setSquareFocusTrue}
-          onBlur={onPuzzleContainerBlur}
-          onClick={setSquareFocusFalse}
+          onBlur={removeClickedSquareOnPuzzlePageBlur}
           onKeyDown={(event) =>
             onPuzzleKeyDown(
               event,
@@ -185,27 +118,9 @@ const PuzzlePageTest = () => {
           }
         >
           <PuzzleContainer key='PuzzleContainer' />
-          <NumberSelectBar key='NumberSelectBar' {...numberSelectBarProps} />
-          <div className='button-container'>
-            <button onClick={pencilModeSwitch} className={pencilClasses}>
-              Pencil Mode
-            </button>
-            <button onClick={onAutofillPencilClick} className={puzzleButtonClass}>
-              Auto-fill Pencil
-            </button>
-            {/* <button onClick={onSaveClick}>Save</button> */}
-            <button onClick={resetPuzzle} className={puzzleButtonClass}>
-              Reset
-            </button>
-            <button
-              onClick={() => alert('Game Data feature is currently being built')}
-              className={puzzleButtonClass}
-            >
-              Game Data
-            </button>
-            {/* <button onClick={solveOneSingleCandidate}>Solve one square via Single Candidate</button>
-        <button onClick={solveAsMuchAsPossible}>Solve as much as possible</button> */}
-          </div>
+          <NumberSelectBar key='NumberSelectBar' />
+          <ToolBar key='ToolBar' />
+          <PuzzleStringDisplay key='PuzzleStringDisplay' />
         </div>
       </div>
     </squareContext.Provider>
@@ -214,13 +129,19 @@ const PuzzlePageTest = () => {
 
 export default PuzzlePageTest;
 
-//---- HELPER FUNCTIONS --------------------------------------------------------------------------------------------------------------
+//---- HELPER FUNCTIONS ----------------------------------------------------------------------------
 
-const samplePuzzle1 =
-  '070000043040009610800634900094052000358460020000800530080070091902100005007040802';
-// const samplePuzzle2 = '679518243543729618821634957794352186358461729216897534485276391962183475137945860';
-// const sampleSolution1 = '679518243543729618821634957794352186358461729216897534485276391962183475137945862';
+// const samplePuzzle1 =
+//   '070000043040009610800634900094052000358460020000800530080070091902100005007040802';
+// const samplePuzzle2 =
+// '679518243543729618821634957794352186358461729216897534485276391962183475137945860';
+// const sampleSolution1 =
+// '679518243543729618821634957794352186358461729216897534485276391962183475137945862';
+// const tripleHiddenExample =
+//   '528600049136490025794205630000100200007826300002509060240300976809702413070904582';
+const emptyPuzzle = '0'.repeat(81);
 
 export const puzzleTestLoader = () => {
-  return { puzzle: samplePuzzle1 };
+  // return { puzzle: tripleHiddenExample };
+  return { puzzle: emptyPuzzle };
 };

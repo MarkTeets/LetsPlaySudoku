@@ -3,8 +3,8 @@ import { Schema, model } from 'mongoose';
 // Types
 import { Puzzle } from '../../types';
 
-// Each puzzle document will include the following details. The names of different techniques denotes
-// if said technique is required to solve the puzzle
+// Each puzzle document will include the following details. The names of different techniques
+// denotes if said technique is required to solve the puzzle
 
 const puzzleSchema = new Schema<Puzzle>({
   puzzleNumber: Number,

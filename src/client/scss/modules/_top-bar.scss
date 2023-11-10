@@ -1,0 +1,21 @@
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+
+  &__left, &__right {
+    display: flex;
+    align-items: center;
+  }
+
+  &__sudoku-icon {
+    height: 40px;
+    width: 40px;
+    margin: 4px;
+  }
+
+  &__page-title{
+    margin: $sideSpaceMargin;
+    font-size: max(16px, min(5vw, 24px));
+    text-wrap: nowrap;
+  }
+}

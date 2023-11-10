@@ -1,0 +1,10 @@
+# An image was made with this Dockerfile with the name "markteetsdev/sudoku-dev"
+
+# The image created from this Dockerfile is essentially an environment to run any 
+# of the package.json script commands via docker-compose files
+FROM node:18.13
+RUN npm install -g webpack
+WORKDIR /usr/src/app
+COPY package*.json /usr/src/app
+RUN npm install
+EXPOSE 3000

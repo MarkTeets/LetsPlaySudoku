@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 
 // Types
 import {
@@ -8,24 +8,30 @@ import {
   PencilSquares,
   PencilSquare,
   PencilData,
-  SquareContextValue
+  SquareContextValue,
+  GameSettingContextValue
 } from '../../../frontendTypes';
 
 // Context
-import { squareContext } from '../../../context';
+import { squareContext, gameSettingsContext } from '../../../context';
 
 // Main Component
 const PencilSquareDisplay = (props: SquareProps) => {
   const { squareId, squareClasses, onSquareClick } = props;
   const { pencilSquares } = useContext<SquareContextValue>(squareContext);
+  const { showDuplicates } = useContext<GameSettingContextValue>(gameSettingsContext);
+  const pencilSquareGrid = useMemo(
+    () => makePencilGrid(squareId, pencilSquares, showDuplicates),
+    [squareId, pencilSquares, showDuplicates]
+  );
 
   return (
     <div
-      className={`pencil-square ${squareClasses}`}
+      className={`${squareClasses} pencil-square`}
       data-square={squareId}
       onClick={(event) => onSquareClick(event)}
     >
-      {makePencilGrid(squareId, pencilSquares)}
+      {pencilSquareGrid}
     </div>
   );
 };
@@ -35,7 +41,7 @@ export default PencilSquareDisplay;
 // Helper Functions
 const puzzleVals: PuzzleVal[] = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
-function makePencilGrid(squareId: SquareId, pencilSquares: PencilSquares) {
+function makePencilGrid(squareId: SquareId, pencilSquares: PencilSquares, showDuplicates: boolean) {
   const pencilSquare = pencilSquares[squareId] as PencilSquare;
   const pencilGrid: React.JSX.Element[] = [];
   if (pencilSquare.size === 0) {
@@ -46,7 +52,7 @@ function makePencilGrid(squareId: SquareId, pencilSquares: PencilSquares) {
     let classes = 'pencil-val-div';
     if (pencilSquare[puzzleVal]) {
       const pencilData = pencilSquare[puzzleVal] as PencilData;
-      if (pencilData.duplicate) {
+      if (showDuplicates && pencilData.duplicate) {
         classes += ' duplicate-number';
       }
       pencilGrid.push(

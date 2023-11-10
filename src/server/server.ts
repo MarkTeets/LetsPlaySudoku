@@ -1,6 +1,8 @@
 import express, { NextFunction, Request, Response } from 'express';
 import cookieParser from 'cookie-parser';
 import mongoose, { Error } from 'mongoose';
+import path from 'path';
+import logger from 'morgan';
 import usersRouter from './routes/userRouter';
 import puzzleRouter from './routes/puzzleRouter';
 import { CustomErrorOutput } from './backendTypes';
@@ -23,15 +25,19 @@ mongoose
   .then(() => console.log('Connected to Mongo DB!'))
   .catch((err) => console.log('Database error: ', err.message));
 
+app.use(logger(':date[web] :method :url :status :response-time ms - :res[content-length]'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+// This first express.static will serve the bundled version of the frontend at dist/index.html when
+// a browser request is made to localhost:3000. Used for Docker, so the server can run with this
+// saved version of the frontend
+app.use(express.static(path.join(__dirname, '../../dist/')));
+app.use('/assets', express.static(path.join(__dirname, '../client/assets')));
 
 app.use('/api/user', usersRouter);
 
 app.use('/api/puzzle', puzzleRouter);
-
-app.get('/favicon.ico', (req: Request, res: Response) => res.status(204));
 
 app.use('/', (req: Request, res: Response) => {
   res.status(404).send('Nothing to see here!');

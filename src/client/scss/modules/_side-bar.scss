@@ -1,0 +1,95 @@
+.side-bar-button {
+  padding: 2px 4px;
+  margin: 6px 10px;
+  width: 32px;
+  height: 32px;
+
+  img {
+    height: 24px;
+    width: 24px;
+    margin-left: -2px;
+  }
+}
+
+.side-bar {
+  position: absolute;
+  margin-top: 4px;
+  right: $sideSpaceMargin;
+  max-height: max-content;
+  overflow: hidden;
+  background-color: #d3d8d7;
+  border-radius: 5px;
+  box-shadow: 2px 2px 6px grey;
+  border: 1px solid grey;
+
+  &.is-height-collapsed {
+    border: none;
+  }
+
+  :first-child .side-bar-section-container__button {
+    border-top: none;
+  }
+}
+
+.side-bar-section-container {
+  @include l-flex-column-align-right;
+
+  &__button {
+    cursor: pointer;
+    width: 100%;
+    font-size: 16px;
+    padding: 4px 0;
+    border-width: 1px;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    background-color: #efefef;
+
+    &:hover {
+      background-color: #e5e2e2;
+    }
+  }
+}
+
+.side-bar-section {
+  @include l-flex-column-align-right;
+  max-height: 400px;
+  transition: all 0.75s ease-in-out;
+  overflow: hidden;
+  width: 100%;
+
+  &__nav-link {
+    color: $numberColor;
+    padding: 4px 5px;
+    width: 100%;
+    text-align: right;
+    text-decoration: none;
+
+    &:hover,
+    &.active {
+      background-color: $nav-link-background;
+    }
+  }
+
+  &__detail {
+    color: $numberColor;
+    padding: 4px 5px;
+
+    input {
+      vertical-align: middle;
+      margin: 0 0 0 7px;
+    }
+  }
+}
+
+.game-stat-section {
+  ul {
+    margin: 0;
+    padding: 0px 0px 0px 30px;
+  }
+
+  li {
+    padding: 2px 0px;
+    color: $numberColor;
+  }
+}

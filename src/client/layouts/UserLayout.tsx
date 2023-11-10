@@ -1,80 +1,36 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { NavLink, Outlet } from 'react-router-dom';
+import React, { useEffect, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // Types
-import { UserContextValue } from '../frontendTypes';
+import { UserContextValue, PuzzleCollectionContextValue } from '../frontendTypes';
+
+// Components
+import TopBar from './TopBar';
+import UserSideBar from './side-bar/UserSideBar';
 
 // Context
-import { userContext } from '../context';
+import { userContext, puzzleCollectionContext } from '../context';
+
+// Utils
+import signInWithSession from '../utils/signInWithSession';
 
 // Main Component
 const UserLayout = () => {
+  const navigate = useNavigate();
   const { user, setUser } = useContext<UserContextValue>(userContext);
-  const [puzzleSelectMenuURL, setPuzzleSelectMenuURL] = useState<string>(
-    user === null ? '/' : `/${encodeURIComponent(user.username)}`
-  );
-  const [lastPuzzleURL, setlastPuzzleURL] = useState<string>(
-    user === null ? '/' : `/${encodeURIComponent(user.username)}/play/${user.lastPuzzle}`
-  );
+  const { setPuzzleCollection } = useContext<PuzzleCollectionContextValue>(puzzleCollectionContext);
 
   useEffect(() => {
-    if (user?.username) {
-      setPuzzleSelectMenuURL(`/${encodeURIComponent(user.username)}`);
-      setlastPuzzleURL(`/${encodeURIComponent(user.username)}/play/${user.lastPuzzle}`);
-    } else {
-      setPuzzleSelectMenuURL('/');
-      setlastPuzzleURL('/');
+    if (!user) {
+      signInWithSession(setUser, setPuzzleCollection).then((successfulSignIn) => {
+        if (!successfulSignIn) {
+          navigate('/');
+        }
+      });
     }
-  }, [user]);
+  }, [user, setUser, setPuzzleCollection, navigate]);
 
-  const logoutUser = async () => {
-    if (!user) return;
-
-    const res = await fetch('/api/user/delete-session', {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        username: user.username
-      })
-    });
-    setUser(null);
-    if (res.ok) {
-      // console.log('Successfully deleted session');
-    }
-  };
-
-  return (
-    <div className='welcome-layout root-layout'>
-      <header>
-        <nav id='main-nav'>
-          <h2 id='lets-play'>Let&apos;s Play Sudoku!</h2>
-          <NavLink to={puzzleSelectMenuURL} className='nav-link' end>
-            Puzzle Select Menu
-          </NavLink>
-          {user && user.lastPuzzle > 0 && (
-            <NavLink to={lastPuzzleURL} className='nav-link'>
-              Puzzle
-            </NavLink>
-          )}
-          {/* <NavLink to='playTest' className='nav-link'>
-            Play Test
-          </NavLink> */}
-          {user?.username !== 'guest' ? (
-            <NavLink to='/' className='nav-link' onClick={logoutUser}>
-              Log out
-            </NavLink>
-          ) : (
-            <NavLink to='/' className='nav-link'>
-              Return home
-            </NavLink>
-          )}
-        </nav>
-      </header>
-      <main>
-        <Outlet />
-      </main>
-    </div>
-  );
+  return <TopBar SideBar={UserSideBar} />;
 };
 
 export default UserLayout;

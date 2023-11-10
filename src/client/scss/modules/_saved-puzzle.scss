@@ -1,0 +1,31 @@
+.saved-puzzle-select {
+  margin-bottom: 15px;
+
+  &__link-and-graphic {
+    @include l-flex-row-justify-center;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+}
+
+.saved-puzzle-graphic {
+  display: grid;
+  grid-template-rows: repeat(9, 1fr);
+  grid-template-columns: repeat(9, 1fr);
+  width: max-content;
+  margin-left: 20px;
+  border: 1px black solid;
+
+  div {
+    width: 4px;
+    height: 4px;
+  }
+
+  .light-square {
+    background-color: $squareBackground;
+  }
+
+  .dark-square {
+    background-color: $numberColor;
+  }
+}

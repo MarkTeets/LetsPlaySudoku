@@ -6,7 +6,7 @@ import puzzleController from '../controllers/puzzleController';
 import cookieController from '../controllers/cookieController';
 import sessionController from '../controllers/sessionController';
 
-userRouter.post('/signup',
+userRouter.post('/sign-up',
   userController.getUser,
   userController.createUser,
   userController.cleanUser,
@@ -30,7 +30,7 @@ userRouter.post('/login',
 );
 
 userRouter.get('/resume-session',
-  sessionController.isLoggedIn,
+  sessionController.findSession,
   userController.getUser,
   userController.cleanUser,
   puzzleController.getUserPuzzles,
@@ -46,11 +46,14 @@ userRouter.get('/no-session',
   }
 );
 
-userRouter.delete('/delete-session',
+userRouter.delete('/log-out',
   userController.getUser,
-  sessionController.logOut,
+  // Need to play with the statuses here,
+  // both saveUser and deleteSession set status to valid on res.locals.frontendData
+  userController.saveUser,
+  sessionController.deleteSession,
+  cookieController.deleteSSIDCookie,
   (req: Request, res: Response) => {
-    res.clearCookie('ssid');
     res.status(200).json(res.locals.frontendData);
   }
 );
@@ -58,6 +61,14 @@ userRouter.delete('/delete-session',
 userRouter.post('/save-puzzle',
   userController.getUser,
   userController.savePuzzle,
+  (req: Request, res: Response) => {
+    res.status(200).json(res.locals.frontendData);
+  }
+);
+
+userRouter.post('/save-user',
+  userController.getUser,
+  userController.saveUser,
   (req: Request, res: Response) => {
     res.status(200).json(res.locals.frontendData);
   }

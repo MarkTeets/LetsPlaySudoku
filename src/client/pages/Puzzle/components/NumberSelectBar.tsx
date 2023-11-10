@@ -1,18 +1,16 @@
-import React from 'react';
+import React, { useContext, useMemo } from 'react';
 
 // Types
-import {
-  PuzzleVal,
-  OnNumberClick,
-  NumberSelectBarProps,
-  MakeButtons
-} from '../../../frontendTypes';
+import { PuzzleVal, MakeButtons, SquareContextValue } from '../../../frontendTypes';
+
+// Context
+import { squareContext } from '../../../context';
 
 //Utilities
-import { onNumberChange } from '../../../utils/squares';
+import { onNumberClick } from '../../../utils/puzzle-state-management-functions/puzzleValueChange';
 
 // Main Component
-const NumberSelectBar = (props: NumberSelectBarProps) => {
+const NumberSelectBar = () => {
   const {
     pencilMode,
     clickedSquare,
@@ -20,50 +18,27 @@ const NumberSelectBar = (props: NumberSelectBarProps) => {
     setFilledSquares,
     pencilSquares,
     setPencilSquares
-  } = props;
-  return (
-    <div className='button-container'>
-      {makeButtons(
+  } = useContext<SquareContextValue>(squareContext);
+
+  const numberButtons = useMemo(
+    () =>
+      makeButtons(
         pencilMode,
         clickedSquare,
         filledSquares,
         setFilledSquares,
         pencilSquares,
         setPencilSquares
-      )}
-    </div>
+      ),
+    [pencilMode, clickedSquare, filledSquares, setFilledSquares, pencilSquares, setPencilSquares]
   );
+
+  return <div className='number-select-bar'>{numberButtons}</div>;
 };
 
 export default NumberSelectBar;
 
 // Helper Functions
-const onNumberClick: OnNumberClick = (
-  event,
-  pencilMode,
-  clickedSquare,
-  filledSquares,
-  setFilledSquares,
-  pencilSquares,
-  setPencilSquares
-) => {
-  if (clickedSquare === null) {
-    alert('Please select a square before clicking a number button');
-    return;
-  }
-  const buttonVal = event.currentTarget.innerText as PuzzleVal;
-
-  onNumberChange(
-    buttonVal,
-    pencilMode,
-    clickedSquare,
-    filledSquares,
-    setFilledSquares,
-    pencilSquares,
-    setPencilSquares
-  );
-};
-
 const makeButtons: MakeButtons = (
   pencilMode,
   clickedSquare,
@@ -78,8 +53,7 @@ const makeButtons: MakeButtons = (
     let isDisabled = false;
     let classes = 'number-button';
 
-    if (!pencilMode) classes += ' fill-mode';
-    else classes += ' pencil-mode';
+    if (pencilMode) classes += ' pencil-mode';
 
     if (clickedSquare) {
       if (filledSquares[clickedSquare]?.fixedVal) {
@@ -93,7 +67,6 @@ const makeButtons: MakeButtons = (
     }
     buttons.push(
       <button
-        id={'number-select-button-' + buttonVal}
         key={'number-select-button-' + buttonVal}
         className={classes}
         disabled={isDisabled}

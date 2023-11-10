@@ -1,0 +1,170 @@
+$bigBorderColor: #08153e;
+$innerBorderColor: #0d2367;
+$squareBackground: #f7f8f8;
+$numberColor: #1840b9;
+$fixedVal: $bigBorderColor;
+$duplicateNumber: rgb(204, 69, 69);
+// $pencilNum: $numberColor;
+$pencilNum: #4f18ce;
+$peerSquareBackground: #d9e1fa;
+// $clickedSquareBackground: #cbd6f8;
+// $clickedSquareBackground: #eef1fd;
+$clickedSquareBackground: #c0cef7;
+$clickedSquareBorder: yellow;
+
+// $puzzleButtonBackground: #3D67E6;
+// $puzzleButtonBackground: #305de4;
+$puzzleButtonBackground: #3964e4;
+$puzzleButtonShadow: rgb(168, 40, 210);
+$puzzleButtonText: #b4c4f5;
+$puzzleButtonShadow: #8a5fed;
+$visitedLink: rgb(128, 179, 171);
+
+.puzzle-page-centerer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+
+  :focus {
+    outline: none;
+  }
+}
+
+.puzzle-page-container {
+  flex-grow: 1;
+  margin: 0 8px;
+  min-width: 320px;
+  max-width: 480px;
+}
+
+.puzzle-container {
+  display: grid;
+  grid-template-rows: repeat(3, 1fr);
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  border: $bigBorderColor solid 2px;
+  background-color: $bigBorderColor;
+  border-radius: 2px;
+  margin-bottom: 15px;
+  font-family: "Roboto Mono", monospace;
+}
+
+.box-unit-container {
+  display: grid;
+  grid-template-rows: repeat(3, 1fr);
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background-color: $innerBorderColor;
+}
+
+.square-container {
+  background-color: $squareBackground;
+  aspect-ratio: 50/61;
+  padding: 2px;
+}
+
+.filled-square {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: max(20px, min(6vw, 32px));
+  font-weight: 300;
+  color: $numberColor;
+}
+
+.fixed-val {
+  color: $fixedVal;
+}
+
+.pencil-square {
+  display: grid;
+  grid-template-rows: repeat(3, 1fr);
+  grid-template-columns: repeat(3, 1fr);
+  align-items: center;
+}
+
+.pencil-val-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: max(9px, min(2.8vw, 14px));
+  font-weight: 200;
+  color: $pencilNum;
+}
+
+.duplicate-number {
+  color: $duplicateNumber;
+}
+
+.fixed-val.duplicate-number {
+  color: darken($duplicateNumber, 15%);
+}
+
+.current-peer {
+  background-color: $peerSquareBackground;
+}
+
+.current-square-outline {
+  padding: 0;
+  border: lighten($numberColor, 10%) solid 2px;
+}
+
+.current-square-background {
+  border-color: $clickedSquareBorder;
+  background-color: $clickedSquareBackground;
+}
+
+// Styles for buttons below puzzle
+.number-select-bar {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.number-button {
+  flex-grow: 1;
+  aspect-ratio: 1;
+  margin: 0 5px;
+  border-color: rgba(118, 118, 118, 0.3);
+  border-radius: 5px;
+  color: $puzzleButtonText;
+  background-color: $puzzleButtonBackground;
+  font-size: max(16px, min(5vw, 24px));
+  font-weight: 300;
+
+  &.pencil-mode {
+    font-size: max(14px, min(4vw, 20px));
+    font-weight: 300;
+  }
+}
+
+.puzzle-button-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.puzzle-button {
+  margin: 0 4px 12px;
+  color: $puzzleButtonText;
+  background-color: $puzzleButtonBackground;
+  font-size: max(16px, min(4vw, 19px));
+  padding: 5px 12px;
+  border-radius: 5px;
+}
+
+.highlight-number-button {
+  background-color: darken($puzzleButtonBackground, 8%);
+  color: darken($puzzleButtonText, 4%);
+  box-shadow: 3px 4px 3px $puzzleButtonShadow;
+}
+
+.number-button:disabled {
+  background-color: lighten($puzzleButtonBackground, 6%);
+  color: lighten($puzzleButtonText, 4%);
+}
+
+.number-button.highlight-number-button:disabled {
+  background-color: lighten($puzzleButtonBackground, 2%);
+  color: lighten($puzzleButtonText, 1%);
+}

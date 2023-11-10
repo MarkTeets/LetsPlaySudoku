@@ -15,12 +15,12 @@ import { UserController, CustomErrorGenerator, UserDocument, BackendStatus } fro
 import controllerErrorMaker from '../utils/controllerErrorMaker';
 const createErr: CustomErrorGenerator = controllerErrorMaker('userController');
 
-//---GET USER --------------------------------------------------------------------------------------------------------------------
+//---GET USER --------------------------------------------------------------------------------------
 const getUser: RequestHandler = async (req, res, next) => {
   const { username } = req.body;
 
   // In the case of delete-session, we want the username specifically, not the cookies
-  // In the case of resume-session, username will be undefined and we'll want userId from the cookies
+  // In the case of resume-session, username will be undefined and we'll want userId from cookies
   let userId;
   if (typeof username !== 'string') {
     userId = req.cookies.ssid;
@@ -38,7 +38,7 @@ const getUser: RequestHandler = async (req, res, next) => {
     );
   }
 
-  // retreive associated data from database
+  // retrieve associated data from database
   try {
     // add whatever is found to res.locals. If nothing is found, null will be returned
     res.locals.userDocument = await models.UserModel.findOne({
@@ -58,17 +58,18 @@ const getUser: RequestHandler = async (req, res, next) => {
   }
 };
 
-//---CLEAN USER -------------------------------------------------------------------------------------------------------------
+//---CLEAN USER ------------------------------------------------------------------------------------
 const cleanUser: RequestHandler = async (req, res, next) => {
-  // if userDocument was found via getUser, extract relevant properties from the immutable returned Mongo document
-  // and send it to next middleware via res.locals.frontendData
+  // if userDocument was found via getUser, extract relevant properties from the immutable returned
+  // Mongo document and send it to next middleware via res.locals.frontendData
 
   if (res.locals.status === 'validUser' && res.locals.userDocument !== null) {
     const userDocument: UserDocument = res.locals.userDocument;
 
-    // It'll be easier on the frontend to organize "allPuzzles" as an object with the keys being the number of the puzzle
-    // I could convert the mongo document to hold a map of puzzle objects, but then they'd have to have dynamic keys based on
-    // the puzzle number and I'd need to use a Map. For now I'll just store them in arrays to avoid dynamic keys
+    // It'll be easier on the frontend to organize "allPuzzles" as an object with the keys being the
+    // number of the puzzle. I could convert the mongo document to hold a map of puzzle objects, but
+    // then they'd have to have dynamic keys based on the puzzle number and I'd need to use a Map.
+    // For now I'll just store them in arrays to avoid dynamic keys
 
     const allPuzzles: AllPuzzles = {};
 
@@ -94,7 +95,7 @@ const cleanUser: RequestHandler = async (req, res, next) => {
   return next();
 };
 
-//---CREATE USER -------------------------------------------------------------------------------------------------------------
+//---CREATE USER -----------------------------------------------------------------------------------
 const createUser: RequestHandler = async (req, res, next) => {
   // if userDocument on res.locals is not null, send frontendData object with status to frontend
   if (res.locals.userDocument !== null) {
@@ -120,7 +121,8 @@ const createUser: RequestHandler = async (req, res, next) => {
   }
 
   try {
-    // Make a document to add to the user collection with a hashed password and displayName as username if no username was provided
+    // Make a document to add to the user collection with a hashed password and displayName as
+    // username if no username was provided
     const document = {
       username,
       password: bcrypt.hashSync(password, saltRound) as string,
@@ -147,7 +149,7 @@ const createUser: RequestHandler = async (req, res, next) => {
   }
 };
 
-//---VERIFY USER LOGIN --------------------------------------------------------------------------------------------
+//---VERIFY USER LOGIN -----------------------------------------------------------------------------
 const verifyUser: RequestHandler = async (req, res, next) => {
   // if userDocument on res.locals is null, send frontendData object with status to frontend
   if (res.locals.userDocument === null) {
@@ -155,7 +157,8 @@ const verifyUser: RequestHandler = async (req, res, next) => {
     return next();
   }
 
-  // If the user was found via getUser, compare the password on the found user document to the submitted password
+  // If the user was found via getUser, compare the password on the found user document to the
+  // submitted password
   const userDocument: UserDocument = res.locals.userDocument;
   const { password } = req.body;
 
@@ -193,8 +196,9 @@ const verifyUser: RequestHandler = async (req, res, next) => {
   }
 };
 
-//---SAVE PUZZLE -----------------------------------------------------------------------------------------------------
-// I may switch the entire schema set-up to include puzzle objects, including a Map of said objects in the User schema
+//---SAVE PUZZLE -----------------------------------------------------------------------------------
+// I may switch the entire schema set-up to include puzzle objects, including a Map of said objects
+// in the User schema
 
 const savePuzzle: RequestHandler = async (req, res, next) => {
   // Make sure getUser found the user
@@ -214,7 +218,7 @@ const savePuzzle: RequestHandler = async (req, res, next) => {
     return next(
       createErr({
         method: 'savePuzzle',
-        overview: 'problem extractinging puzzle info from req.body',
+        overview: 'problem extracting puzzle info from req.body',
         status: 500,
         err: 'puzzleNumber and/or progress was undefined'
       })
@@ -225,7 +229,7 @@ const savePuzzle: RequestHandler = async (req, res, next) => {
 
   try {
     // I can refactor this if I make the user allPuzzles property a map. I could also make a schema
-    // for the userPuzzleObjects if I wanted to be specific about it. Or I could just leave the array.
+    // for the userPuzzleObjects if I wanted to be specific about it. I'll leave the array for now
     for (let i = 0; i < userDocument.allPuzzles.length; i++) {
       if (puzzleNumber === userDocument.allPuzzles[i].puzzleNumber) {
         currentPuzzleIndex = i;
@@ -251,10 +255,11 @@ const savePuzzle: RequestHandler = async (req, res, next) => {
 
     res.locals.userDocument.lastPuzzle = puzzleNumber;
 
-    // I don't need to check and see if the returned value is null. An error will be thrown if the save is unsuccessful
+    // I don't need to check and see if the returned value is null.
+    // An error will be thrown if the save is unsuccessful
     await res.locals.userDocument.save();
 
-    // I'm not going to send back the whole user, I'll only send whether or not it was succesful.
+    // I'm not going to send back the whole user, I'll only send whether or not it was successful.
     // As the user object gets bigger via more and more puzzles, this will be more efficient
     res.locals.frontendData = { status: 'valid' } as SignInResponse;
 
@@ -271,12 +276,69 @@ const savePuzzle: RequestHandler = async (req, res, next) => {
   }
 };
 
+//---SAVE USER -------------------------------------------------------------------------------------
+/**
+ * Takes only a user, saves entire user to database including converting allPuzzles to array
+ */
+const saveUser: RequestHandler = async (req, res, next) => {
+  // Make sure getUser found the user
+  if (res.locals.userDocument === null) {
+    res.locals.frontendData = { status: 'userNotFound' } as SignInResponse;
+    return next();
+  }
+
+  const frontendLastPuzzle: number = req.body.lastPuzzle;
+  const frontendAllPuzzles: AllPuzzles = req.body.allPuzzles;
+
+  if (!frontendAllPuzzles || !frontendLastPuzzle) {
+    return next(
+      createErr({
+        method: 'saveUser',
+        overview: 'problem extracting user info from req.body',
+        status: 500,
+        err: 'user was undefined'
+      })
+    );
+  }
+
+  const puzzleKeys = Object.keys(frontendAllPuzzles);
+  const backendAllPuzzles = [];
+  for (const key of puzzleKeys) {
+    backendAllPuzzles.push(frontendAllPuzzles[Number(key)]);
+  }
+
+  try {
+    res.locals.userDocument.allPuzzles = backendAllPuzzles;
+    res.locals.userDocument.lastPuzzle = frontendLastPuzzle;
+
+    // I don't need to check and see if the returned value is null.
+    // An error will be thrown if the save is unsuccessful
+    await res.locals.userDocument.save();
+
+    // I'm not going to send back the whole user, I'll only send whether or not it was successful.
+    // As the user object gets bigger via more and more puzzles, this will be more efficient
+    res.locals.frontendData = { status: 'valid' } as SignInResponse;
+
+    return next();
+  } catch (err) {
+    return next(
+      createErr({
+        method: 'saveUser',
+        overview: `problem saving progress to ${res.locals.userDocument.username}'s allPuzzles array`,
+        status: 500,
+        err
+      })
+    );
+  }
+};
+
 const userController: UserController = {
   getUser,
   cleanUser,
   createUser,
   verifyUser,
-  savePuzzle
+  savePuzzle,
+  saveUser
 };
 
 export default userController;

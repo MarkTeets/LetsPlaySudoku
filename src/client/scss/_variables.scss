@@ -1,0 +1,79 @@
+// @use 'sass:math';
+
+// $bodyColor: #222da9;
+$bodyColor: #b59cf0;
+$bodyColorTransparent: #b59cf060;
+$menuBorderColor: #58c2c6;
+$buttonBackground: rgb(194, 202, 201);
+$offBlack: rgb(50, 42, 104);
+// $textColor: #6b3ee6;
+$textColor: #4f18ce;
+$buttonText: rgb(57, 50, 50);
+$visitedLink: rgb(128, 179, 171);
+
+
+$bigBorderColor: #08153e;
+$innerBorderColor: #0d2367;
+$squareBackground: #f7f8f8;
+$numberColor: #1840b9;
+$fixedVal: $bigBorderColor;
+$duplicateNumber: rgb(204, 69, 69);
+// $pencilNum: $numberColor;
+$pencilNum: #4f18ce;
+$peerSquareBackground: #d9e1fa;
+// $clickedSquareBackground: #cbd6f8;
+// $clickedSquareBackground: #eef1fd;
+$clickedSquareBackground: #c0cef7;
+$clickedSquareBorder: yellow;
+
+// $puzzleButtonBackground: #3D67E6;
+// $puzzleButtonBackground: #305de4;
+$puzzleButtonBackground: #3964e4;
+$puzzleButtonShadow: rgb(168, 40, 210);
+$puzzleButtonText: #b4c4f5;
+$puzzleButtonShadow: #8a5fed;
+$visitedLink: rgb(128, 179, 171);
+
+$nav-link-background: #c1c5c5;
+$sideSpaceMargin: 8px;
+
+$minFilledSquareFont: 16px;
+$maxFilledSquareFont: 35px;
+
+$minPencilSquareFont: 8px;
+$maxPencilSquareFont: 14px;
+
+$maxPuzzleWidth: 530px;
+$minPuzzleWidth: 320px;
+
+// @function scaledFontSize($maxFont, $minFont, $maxWidth, $minWidth) {
+//   $slope: math.div(($maxFont-$minFont), ($maxWidth-$minWidth));
+//   $b: $maxFont - ($slope * $maxWidth);
+//   @return 1vw*100*$slope + $b;
+// };
+
+// @mixin filledSquareFontSize {
+//   font-size: scaledFontSize($maxFilledSquareFont, $minFilledSquareFont, $maxPuzzleWidth, $minPuzzleWidth);
+// }
+
+// @mixin filledSquareFontSize {
+//   font-size: scaledFontSize(35, 16, 530, 320);
+// }
+
+// @mixin filledSquareFontSize {
+//   font-size: 1vw * 100 * math.div(($maxFilledSquareFont - $minFilledSquareFont), ($maxPuzzleWidth - $minPuzzleWidth)) + ($maxFilledSquareFont - $maxPuzzleWidth * math.div(($maxFilledSquareFont - $minFilledSquareFont), ($maxPuzzleWidth - $minPuzzleWidth)))
+// }
+
+// @function scaledFilledSquareFontSize() {
+//   @return scaledFontSize($maxFilledSquareFont, $minFilledSquareFont, $maxPuzzleWidth, $minPuzzleWidth);
+// };
+
+// @function scaledPencilSquareFontSize() {
+//   @return scaledFontSize($maxPencilSquareFont, $minPencilSquareFont, $maxPuzzleWidth, $minPuzzleWidth);
+// };
+
+// @function scaledFilledSquareFontSize() {
+//   $slope: math.div(($maxFilledSquareFont-$minFilledSquareFont), ($maxPuzzleWidth-$minPuzzleWidth));
+//   $b: $maxFilledSquareFont - ($slope * $maxPuzzleWidth);
+//   @return 1vw*100*$slope + $b;
+// };

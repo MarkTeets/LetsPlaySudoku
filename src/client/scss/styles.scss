@@ -1,35 +1,62 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@100;200;300;400&family=Roboto:ital,wght@0,100;0,300;0,400;1,300;1,400&family=Rubik:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&display=swap');
-
-$bodyColor: #222da9;
+// $bodyColor: #222da9;
+$bodyColor: #b59cf0;
 $bigBorderColor: #58c2c6;
-$innerBorderColor: #e985a6;
-$squareBackground: rgb(52, 64, 160);
 $buttonBackground: rgb(194, 202, 201);
-$puzzleButtonBackground: rgba(156, 53, 207, 0.958);
 $offBlack: rgb(50, 42, 104);
-$numberColor:#8eb5f5;
-$textColor: rgb(236, 213, 130);
+// $textColor: #6b3ee6;
+$textColor: #4f18ce;
 $buttonText: rgb(57, 50, 50);
-$puzzleButtonText: rgba(64, 227, 113, 0.844);
 $visitedLink: rgb(128, 179, 171);
-$duplicateNumber: rgb(204, 69, 69);
+
+*,
+::after,
+::before {
+  box-sizing: border-box;
+}
+
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@100;200;300;400&family=Roboto:ital,wght@0,100;0,300;0,400;1,300;1,400&family=Rubik:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&display=swap");
 
 body {
-  background-color: $bodyColor;
-  font-family: 'Roboto', sans-serif;
+  min-height: 100vh;
+  margin: 0;
+  // background-color: $bodyColor;
+  background-image: radial-gradient(ellipse at top left, $bodyColor, transparent 100%);
+  font-family: "Roboto", sans-serif;
   // font-family:'Lucinda Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
   // font-family: 'Rubik', sans-serif;
-
   color: $textColor;
 }
 
-h1, h2, h3, h5 {
+h1,
+h2,
+h3,
+h5 {
   width: max-content;
-  margin: 15px auto;
+  margin: 10px auto 15px;
+}
+
+#main-nav {
+  width: max-content;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 40px;
+}
+
+.nav-link-container {
+  width: max-content;
+  margin: 0 auto;
+}
+
+#main-nav .nav-link {
+  margin: 0 10px;
+}
+
+#main-nav .active {
+  background-color: $offBlack;
+  border-radius: 7px;
 }
 
 .centered-div {
-  box-sizing: border-box;
   width: max-content;
   padding: 10px 30px 15px;
   margin: 0 auto;
@@ -48,10 +75,10 @@ h1, h2, h3, h5 {
   }
 
   label {
-    margin: 8px 0
+    margin: 8px 0;
   }
 
-  div {
+  .puzzle-select-div {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -66,9 +93,11 @@ p {
   margin: 10px 0;
 }
 
-#lets-play{
-  font-family: 'Rubik', sans-serif;
+#lets-play {
+  font-family: "Rubik", sans-serif;
   font-size: 40px;
+  height: 55px;
+  padding: 12px;
   margin-bottom: 40px;
   font-style: italic;
   font-weight: 500;
@@ -79,38 +108,6 @@ p {
   width: max-content;
   margin: 0 auto;
   border-radius: 4px;
-} 
-
-#main-nav {
-  width:max-content;
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 40px;
-}
-
-.nav-link {
-  color: $numberColor;
-  margin: 0 10px;
-  padding: 15px;
-}
-
-.nav-link-container {
-  width: max-content;
-  margin: 0 auto;
-}
-
-#main-nav .active {
-  background-color: $offBlack;
-  border-radius: 7px;
-}
-
-#puzzle-page {
-  width: max-content;
-  margin: 0 auto;
-  
-  :focus{
-    outline: none;
-  }
 }
 
 button {
@@ -119,139 +116,15 @@ button {
   color: $buttonText;
   padding: 5px 10px;
   border-radius: 5px;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 16px;
 }
 
 .button-container {
   width: max-content;
   margin: 15px auto;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
 }
 
-.puzzle-button, .number-button {
-  color: $puzzleButtonText;
-  background-color: $puzzleButtonBackground;
-}
-
-.highlight-number-button {
-  background-color: lighten($puzzleButtonBackground, 12%);
-  box-shadow: 0px 0px 10px 4px rgb(168, 40, 210);
-}
-
-#puzzle-container {
-  display: grid;
-  grid-template-rows: repeat(3, 1fr);
-  grid-template-columns: repeat(3, 1fr);
-  border: $bigBorderColor solid 3px;
-  width: 500px;
-  height: 525px;
-  margin: 30px auto;
-  border-radius: 2px;
-  font-family: 'Roboto Mono', monospace;
-}
-
-.number-button {
-  margin: 3px 8.5px;
-  height: 45px;
-  width: 40px;
-  border-color: rgba(118, 118, 118, 0.3);
-  // font-family: 'Roboto', sans-serif;
-}
-
-.number-button:disabled{
-  background-color: darken($puzzleButtonBackground, 9%);
-}
-
-.number-button.highlight-number-button:disabled {
-  background-color: darken($puzzleButtonBackground, 3%);
-}
-
-.fill-mode {
-  font-size: 24px;
-  font-weight: 300;
-}
-
-.pencil-mode {
-  font-size: 18px;
-  font-weight: 400;
-}
-
-.box-unit-container {
-  box-sizing: border-box;
-  display: grid;
-  grid-template-rows: repeat(3, 1fr);
-  grid-template-columns: repeat(3, 1fr);
-  border: $bigBorderColor solid 1px;
-}
-
-.square-display {
-  box-sizing: border-box;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 0;
-  background-color: $squareBackground;
-  border: $innerBorderColor dotted 1px;
-  border-radius: 0;
-  outline: none;
-  appearance: none;
-  width: 100%;
-  height: 100%;
-  font-size: 35px;
-  font-weight: 300;
-  color: $numberColor;
-}
-
-.pencil-square {
-  box-sizing: border-box;
-  padding: 0;
-  background-color: $squareBackground;
-  border: $innerBorderColor dotted 1px;
-  border-radius: 0;
-  outline: none;
-  appearance: none;
-  width: 100%;
-  height: 100%;
-  display: grid;
-  grid-template-rows: repeat(3, 1fr);
-  grid-template-columns: repeat(3, 1fr);
-  color: lighten($numberColor, 5%);
-  align-items: center;
-}
-
-.pencil-val-div {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 14px;
-  font-weight: 200;
-}
-
-.current-square {
-background-color: darken($squareBackground, 9%);
-}
-
-.current-peer {
-  background-color: darken($squareBackground, 4.5%);
-}
-
-.square-1, .square-2, .square-3 {
-  border-top-style: none;
-}
-
-.square-1, .square-4, .square-7 {
-  border-left-style: none;
-}
-
-.square-3, .square-6, .square-9 {
-  border-right-style: none;
-}
-
-.square-7, .square-8, .square-9 {
-  border-bottom-style: none;
-}
-
-.duplicate-number {
-  color: $duplicateNumber;
-}
+@import "./modules/puzzle.scss";
+@import "./modules/userNavbar.scss";

@@ -8,7 +8,7 @@ const EmptySquareDisplay = (props: SquareProps) => {
   const { squareId, squareClasses, onSquareClick } = props;
   return (
     <div
-      className={`square-display ${squareClasses}`}
+      className={squareClasses}
       data-square={squareId}
       onClick={(event) => onSquareClick(event)}
     ></div>

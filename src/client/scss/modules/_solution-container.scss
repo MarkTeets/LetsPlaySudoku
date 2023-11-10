@@ -1,0 +1,23 @@
+.solution-container {
+  @include l-flex-column-align-center;
+  min-width: 210px;
+  @include breakpoint(380px) {
+    @include l-flex-column-align-left;
+  }
+
+  &__technique-applier {
+    @include l-flex-row-justify-center;
+    flex-wrap: wrap;
+    @include breakpoint(380px) {
+      @include l-flex-row-justify-start;
+    }
+
+    label {
+      margin: 0 10px 5px 0;
+    }
+
+    button {
+      margin-bottom: 5px;
+    }
+  }
+}

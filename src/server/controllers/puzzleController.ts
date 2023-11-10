@@ -14,7 +14,7 @@ const createErr: CustomErrorGenerator = controllerErrorMaker('puzzleController')
 // Global Variables
 import totalPuzzles from '../../globalUtils/totalPuzzles';
 
-//---GET PUZZLE BY NUMBER---------------------------------------------------------------------------------------------------
+//---GET PUZZLE BY NUMBER---------------------------------------------------------------------------
 
 // Given a puzzleNumber, retrieve associated puzzle from the database and return it as a json
 
@@ -64,9 +64,9 @@ const getPuzzleByNumber: RequestHandler = async (req, res, next) => {
   }
 };
 
-//---GET USER PUZZLES --------------------------------------------------------------------------------------------------------------------------
-// Given a frontendData object on res.locals from userController.verifyLogin, this function will return all of the puzzle details
-// for each puzzle in the frontendData user's allPuzzles
+//---GET USER PUZZLES ------------------------------------------------------------------------------
+// Given a frontendData object on res.locals from userController.verifyLogin, this function will
+// return all of the puzzle details for each puzzle in the frontendData user's allPuzzles
 
 const getUserPuzzles: RequestHandler = async (req, res, next) => {
   // The login page already handles the "userNotFound" case, so I don't need to do anything else
@@ -108,12 +108,13 @@ const getUserPuzzles: RequestHandler = async (req, res, next) => {
   }
 };
 
-//---GET NEXT PUZZLE ----------------------------------------------------------------------------------------------------------------------
-// A post request from a guest will include their allPuzzles object. A post request from a user will include their username.
-// This middleware will find the first puzzle number that hasn't been played, and redirect to a get request for that specific puzzle
-// If every puzzle has been played, a specific status will be sent back.
-// There are two different ways to get the info for guests vs users as a user's allPuzzles array might be large, and eventually it'll be
-// cached for fast retrieval
+//---GET NEXT PUZZLE -------------------------------------------------------------------------------
+// A post request from a guest will include their allPuzzles object. A post request from a user will
+// include their username. This middleware will find the first puzzle number that hasn't been played
+// and redirect to a get request for that specific puzzle. If every puzzle has been played, a
+// specific status will be sent back. There are two different ways to get the info for guests vs
+// users as a user's allPuzzles array might be large, and eventually it'll be cached for fast
+// retrieval
 
 const getNextPuzzle: RequestHandler = async (req, res, next) => {
   const { username, allPuzzles } = req.body;
@@ -124,9 +125,10 @@ const getNextPuzzle: RequestHandler = async (req, res, next) => {
   //Now we'll handle two different cases for a user request and a guest request
 
   // Case 1: User request
-  // A user request will include a username and the getUser middleware is called to retreive the user.
+  // A user request will include a username and the getUser middleware retrieves the user
   if (typeof username === 'string') {
-    // Having confirmed the request came from a user, check to see if the corresponding user document has been found
+    // Having confirmed the request came from a user, check to see if the corresponding
+    // user document has been found.
     // If not send status back to frontend to show that getUser didn't find intended user
     if (res.locals.userDocument === null) {
       res.locals.frontendData = { status: 'userNotFound' };
@@ -141,8 +143,9 @@ const getNextPuzzle: RequestHandler = async (req, res, next) => {
       puzzleNumSet.add(puzzleObj.puzzleNumber);
     }
 
-    // Reassign nextPuzzleNum to the first unused puzzle number from the user's allPuzzles array that's less than the total number of puzzles
-    // Have to do this sequentially as user can choose any number to play via other methods, aka puzzle numbers can be sparse
+    // Reassign nextPuzzleNum to the first unused puzzle number from the user's allPuzzles array
+    // that's less than the total number of puzzles. Have to do this sequentially as user can
+    // choose any number to play via other methods, aka puzzle numbers can be sparse
     for (let i = 1; i <= totalPuzzles; i++) {
       if (!puzzleNumSet.has(i)) {
         nextPuzzleNum = i;
@@ -155,8 +158,9 @@ const getNextPuzzle: RequestHandler = async (req, res, next) => {
   // A guest request will include an allPuzzles object.
   if (typeof allPuzzles === 'object') {
     const guestAllPuzzles: AllPuzzles = allPuzzles;
-    // Reassign nextPuzzleNum to the first unused puzzle number in the object that's less  than the total number of puzzles
-    // Have to do this sequentially as user can choose any number to play via other methods, aka puzzle numbers can be sparse
+    // Reassign nextPuzzleNum to the first unused puzzle number in the object that's less than the
+    // total number of puzzles. Have to do this sequentially as user can choose any number to play
+    // via other methods, aka puzzle numbers can be sparse
     for (let i = 1; i <= totalPuzzles; i++) {
       if (!guestAllPuzzles[i]) {
         nextPuzzleNum = i;
@@ -171,13 +175,14 @@ const getNextPuzzle: RequestHandler = async (req, res, next) => {
     return res.redirect(`/api/puzzle/${nextPuzzleNum}`);
   }
 
-  // If no usable number was found, it's because they've already played all of the puzzles. Send this info back to the frontend.
+  // If no usable number was found, it's because they've already played all of the puzzles.
+  // Send this info back to the frontend.
   res.locals.frontendData = { status: 'allPuzzlesPlayed' } as PuzzleResponse;
 
   return next();
 };
 
-//---GET PUZZLE WITH FILTERS ------------------------------------------------------------------------------------------------------------------
+//---GET PUZZLE WITH FILTERS -----------------------------------------------------------------------
 // const getPuzzleWithFilters: RequestHandler = async (req, res, next) => {
 
 // };
