@@ -131,15 +131,17 @@ export default PuzzlePageTest;
 
 //---- HELPER FUNCTIONS ----------------------------------------------------------------------------
 
-const samplePuzzle1 =
-  '070000043040009610800634900094052000358460020000800530080070091902100005007040802';
+// const samplePuzzle1 =
+//   '070000043040009610800634900094052000358460020000800530080070091902100005007040802';
 // const samplePuzzle2 =
 // '679518243543729618821634957794352186358461729216897534485276391962183475137945860';
 // const sampleSolution1 =
 // '679518243543729618821634957794352186358461729216897534485276391962183475137945862';
+// const tripleHiddenExample =
+//   '528600049136490025794205630000100200007826300002509060240300976809702413070904582';
 const emptyPuzzle = '0'.repeat(81);
 
 export const puzzleTestLoader = () => {
-  return { puzzle: samplePuzzle1 };
-  // return { puzzle: emptyPuzzle };
+  // return { puzzle: tripleHiddenExample };
+  return { puzzle: emptyPuzzle };
 };
